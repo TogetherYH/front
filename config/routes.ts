@@ -1,5 +1,9 @@
 export default [
   {
+    path: '/',
+    redirect: '/home',
+  },
+  {
     name: 'login',
     path: '/login',
     component: '@/pages/Login',

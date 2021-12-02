@@ -4,7 +4,7 @@
 declare namespace API {
   type CurrentUser = {
     username?: string;
-    userid: bigint;
+    userId: bigint;
     token?: string;
   };
 
@@ -16,9 +16,17 @@ declare namespace API {
   };
 
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    code?: string;
+    success?: boolean;
+    data?: any;
+    message?: string;
+  };
+
+  type AjaxResult = {
+    success?: boolean;
+    code?: number;
+    message?: string;
+    data?: any;
   };
 
   type ErrorResponse = {

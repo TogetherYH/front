@@ -1,12 +1,59 @@
 import classNames from 'classnames';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { useModel, history } from 'umi';
+
 import { login } from '@/services/login';
 
 const Login = () => {
-  const onFinish = async (values: any) => {
-    // dispatch({ type: 'login/login', payload: values });
-    const msg = await login({ ...values });
+  const { initialState, setInitialState } = useModel('@@initialState');
+
+  const fetchUserInfo = async () => {
+    const userInfo = await initialState?.fetchUserInfo?.();
+    console.log('@@userInfo:', userInfo);
+    if (userInfo) {
+      await setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo,
+      }));
+    }
+  };
+
+  const handleSubmit = async (values: API.LoginParams) => {
+    try {
+      // 登录
+      const msg = await login({ ...values });
+      // console.log('msg', msg);
+
+      if (msg.success === true) {
+        notification.success({
+          message: '登录成功',
+        });
+        // console.log('msg', msg);
+        // 保存token到localStorage
+        localStorage.setItem('token', msg.data.token);
+        // 获取用户信息
+        await fetchUserInfo();
+        /** 此方法会跳转到 redirect 参数所在的位置 */
+        if (!history) return;
+        const { query } = history.location;
+        const { redirect } = query as { redirect: string };
+        history.push(redirect || '/');
+        return;
+      } else {
+        notification.error({
+          message: '登录失败',
+        });
+      }
+      console.log(msg);
+      // 如果失败去设置用户错误信息
+      // setUserLoginState(msg);
+    } catch (error) {
+      console.log('error', error);
+      notification.error({
+        message: '登录失败',
+      });
+    }
   };
 
   return (
@@ -22,7 +69,9 @@ const Login = () => {
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        onFinish={onFinish}
+        onFinish={async (values) => {
+          await handleSubmit(values as API.LoginParams);
+        }}
         // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
