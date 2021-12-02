@@ -6,6 +6,9 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  antd: {
+    compact: true, // 开启紧凑主题
+  },
   layout: {},
   routes,
   fastRefresh: {},
