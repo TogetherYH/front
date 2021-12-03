@@ -1,61 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, Tag, Space } from 'antd';
 import { connect, Loading } from 'umi';
 import { UserModelState } from '@/models/system/user';
-
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'username',
-    key: 'username',
-  },
-  // {
-  //   title: 'Age',
-  //   dataIndex: 'age',
-  //   key: 'age',
-  // },
-  // {
-  //   title: 'Address',
-  //   dataIndex: 'address',
-  //   key: 'address',
-  // },
-  // {
-  //   title: 'Tags',
-  //   key: 'tags',
-  //   dataIndex: 'tags',
-  //   render: (tags: string[]) => (
-  //     <>
-  //       {tags.map(tag => {
-  //         let color = tag.length > 5 ? 'geekblue' : 'green';
-  //         if (tag === 'loser') {
-  //           color = 'volcano';
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (text: string, record: UserModelState) => (
-      <Space size="middle">
-        <a>Edit</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
+import UserModal from './components/UserModal';
 
 const User = ({ users }: { users: UserModelState[] }) => {
-  // console.log('users2', users);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [record, setRecord] = useState(undefined);
+
+  const columns = [
+    // {
+    //   key: 'id',
+    // },
+    {
+      title: '账号',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: '姓名',
+      dataIndex: 'realName',
+      key: 'realName',
+    },
+    {
+      title: '性别',
+      dataIndex: 'sex',
+      key: 'sex',
+    },
+    {
+      title: '出生日期',
+      dataIndex: 'birthday',
+      key: 'birthday',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (text: string, record: UserModelState) => (
+        <Space size="middle">
+          <a
+            onClick={() => {
+              editHandler(record);
+            }}
+          >
+            编辑
+          </a>
+          <a>删除</a>
+        </Space>
+      ),
+    },
+  ];
+
+  const editHandler = (record) => {
+    setModalVisible(true);
+    console.log('record', record);
+    setRecord(record);
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
+  };
+
   return (
     <div>
-      <Table columns={columns} dataSource={users} />
+      <Table columns={columns} dataSource={users} rowKey="id" />
+      <UserModal
+        visible={modalVisible}
+        handleClose={handleClose}
+        record={record}
+      />
     </div>
   );
 };
