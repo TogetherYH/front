@@ -3,11 +3,23 @@ import { Modal, Button, Form, Input, Checkbox } from 'antd';
 
 export default function UserModal(props) {
   const [form] = Form.useForm();
-  const { visible, record, handleClose } = props;
+  const { visible, record, handleClose, onFinish } = props;
 
   useEffect(() => {
-    form.setFieldsValue(record);
+    if (record === undefined) {
+      form.resetFields();
+    } else {
+      form.setFieldsValue(record);
+    }
   }, [visible]);
+
+  const onOk = () => {
+    form.submit();
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
   return (
     <div>
@@ -17,7 +29,7 @@ export default function UserModal(props) {
         centered
         forceRender
         visible={visible}
-        onOk={handleClose}
+        onOk={onOk}
         onCancel={handleClose}
       >
         <Form
@@ -25,17 +37,19 @@ export default function UserModal(props) {
           form={form}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
-          <Form.Item name="id" hidden>
+          {/* <Form.Item name="id" hidden>
             <Input />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item
             label="账号"
             name="username"
             rules={[{ required: true, message: 'Please input your username!' }]}
           >
-            <Input disabled />
+            <Input />
           </Form.Item>
 
           <Form.Item

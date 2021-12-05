@@ -1,6 +1,11 @@
 import { Reducer, Effect, Subscription } from 'umi';
 
-import { getUserList } from '@/services/system/user';
+import {
+  getUserList,
+  updateUser,
+  deleteUser,
+  addUser,
+} from '@/services/system/user';
 
 export interface UserModelState {
   id: number;
@@ -17,7 +22,10 @@ export interface UserModelType {
     getList: Reducer;
   };
   effects: {
-    getUserList: Effect;
+    getRemote: Effect;
+    updateUser: Effect;
+    addUser: Effect;
+    deleteUser: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -34,12 +42,34 @@ const UserModel: UserModelType = {
     },
   },
   effects: {
-    *getUserList(action, { put, call }) {
+    *getRemote(action, { put, call }) {
       const data = yield call(getUserList);
-      console.log('ddd', data);
       yield put({
         type: 'getList',
         payload: data.data.list,
+      });
+    },
+    *updateUser({ type, payload }, { put, call }) {
+      console.log('update here', payload);
+      yield call(updateUser, payload);
+      // const data = yield call(getUserList);
+      yield put({
+        type: 'getRemote',
+      });
+    },
+    *addUser({ type, payload }, { put, call }) {
+      console.log('update here', payload);
+      yield call(addUser, payload);
+      // const data = yield call(getUserList);
+      yield put({
+        type: 'getRemote',
+      });
+    },
+    *deleteUser({ type, payload }, { put, call }) {
+      console.log('del here', payload);
+      yield call(deleteUser, payload);
+      yield put({
+        type: 'getRemote',
       });
     },
   },
@@ -48,7 +78,7 @@ const UserModel: UserModelType = {
       return history.listen((location, action) => {
         if (location.pathname === '/system/user') {
           dispatch({
-            type: 'getUserList',
+            type: 'getRemote',
             payload: {},
           });
         }

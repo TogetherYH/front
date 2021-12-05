@@ -53,6 +53,7 @@ request.interceptors.request.use((url: string, options: RequestOptionsInit) => {
   // 给每个请求带上token
   let token = localStorage.getItem('token') || '';
   let headers = {
+    'Content-Type': 'application/json;',
     'sz-token': token,
   };
   return {
@@ -79,7 +80,7 @@ const get = async (
     console.error(error);
   }
 };
-const deletes = async (
+const del = async (
   url: string,
   parameter?: Record<string, unknown>,
 ): Promise<any> => {
@@ -118,5 +119,5 @@ export default {
   get,
   post,
   put,
-  deletes,
+  del,
 };
