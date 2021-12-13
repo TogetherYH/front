@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { Modal, Button, Form, Input, Checkbox } from 'antd';
+import { SingleUserType, FormValues } from '../data';
 
-export default function UserModal(props) {
+interface UserModalProps {
+  visible: boolean;
+  record: SingleUserType | undefined;
+  closeHandler: () => void;
+  onFinish: (values: FormValues) => void;
+}
+
+const UserModal: FC<UserModalProps> = (props) => {
+  const { visible, record, closeHandler, onFinish } = props;
+
   const [form] = Form.useForm();
-  const { visible, record, handleClose, onFinish } = props;
-
+  // 第二个参数是触发条件
   useEffect(() => {
     if (record === undefined) {
       form.resetFields();
@@ -17,8 +26,8 @@ export default function UserModal(props) {
     form.submit();
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('form submit failed');
   };
 
   return (
@@ -30,20 +39,17 @@ export default function UserModal(props) {
         forceRender
         visible={visible}
         onOk={onOk}
-        onCancel={handleClose}
+        onCancel={closeHandler}
       >
         <Form
-          name="basic"
           form={form}
+          name="basic"
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
+          autoComplete="off"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          {/* <Form.Item name="id" hidden>
-            <Input />
-          </Form.Item> */}
-
           <Form.Item
             label="账号"
             name="username"
@@ -59,22 +65,10 @@ export default function UserModal(props) {
           >
             <Input />
           </Form.Item>
-
-          {/* <Form.Item
-              label="启用"
-              name="status"
-              // valuePropName="status"
-            >
-              <Checkbox/>
-            </Form.Item> */}
-
-          {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item> */}
         </Form>
       </Modal>
     </div>
   );
-}
+};
+
+export default UserModal;

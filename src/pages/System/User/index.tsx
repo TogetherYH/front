@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { Table, Tag, Space, Modal, Button } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { connect, Loading } from 'umi';
-import { UserModelState } from '@/models/system/user';
+import React, { useState, FC } from 'react';
+import { Table, Tag, Space, Modal, Button, Popconfirm } from 'antd';
+import { connect, Dispatch, Loading, userState } from 'umi';
 import UserModal from './components/UserModal';
+import { SingleUserType, FormValues } from './data';
 
-const User = ({ users, dispatch }: { users: UserModelState[] }) => {
+interface UserPageProps {
+  users: userState;
+  dispatch: Dispatch;
+  userListLoading: boolean;
+}
+
+const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [record, setRecord] = useState(undefined);
+  const [record, setRecord] = useState<SingleUserType | undefined>(undefined);
 
   const columns = [
-    // {
-    //   key: 'id',
-    // },
     {
       title: '账号',
       dataIndex: 'username',
@@ -29,14 +31,9 @@ const User = ({ users, dispatch }: { users: UserModelState[] }) => {
       key: 'sex',
     },
     {
-      title: '出生日期',
-      dataIndex: 'birthday',
-      key: 'birthday',
-    },
-    {
       title: '操作',
       key: 'action',
-      render: (text: string, record: UserModelState) => (
+      render: (text: string, record: SingleUserType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -45,68 +42,64 @@ const User = ({ users, dispatch }: { users: UserModelState[] }) => {
           >
             编辑
           </a>
-          <a
-            onClick={() => {
-              deleteConfirm(record);
+          <Popconfirm
+            title="Are you sure to delete this task?"
+            onConfirm={() => {
+              confirm(record);
             }}
+            okText="Yes"
+            cancelText="No"
           >
-            删除
-          </a>
+            <a>删除</a>
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  const editHandler = (record) => {
-    setModalVisible(true);
-    console.log('record', record);
+  const confirm = (record: SingleUserType) => {
     setRecord(record);
+    const id = record.id;
+    dispatch({
+      type: 'users/del',
+      payload: { id },
+    });
   };
 
-  const handleClose = () => {
+  const editHandler = (record: SingleUserType) => {
+    setRecord(record);
+    // console.log('rrr', record);
+    setModalVisible(true);
+  };
+
+  const closeHandler = () => {
     setModalVisible(false);
   };
 
-  const onFinish = (values) => {
+  const onFinish = (values: FormValues) => {
+    // console.log('form on finish');
     let id = 0;
     if (record) {
       id = record.id;
     }
     if (id) {
       dispatch({
-        type: 'users/updateUser',
-        payload: { id, ...values },
+        type: 'users/edit',
+        payload: { id, values },
       });
     } else {
       dispatch({
-        type: 'users/addUser',
-        payload: values,
+        type: 'users/add',
+        payload: { values },
       });
     }
-    setModalVisible(false);
-    // console.log('Success:', values);
-  };
 
-  const deleteConfirm = (record) => {
-    const id = record.id;
-    Modal.confirm({
-      // title: '确认',
-      icon: <ExclamationCircleOutlined />,
-      content: '确定删除当前用户？',
-      okText: '确定',
-      cancelText: '取消',
-      onOk: () => {
-        dispatch({
-          type: 'users/deleteUser',
-          payload: { id },
-        });
-      },
-    });
+    setModalVisible(false);
   };
 
   const addHandler = () => {
-    setModalVisible(true);
     setRecord(undefined);
+    setModalVisible(true);
   };
 
   return (
@@ -114,30 +107,33 @@ const User = ({ users, dispatch }: { users: UserModelState[] }) => {
       <Button type="primary" onClick={addHandler}>
         Add
       </Button>
-      <Table columns={columns} dataSource={users} rowKey="id" />
+      <Table
+        columns={columns}
+        dataSource={users.list}
+        rowKey="id"
+        loading={userListLoading}
+      />
       <UserModal
         visible={modalVisible}
-        handleClose={handleClose}
-        record={record}
+        closeHandler={closeHandler}
         onFinish={onFinish}
+        record={record}
       />
     </div>
   );
 };
 
-// namespace: 'users'
 const mapStateToProps = ({
   users,
   loading,
 }: {
-  users: UserModelState[];
+  users: userState;
   loading: Loading;
 }) => {
-  console.log('users', users);
-  // console.log('users1', users);
+  console.log('uuuuuuuuu', users, loading);
   return {
     users,
-    loading: loading.models.index,
+    userListLoading: loading.models.users,
   };
 };
 
