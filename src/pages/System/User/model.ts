@@ -37,44 +37,63 @@ const UserModel: UserModelType = {
     },
   },
   effects: {
-    *getRemote(action, { put, call }) {
-      const data = yield call(getReomteList);
+    *getRemote({ payload: { pageNum, pageSize } }, { put, call }) {
+      const data = yield call(getReomteList, { pageNum, pageSize });
       if (data) {
-        console.log('ddddddddddddddd', data);
+        // console.log('ddddddddddddddd', data);
         yield put({
           type: 'getList',
           payload: data,
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call }) {
-      // console.log('pp', id);
-      // console.log('pp', values);
+    *edit({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(editRecord, { id, values });
-      // console.log('dddd', data);
       if (data) {
         message.success('Edit successfully');
+        const { pageNum, pageSize } = yield select((state) => {
+          return state.users;
+        });
         yield put({
           type: 'getRemote',
+          payload: {
+            pageNum,
+            pageSize,
+          },
         });
       }
     },
-    *add({ payload: { values } }, { put, call }) {
+    *add({ payload: { values } }, { put, call, select }) {
       const data = yield call(addRecord, { values });
       if (data) {
         message.success('Add successfully');
+        const { pageNum, pageSize } = yield select((state) => {
+          return state.users;
+        });
         yield put({
           type: 'getRemote',
+          payload: {
+            pageNum,
+            pageSize,
+          },
         });
       }
     },
-    *del({ payload: { id } }, { put, call }) {
+    *del({ payload: { id } }, { put, call, select }) {
       const data = yield call(delRecord, { id });
       // console.log('dddd', data);
       if (data) {
         message.success('Delete successfully');
+        const { pageNum, pageSize } = yield select((state) => {
+          return state.users;
+        });
+        // console.log('dddddaaa', pageNum, pageSize);
         yield put({
           type: 'getRemote',
+          payload: {
+            pageNum,
+            pageSize,
+          },
         });
       }
     },
@@ -85,7 +104,7 @@ const UserModel: UserModelType = {
         if (location.pathname === '/system/user') {
           dispatch({
             type: 'getRemote',
-            payload: {},
+            payload: { pageNum: 1, pageSize: 20 },
           });
         }
       });

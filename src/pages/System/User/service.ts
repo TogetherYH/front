@@ -32,12 +32,36 @@ const errorHandler = function (error: any) {
 // 1. Unified processing
 const extendRequest = extend({ errorHandler });
 
-export const getReomteList = async () => {
-  return extendRequest('http://localhost:8080/system/user/list', {
-    method: 'get',
-  })
+request.interceptors.response.use(async (response) => {
+  const codeMaps = {
+    500: '服务器错误。请联系管理员',
+    502: '网关错误。',
+    503: '服务不可用，服务器暂时过载或维护。',
+    504: '网关超时。',
+  };
+  // message.error(codeMaps[response.data.code]);
+  const data = await response.clone().json();
+  if (codeMaps[data.code]) {
+    message.error(codeMaps[data.code]);
+  }
+  return response;
+});
+
+export const getReomteList = async ({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) => {
+  return extendRequest(
+    `http://localhost:8080/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}`,
+    {
+      method: 'get',
+    },
+  )
     .then(function (response) {
-      console.log('responserrrrrrrr', request);
+      // console.log('responserrrrrrrr', request);
       return response.data;
     })
     .catch(function (error) {

@@ -3,6 +3,9 @@ export interface SingleUserType {
   username: string;
   realName: string;
   sex: string;
+  birthday: string;
+  createTime: string;
+  status: string;
 }
 
 export interface FormValues {
