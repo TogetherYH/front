@@ -33,7 +33,7 @@ const errorHandler = function (error: any) {
 const extendRequest = extend({ errorHandler });
 
 request.interceptors.response.use(async (response) => {
-  const codeMaps = {
+  const codeMaps: Record<number, string> = {
     500: '服务器错误。请联系管理员',
     502: '网关错误。',
     503: '服务不可用，服务器暂时过载或维护。',
@@ -50,12 +50,18 @@ request.interceptors.response.use(async (response) => {
 export const getReomteList = async ({
   pageNum,
   pageSize,
+  username,
+  realName,
 }: {
   pageNum: number;
   pageSize: number;
+  username: string;
+  realName: string;
 }) => {
   return extendRequest(
-    `http://localhost:8080/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}`,
+    `http://localhost:8080/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}&username=${
+      username ? username : ''
+    }&realName=${realName ? realName : ''}`,
     {
       method: 'get',
     },
@@ -74,7 +80,7 @@ export const editRecord = async ({
   id,
   values,
 }: {
-  id: number;
+  id: string;
   values: FormValues;
 }) => {
   return extendRequest('http://localhost:8080/system/user/update', {
@@ -102,7 +108,7 @@ export const addRecord = async ({ values }: { values: FormValues }) => {
     });
 };
 
-export const delRecord = async ({ id }: { id: number }) => {
+export const delRecord = async ({ id }: { id: string }) => {
   return extendRequest(`http://localhost:8080/system/user/delete/${id}`, {
     method: 'delete',
   })

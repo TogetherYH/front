@@ -1,30 +1,32 @@
-import React, { useState, FC } from 'react';
+import { FC, useState } from 'react';
 import {
   Table,
-  Tag,
   Space,
-  Modal,
   Button,
   Popconfirm,
   Card,
   Pagination,
+  Input,
+  Form,
 } from 'antd';
 // import ProTable, { ProColumns, TableDropdown, ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch, Loading, userState } from 'umi';
 import UserModal from './components/UserModal';
-import { getReomteList } from './service';
+// import { getReomteList } from './service';
 import { SingleUserType, FormValues } from './data';
 
-interface UserPageProps {
+interface UserProps {
   users: userState;
   dispatch: Dispatch;
   userListLoading: boolean;
 }
 
-const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
+const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [record, setRecord] = useState<SingleUserType | undefined>(undefined);
+
+  const [searchForm] = Form.useForm();
 
   const columns = [
     {
@@ -112,7 +114,7 @@ const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
-    let id = 0;
+    let id = '';
     if (record) {
       id = record.id;
     }
@@ -152,6 +154,8 @@ const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
     dispatch({
       type: 'users/getRemote',
       payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
         pageNum: users.pageNum,
         pageSize: users.pageSize,
       },
@@ -162,8 +166,22 @@ const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
     dispatch({
       type: 'users/getRemote',
       payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
         pageNum,
         pageSize,
+      },
+    });
+  };
+
+  const searchHandler = () => {
+    dispatch({
+      type: 'users/getRemote',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum: users.pageNum,
+        pageSize: users.pageSize,
       },
     });
   };
@@ -173,9 +191,26 @@ const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
       <Space direction="vertical" style={{ width: '100%' }}>
         <Card>
           <Space>
-            <Button type="primary" onClick={addHandler}>
-              添加
+            <Form form={searchForm} layout="inline">
+              <Form.Item
+                label="账号"
+                name="username"
+                style={{ marginBottom: '0' }}
+              >
+                <Input allowClear />
+              </Form.Item>
+              <Form.Item
+                label="姓名"
+                name="realName"
+                style={{ marginBottom: '0' }}
+              >
+                <Input allowClear />
+              </Form.Item>
+            </Form>
+            <Button type="primary" onClick={searchHandler}>
+              搜索
             </Button>
+            <Button onClick={addHandler}>添加</Button>
             <Button onClick={refreshHandler}>刷新</Button>
           </Space>
         </Card>
@@ -187,6 +222,7 @@ const User: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
             loading={userListLoading}
             pagination={false}
             size="middle"
+            scroll={{ y: 600 }}
             // request={requestHandler}
           />
           <Pagination
@@ -222,7 +258,7 @@ const mapStateToProps = ({
   users: userState;
   loading: Loading;
 }) => {
-  console.log('uuuuuuuuu', users, loading);
+  // console.log('uuuuuuuuu', users, loading);
   return {
     users,
     userListLoading: loading.models.users,

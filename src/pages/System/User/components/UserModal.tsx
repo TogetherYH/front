@@ -1,14 +1,5 @@
-import React, { useEffect, FC } from 'react';
-import {
-  Modal,
-  Button,
-  Form,
-  Input,
-  Checkbox,
-  Radio,
-  DatePicker,
-  Switch,
-} from 'antd';
+import { FC, useEffect } from 'react';
+import { Modal, Form, Input, Radio, DatePicker, Switch } from 'antd';
 import moment from 'moment';
 import { SingleUserType, FormValues } from '../data';
 
@@ -48,7 +39,7 @@ const UserModal: FC<UserModalProps> = (props) => {
   return (
     <div>
       <Modal
-        title="basic modal"
+        title={record ? '修改用户信息' : '添加用户信息'}
         maskClosable={false}
         centered
         forceRender
@@ -61,17 +52,20 @@ const UserModal: FC<UserModalProps> = (props) => {
           form={form}
           name="basic"
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           autoComplete="off"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
+          initialValues={{
+            status: true,
+          }}
         >
           <Form.Item
             label="账号"
             name="username"
             rules={[{ required: true, message: '账号不能为空' }]}
           >
-            <Input />
+            <Input disabled={record ? true : false} />
           </Form.Item>
 
           <Form.Item

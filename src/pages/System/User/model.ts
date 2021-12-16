@@ -1,4 +1,3 @@
-import React from 'react';
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
 import { getReomteList, editRecord, delRecord, addRecord } from './service';
@@ -37,8 +36,16 @@ const UserModel: UserModelType = {
     },
   },
   effects: {
-    *getRemote({ payload: { pageNum, pageSize } }, { put, call }) {
-      const data = yield call(getReomteList, { pageNum, pageSize });
+    *getRemote(
+      { payload: { pageNum, pageSize, username, realName } },
+      { put, call },
+    ) {
+      const data = yield call(getReomteList, {
+        pageNum,
+        pageSize,
+        username,
+        realName,
+      });
       if (data) {
         // console.log('ddddddddddddddd', data);
         yield put({
@@ -51,7 +58,7 @@ const UserModel: UserModelType = {
       const data = yield call(editRecord, { id, values });
       if (data) {
         message.success('Edit successfully');
-        const { pageNum, pageSize } = yield select((state) => {
+        const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
         yield put({
@@ -67,7 +74,7 @@ const UserModel: UserModelType = {
       const data = yield call(addRecord, { values });
       if (data) {
         message.success('Add successfully');
-        const { pageNum, pageSize } = yield select((state) => {
+        const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
         yield put({
@@ -84,7 +91,7 @@ const UserModel: UserModelType = {
       // console.log('dddd', data);
       if (data) {
         message.success('Delete successfully');
-        const { pageNum, pageSize } = yield select((state) => {
+        const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
         // console.log('dddddaaa', pageNum, pageSize);

@@ -1,5 +1,5 @@
 export interface SingleUserType {
-  id: number;
+  id: string;
   username: string;
   realName: string;
   sex: string;

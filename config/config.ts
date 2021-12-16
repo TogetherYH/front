@@ -9,17 +9,19 @@ export default defineConfig({
   antd: {
     compact: true, // 开启紧凑主题
   },
-  layout: {},
+  layout: {
+    name: 'xx管理系统',
+  },
   routes,
   fastRefresh: {},
   alias: {
     '@': resolve(__dirname, './src'),
   },
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-      pathRewrite: { '^/api': '/' },
-    },
-  },
+  // proxy: {
+  //   '/api': {
+  //     target: 'http://localhost:8080',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api': '/' },
+  //   },
+  // },
 });
