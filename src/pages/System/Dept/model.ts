@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { getReomteList, addRecord, editRecord, delRecord } from './service';
+import { page, update, del, add } from './service';
 import { SingleDeptType } from './data';
 
 export interface deptState {
@@ -37,17 +37,16 @@ const DeptModel: DeptModelType = {
   },
   effects: {
     *getRemote({ payload: { pageNum, pageSize, name } }, { put, call }) {
-      const data = yield call(getReomteList, { pageNum, pageSize, name });
+      const data = yield call(page, { pageNum, pageSize, name });
       if (data) {
-        // console.log('ddddddddddddddd', data);
         yield put({
           type: 'getList',
-          payload: data,
+          payload: data.data,
         });
       }
     },
     *edit({ payload: { id, values } }, { put, call, select }) {
-      const data = yield call(editRecord, { id, values });
+      const data = yield call(update, { id, values });
       if (data) {
         message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
@@ -63,7 +62,7 @@ const DeptModel: DeptModelType = {
       }
     },
     *add({ payload: { values } }, { put, call, select }) {
-      const data = yield call(addRecord, { values });
+      const data = yield call(add, { values });
       if (data) {
         message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
@@ -79,14 +78,12 @@ const DeptModel: DeptModelType = {
       }
     },
     *del({ payload: { id } }, { put, call, select }) {
-      const data = yield call(delRecord, { id });
-      // console.log('dddd', data);
+      const data = yield call(del, { id });
       if (data) {
         message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
-        // console.log('dddddaaa', pageNum, pageSize);
         yield put({
           type: 'getRemote',
           payload: {

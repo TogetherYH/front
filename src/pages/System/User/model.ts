@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { getReomteList, editRecord, delRecord, addRecord } from './service';
+import { page, update, del, add } from './service';
 import { SingleUserType } from './data';
 
 export interface userState {
@@ -40,22 +40,21 @@ const UserModel: UserModelType = {
       { payload: { pageNum, pageSize, username, realName } },
       { put, call },
     ) {
-      const data = yield call(getReomteList, {
+      const data = yield call(page, {
         pageNum,
         pageSize,
         username,
         realName,
       });
       if (data) {
-        // console.log('ddddddddddddddd', data);
         yield put({
           type: 'getList',
-          payload: data,
+          payload: data.data,
         });
       }
     },
     *edit({ payload: { id, values } }, { put, call, select }) {
-      const data = yield call(editRecord, { id, values });
+      const data = yield call(update, { id, values });
       if (data) {
         message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
@@ -71,7 +70,7 @@ const UserModel: UserModelType = {
       }
     },
     *add({ payload: { values } }, { put, call, select }) {
-      const data = yield call(addRecord, { values });
+      const data = yield call(add, { values });
       if (data) {
         message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
@@ -87,14 +86,12 @@ const UserModel: UserModelType = {
       }
     },
     *del({ payload: { id } }, { put, call, select }) {
-      const data = yield call(delRecord, { id });
-      // console.log('dddd', data);
+      const data = yield call(del, { id });
       if (data) {
         message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
-        // console.log('dddddaaa', pageNum, pageSize);
         yield put({
           type: 'getRemote',
           payload: {

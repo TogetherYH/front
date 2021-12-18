@@ -1,53 +1,8 @@
-import { message } from 'antd';
-import request, { extend } from 'umi-request';
+import request from 'umi-request';
 import { FormValues } from './data';
 
-const errorHandler = function (error: any) {
-  const codeMap = {
-    '021': 'An error has occurred',
-    '022': 'It’s a big mistake,',
-    // ....
-  };
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.log('.....');
-    console.log(error.response.status);
-    console.log(error.response.headers);
-    console.log(error.data);
-    console.log(error.request);
-    // console.log(codeMap[error.data.status]);
-  } else {
-    // The request was made but no response was received or error occurs when setting up the request.
-    // 如果response为空，返回网络错误
-    message.error('Network Error');
-  }
-
-  throw error; // If throw. The error will continue to be thrown.
-
-  // return {some: 'data'}; If return, return the value as a return. If you don't write it is equivalent to return undefined, you can judge whether the response has a value when processing the result.
-  // return {some: 'data'};
-};
-
-// 1. Unified processing
-const extendRequest = extend({ errorHandler });
-
-request.interceptors.response.use(async (response) => {
-  const codeMaps: Record<number, string> = {
-    500: '服务器错误。请联系管理员',
-    502: '网关错误。',
-    503: '服务不可用，服务器暂时过载或维护。',
-    504: '网关超时。',
-  };
-  // message.error(codeMaps[response.data.code]);
-  const data = await response.clone().json();
-  if (codeMaps[data.code]) {
-    message.error(codeMaps[data.code]);
-  }
-  return response;
-});
-
-export const getReomteList = async ({
+/** 用户分页列表 GET /sysstem/user/list */
+export async function page({
   pageNum,
   pageSize,
   username,
@@ -57,65 +12,36 @@ export const getReomteList = async ({
   pageSize: number;
   username: string;
   realName: string;
-}) => {
-  return extendRequest(
+}) {
+  return request.get(
     `http://localhost:8080/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}&username=${
       username ? username : ''
     }&realName=${realName ? realName : ''}`,
-    {
-      method: 'get',
-    },
-  )
-    .then(function (response) {
-      // console.log('responserrrrrrrr', request);
-      return response.data;
-    })
-    .catch(function (error) {
-      // console.log(error);
-      return false;
-    });
-};
+    {},
+  );
+}
 
-export const editRecord = async ({
+/** 更新用户信息 POST /sysstem/user/update */
+export async function update({
   id,
   values,
 }: {
   id: string;
   values: FormValues;
-}) => {
-  return extendRequest('http://localhost:8080/system/user/update', {
-    method: 'post',
+}) {
+  return request.post('http://localhost:8080/system/user/update', {
     data: { id, ...values },
-  })
-    .then(function (response) {
-      return true;
-    })
-    .catch(function (error) {
-      return false;
-    });
-};
+  });
+}
 
-export const addRecord = async ({ values }: { values: FormValues }) => {
-  return extendRequest('http://localhost:8080/system/user/add', {
-    method: 'post',
+/** 添加用户信息 POST /sysstem/user/add */
+export async function add({ values }: { values: FormValues }) {
+  return request.post('http://localhost:8080/system/user/add', {
     data: values,
-  })
-    .then(function (response) {
-      return true;
-    })
-    .catch(function (error) {
-      return false;
-    });
-};
+  });
+}
 
-export const delRecord = async ({ id }: { id: string }) => {
-  return extendRequest(`http://localhost:8080/system/user/delete/${id}`, {
-    method: 'delete',
-  })
-    .then(function (response) {
-      return true;
-    })
-    .catch(function (error) {
-      return false;
-    });
-};
+/** 删除用户信息 POST /sysstem/user/delete */
+export async function del({ id }: { id: string }) {
+  return request.delete(`http://localhost:8080/system/user/delete/${id}`, {});
+}

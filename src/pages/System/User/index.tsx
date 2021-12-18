@@ -8,6 +8,8 @@ import {
   Pagination,
   Input,
   Form,
+  Row,
+  Col,
 } from 'antd';
 // import ProTable, { ProColumns, TableDropdown, ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch, Loading, userState } from 'umi';
@@ -190,34 +192,40 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Card>
-          <Space>
-            <Form form={searchForm} layout="inline">
-              <Form.Item
-                label="账号"
-                name="username"
-                style={{ marginBottom: '0' }}
-              >
-                <Input allowClear />
-              </Form.Item>
-              <Form.Item
-                label="姓名"
-                name="realName"
-                style={{ marginBottom: '0' }}
-              >
-                <Input allowClear />
-              </Form.Item>
-            </Form>
-            <Button type="primary" onClick={searchHandler}>
-              搜索
-            </Button>
-            <Button onClick={addHandler}>添加</Button>
-            <Button onClick={refreshHandler}>刷新</Button>
-          </Space>
+          <Row gutter={24}>
+            <Col span={18}>
+              <Form form={searchForm} layout="inline">
+                <Form.Item
+                  label="账号"
+                  name="username"
+                  style={{ marginBottom: '0' }}
+                >
+                  <Input allowClear />
+                </Form.Item>
+                <Form.Item
+                  label="姓名"
+                  name="realName"
+                  style={{ marginBottom: '0' }}
+                >
+                  <Input allowClear />
+                </Form.Item>
+              </Form>
+            </Col>
+            <Col span={6}>
+              <Space>
+                <Button type="primary" onClick={searchHandler}>
+                  搜索
+                </Button>
+                <Button onClick={addHandler}>添加</Button>
+                <Button onClick={refreshHandler}>刷新</Button>
+              </Space>
+            </Col>
+          </Row>
         </Card>
         <Card>
           <Table
             columns={columns}
-            dataSource={users.list}
+            dataSource={users?.list}
             rowKey="id"
             loading={userListLoading}
             pagination={false}
@@ -227,10 +235,10 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
           />
           <Pagination
             style={{ marginTop: '10px', textAlign: 'right' }}
-            total={users.total}
+            total={users?.total}
             size="small"
             onChange={paginationHandler}
-            current={users.pageNum}
+            current={users?.pageNum}
             defaultPageSize={20}
             pageSizeOptions={['10', '20', '50', '100']}
             // onShowSizeChange={pageSizeHandler}
