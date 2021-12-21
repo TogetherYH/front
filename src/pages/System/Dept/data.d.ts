@@ -10,3 +10,10 @@ export interface SingleDeptType {
 export interface FormValues {
   [name: string]: any;
 }
+
+export interface DeptTreeType {
+  id: string;
+  name: string;
+  parentId: string;
+  children: DeptTreeType[];
+}

@@ -19,6 +19,11 @@ export async function page({
   );
 }
 
+/** 部门树 GET /sysstem/user/tree */
+export async function tree() {
+  return request.get(`/api/system/dept/tree`, {});
+}
+
 /** 更新部门信息 POST /sysstem/dept/update */
 export async function update({
   id,

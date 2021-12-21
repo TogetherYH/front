@@ -4,7 +4,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { useModel, history } from 'umi';
 
 import { login } from '@/services/login';
-import { setToken } from '@/utils/token';
+import { removeToken, setToken } from '@/utils/token';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -35,6 +35,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
+      removeToken();
       // 登录
       const msg = await login({ ...values });
       // console.log('msg', msg);

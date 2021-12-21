@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { page, update, del, add } from './service';
-import { SingleDeptType } from './data';
+import { page, update, del, add } from '../service';
+import { SingleDeptType } from '../data';
 
 export interface deptState {
   pageNum?: number;
@@ -52,6 +52,7 @@ const DeptModel: DeptModelType = {
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
+        yield put({ type: 'deptTree/getRemote' });
         yield put({
           type: 'getRemote',
           payload: {
@@ -68,6 +69,7 @@ const DeptModel: DeptModelType = {
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
+        yield put({ type: 'deptTree/getRemote' });
         yield put({
           type: 'getRemote',
           payload: {
@@ -84,6 +86,7 @@ const DeptModel: DeptModelType = {
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
+        yield put({ type: 'deptTree/getRemote' });
         yield put({
           type: 'getRemote',
           payload: {

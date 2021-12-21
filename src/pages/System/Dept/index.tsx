@@ -12,17 +12,23 @@ import {
   Row,
   Col,
 } from 'antd';
-import { connect, Dispatch, Loading, deptState } from 'umi';
+import { connect, Dispatch, Loading, deptState, deptTreeState } from 'umi';
 import { SingleDeptType, FormValues } from './data';
 import DeptModal from './components/DeptModal';
 
 interface DeptProps {
   depts: deptState;
+  deptTree: deptTreeState;
   dispatch: Dispatch;
   deptListLoading: boolean;
 }
 
-const Dept: FC<DeptProps> = ({ depts, dispatch, deptListLoading }) => {
+const Dept: FC<DeptProps> = ({
+  depts,
+  deptTree,
+  dispatch,
+  deptListLoading,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [record, setRecord] = useState<SingleDeptType | undefined>(undefined);
@@ -33,7 +39,7 @@ const Dept: FC<DeptProps> = ({ depts, dispatch, deptListLoading }) => {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      width: 300,
+      width: 250,
     },
     {
       title: '编号',
@@ -171,64 +177,23 @@ const Dept: FC<DeptProps> = ({ depts, dispatch, deptListLoading }) => {
     });
   };
 
-  const treeData = [
-    {
-      title: '0-0',
-      key: '0-0',
-      children: [
-        {
-          title: '0-0-0',
-          key: '0-0-0',
-          children: [
-            { title: '0-0-0-0', key: '0-0-0-0' },
-            { title: '0-0-0-1', key: '0-0-0-1' },
-            { title: '0-0-0-2', key: '0-0-0-2' },
-          ],
-        },
-        {
-          title: '0-0-1',
-          key: '0-0-1',
-          children: [
-            { title: '0-0-1-0', key: '0-0-1-0' },
-            { title: '0-0-1-1', key: '0-0-1-1' },
-            { title: '0-0-1-2', key: '0-0-1-2' },
-          ],
-        },
-        {
-          title: '0-0-2',
-          key: '0-0-2',
-        },
-      ],
-    },
-    {
-      title: '0-1',
-      key: '0-1',
-      children: [
-        { title: '0-1-0-0', key: '0-1-0-0' },
-        { title: '0-1-0-1', key: '0-1-0-1' },
-        { title: '0-1-0-2', key: '0-1-0-2' },
-      ],
-    },
-    {
-      title: '0-2',
-      key: '0-2',
-    },
-  ];
-
   return (
     <div>
       <Row gutter={12}>
         <Col span={6}>
-          <Card>
-            <Input.Search style={{ marginBottom: 8 }} placeholder="Search" />
-            <Tree
-              // showLine
-              // onSelect={handleSelect}
-              treeData={treeData}
-              // selectedKeys={selectedKeys}
-              // onExpand={onExpand}
-            />
-          </Card>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Card>
+              <Input.Search style={{ marginBottom: 8 }} placeholder="Search" />
+              <Tree
+                // showLine
+                // onSelect={handleSelect}
+                treeData={deptTree?.tree}
+                fieldNames={{ title: 'name', key: 'id', children: 'children' }}
+                // selectedKeys={selectedKeys}
+                // onExpand={onExpand}
+              />
+            </Card>
+          </Space>
         </Col>
         <Col span={18}>
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -288,6 +253,7 @@ const Dept: FC<DeptProps> = ({ depts, dispatch, deptListLoading }) => {
         closeHandler={closeHandler}
         onFinish={onFinish}
         record={record}
+        deptTree={deptTree}
         confirmLoading={confirmLoading}
       />
     </div>
@@ -296,14 +262,18 @@ const Dept: FC<DeptProps> = ({ depts, dispatch, deptListLoading }) => {
 
 const mapStateToProps = ({
   depts,
+  deptTree,
   loading,
 }: {
   depts: deptState;
+  deptTree: deptTreeState;
   loading: Loading;
 }) => {
-  // console.log('uuuuuuuuu', depts, loading);
+  console.log('uuuuuuuuu', depts);
+  console.log('uuuuuuuuu2', deptTree);
   return {
     depts,
+    deptTree,
     deptListLoading: loading.models.depts,
   };
 };
