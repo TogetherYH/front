@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Switch, TreeSelect } from 'antd';
-import { SingleDeptType, FormValues, DeptTreeType } from '../data';
+import { Modal, Form, Input, Switch, TreeSelect, InputNumber } from 'antd';
+import { SingleDeptType, FormValues } from '../data';
 import { deptTreeState } from '../models/deptTree';
 
 interface DeptModalProps {
@@ -68,6 +68,7 @@ const DeptModal: FC<DeptModalProps> = (props) => {
             <TreeSelect
               treeData={deptTree?.tree}
               fieldNames={{ label: 'name', value: 'id' }}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             />
           </Form.Item>
           <Form.Item
@@ -84,6 +85,10 @@ const DeptModal: FC<DeptModalProps> = (props) => {
             rules={[{ required: true, message: '部门编码不能为空' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="排序" name="order">
+            <InputNumber />
           </Form.Item>
 
           <Form.Item label="状态" name="status" valuePropName="checked">

@@ -48,16 +48,22 @@ const Dept: FC<DeptProps> = ({
       width: 100,
     },
     {
+      title: '排序',
+      dataIndex: 'order',
+      key: 'order',
+      width: 70,
+    },
+    {
       title: '创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      width: 200,
+      width: 150,
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 70,
     },
     {
       title: '操作',
@@ -152,6 +158,10 @@ const Dept: FC<DeptProps> = ({
         pageNum: depts.pageNum,
         pageSize: depts.pageSize,
       },
+    });
+    dispatch({
+      type: 'deptTree/getRemote',
+      payload: {},
     });
   };
 
