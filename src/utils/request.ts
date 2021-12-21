@@ -1,6 +1,7 @@
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
 import { extend, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
+import { TOKEN_KEY, getToken } from './token';
 
 const codeMessage: Record<number, string> = {
   200: '服务器成功返回请求的数据。',
@@ -59,10 +60,9 @@ const request = extend({
 // request拦截器, 携带token
 request.interceptors.request.use((url: string, options: RequestOptionsInit) => {
   // 给每个请求带上token
-  let token = localStorage.getItem('token') || '';
   let headers = {
     'Content-Type': 'application/json;',
-    'sz-token': token,
+    [TOKEN_KEY]: getToken() || '',
   };
   return {
     url,

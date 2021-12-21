@@ -14,7 +14,7 @@ export async function page({
   realName: string;
 }) {
   return request.get(
-    `http://localhost:8080/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}&username=${
+    `/api/system/user/list?pageNum=${pageNum}&pageSize=${pageSize}&username=${
       username ? username : ''
     }&realName=${realName ? realName : ''}`,
     {},
@@ -29,19 +29,19 @@ export async function update({
   id: string;
   values: FormValues;
 }) {
-  return request.post('http://localhost:8080/system/user/update', {
+  return request.post('/api/system/user/update', {
     data: { id, ...values },
   });
 }
 
 /** 添加用户信息 POST /sysstem/user/add */
 export async function add({ values }: { values: FormValues }) {
-  return request.post('http://localhost:8080/system/user/add', {
+  return request.post('/api/system/user/add', {
     data: values,
   });
 }
 
 /** 删除用户信息 POST /sysstem/user/delete */
 export async function del({ id }: { id: string }) {
-  return request.delete(`http://localhost:8080/system/user/delete/${id}`, {});
+  return request.delete(`/api/system/user/delete/${id}`, {});
 }

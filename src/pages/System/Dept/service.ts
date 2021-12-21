@@ -12,7 +12,7 @@ export async function page({
   name: string;
 }) {
   return request.get(
-    `http://localhost:8080/system/dept/list?pageNum=${pageNum}&pageSize=${pageSize}&name=${
+    `/api/system/dept/list?pageNum=${pageNum}&pageSize=${pageSize}&name=${
       name ? name : ''
     }`,
     {},
@@ -27,19 +27,19 @@ export async function update({
   id: string;
   values: FormValues;
 }) {
-  return request.post('http://localhost:8080/system/dept/update', {
+  return request.post('/api/system/dept/update', {
     data: { id, ...values },
   });
 }
 
 /** 添加部门信息 POST /sysstem/dept/add */
 export async function add({ values }: { values: FormValues }) {
-  return request.post('http://localhost:8080/system/dept/add', {
+  return request.post('/api/system/dept/add', {
     data: values,
   });
 }
 
 /** 删除部门信息 POST /sysstem/dept/delete */
 export async function del({ id }: { id: string }) {
-  return request.delete(`http://localhost:8080/system/dept/delete/${id}`, {});
+  return request.delete(`/api/system/dept/delete/${id}`, {});
 }

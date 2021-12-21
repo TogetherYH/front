@@ -1,11 +1,25 @@
 import classNames from 'classnames';
-import { Form, Input, Button, notification } from 'antd';
+import { Alert, Form, Input, Button, notification } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { useModel, history } from 'umi';
 
 import { login } from '@/services/login';
+import { setToken } from '@/utils/token';
 
-const Login = () => {
+const LoginMessage: React.FC<{
+  content: string;
+}> = ({ content }) => (
+  <Alert
+    style={{
+      marginBottom: 24,
+    }}
+    message={content}
+    type="error"
+    showIcon
+  />
+);
+
+const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const fetchUserInfo = async () => {
@@ -31,7 +45,7 @@ const Login = () => {
         });
         // console.log('msg', msg);
         // 保存token到localStorage
-        localStorage.setItem('token', msg.data.token);
+        setToken(msg.data.token);
         // 获取用户信息
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -51,7 +65,7 @@ const Login = () => {
     } catch (error) {
       console.log('error', error);
       notification.error({
-        message: '登录失败',
+        message: '登录失败，请重试！',
       });
     }
   };

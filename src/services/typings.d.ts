@@ -4,7 +4,8 @@
 declare namespace API {
   type CurrentUser = {
     username?: string;
-    userId: bigint;
+    userId: string;
+    avatar: string;
     token?: string;
   };
 

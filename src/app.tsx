@@ -2,16 +2,25 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { history, Link } from 'umi';
 import type { RunTimeLayoutConfig } from 'umi';
 import { currentUser as queryCurrentUser } from '@/services/login';
+import RightContent from './components/RightContent';
+import Footer from './components/Footer';
+import { getToken } from './utils/token';
 
 const loginPath = '/login';
 const isDev = process.env.NODE_ENV === 'development';
 
+/**
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
+ * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
+    if (!getToken()) {
+      return undefined;
+    }
     try {
       const msg = await queryCurrentUser();
       console.log('fetchUserInfo msg', msg);
@@ -41,7 +50,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
-    // rightContentRender: () => <RightContent />,
+    rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
       content: initialState?.currentUser?.username,
@@ -50,7 +59,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!localStorage.getItem('token') && location.pathname !== loginPath) {
+      if (!getToken() && location.pathname !== loginPath) {
         console.log('没有登录，重定向到 login');
         history.push(loginPath);
       }
