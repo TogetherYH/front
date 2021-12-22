@@ -1,10 +1,16 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import type {
+  MenuDataItem,
+  Settings as LayoutSettings,
+} from '@ant-design/pro-layout';
 import { history, Link } from 'umi';
 import type { RunTimeLayoutConfig } from 'umi';
-import { currentUser as queryCurrentUser } from '@/services/login';
-import RightContent from './components/RightContent';
-import Footer from './components/Footer';
-import { getToken } from './utils/token';
+import {
+  currentUser as queryCurrentUser,
+  menuData as fetchMenuData,
+} from '@/services/login';
+import RightContent from '@/components/RightContent';
+// import Footer from './components/Footer';
+import { getToken } from '@/utils/token';
 
 const loginPath = '/login';
 const isDev = process.env.NODE_ENV === 'development';
@@ -50,6 +56,23 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
+    menu: {
+      // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+      params: {
+        // userId: initialState?.currentUser?.userid,
+      },
+      request: async (params, defaultMenuData) => {
+        // initialState.currentUser 中包含了所有用户信息
+        const menuData = await fetchMenuData();
+
+        // menuData.data.map((mydata: any) => {
+        //   mydata.key = mydata.id;
+        //   return mydata;
+        // });
+
+        return menuData.data;
+      },
+    },
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {

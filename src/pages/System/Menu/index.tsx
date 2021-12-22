@@ -12,26 +12,26 @@ import {
   Row,
   Col,
 } from 'antd';
-import { connect, Dispatch, Loading, deptState, deptTreeState } from 'umi';
-import { SingleDeptType, FormValues } from './data';
-import DeptModal from './components/DeptModal';
+import { connect, Dispatch, Loading, menuState, menuTreeState } from 'umi';
+import { SingleMenuType, FormValues } from './data';
+import MenuModal from './components/MenuModal';
 
-interface DeptProps {
-  depts: deptState;
-  deptTree: deptTreeState;
+interface MenuProps {
+  menus: menuState;
+  menuTree: menuTreeState;
   dispatch: Dispatch;
-  deptListLoading: boolean;
+  menuListLoading: boolean;
 }
 
-const Dept: FC<DeptProps> = ({
-  depts,
-  deptTree,
+const Menu: FC<MenuProps> = ({
+  menus,
+  menuTree,
   dispatch,
-  deptListLoading,
+  menuListLoading,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<SingleDeptType | undefined>(undefined);
+  const [record, setRecord] = useState<SingleMenuType | undefined>(undefined);
   const [searchForm] = Form.useForm();
 
   const columns = [
@@ -39,7 +39,7 @@ const Dept: FC<DeptProps> = ({
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      width: 250,
+      width: 150,
     },
     {
       title: '编号',
@@ -48,10 +48,16 @@ const Dept: FC<DeptProps> = ({
       width: 100,
     },
     {
-      title: '排序',
-      dataIndex: 'order',
-      key: 'order',
-      width: 70,
+      title: '类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 100,
+    },
+    {
+      title: '路径',
+      dataIndex: 'path',
+      key: 'path',
+      width: 120,
     },
     {
       title: '创建时间',
@@ -68,7 +74,7 @@ const Dept: FC<DeptProps> = ({
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: SingleDeptType) => (
+      render: (text: string, record: SingleMenuType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -92,16 +98,16 @@ const Dept: FC<DeptProps> = ({
     },
   ];
 
-  const confirm = (record: SingleDeptType) => {
+  const confirm = (record: SingleMenuType) => {
     setRecord(record);
     const id = record.id;
     dispatch({
-      type: 'depts/del',
+      type: 'menus/del',
       payload: { id },
     });
   };
 
-  const editHandler = (record: SingleDeptType) => {
+  const editHandler = (record: SingleMenuType) => {
     setRecord(record);
     // console.log('rrr', record);
     setModalVisible(true);
@@ -120,7 +126,7 @@ const Dept: FC<DeptProps> = ({
     }
     if (id) {
       dispatch({
-        type: 'depts/edit',
+        type: 'menus/edit',
         payload: {
           id,
           values: {
@@ -131,7 +137,7 @@ const Dept: FC<DeptProps> = ({
       });
     } else {
       dispatch({
-        type: 'depts/add',
+        type: 'menus/add',
         payload: {
           values: {
             ...values,
@@ -152,22 +158,22 @@ const Dept: FC<DeptProps> = ({
 
   const refreshHandler = () => {
     dispatch({
-      type: 'depts/getRemote',
+      type: 'menus/getRemote',
       payload: {
         name: searchForm.getFieldValue('name'),
-        pageNum: depts.pageNum,
-        pageSize: depts.pageSize,
+        pageNum: menus.pageNum,
+        pageSize: menus.pageSize,
       },
     });
     dispatch({
-      type: 'deptTree/getRemote',
+      type: 'menuTree/getRemote',
       payload: {},
     });
   };
 
   const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
     dispatch({
-      type: 'depts/getRemote',
+      type: 'menus/getRemote',
       payload: {
         name: searchForm.getFieldValue('name'),
         pageNum,
@@ -178,11 +184,11 @@ const Dept: FC<DeptProps> = ({
 
   const searchHandler = () => {
     dispatch({
-      type: 'depts/getRemote',
+      type: 'menus/getRemote',
       payload: {
         name: searchForm.getFieldValue('name'),
-        pageNum: depts.pageNum,
-        pageSize: depts.pageSize,
+        pageNum: menus.pageNum,
+        pageSize: menus.pageSize,
       },
     });
   };
@@ -197,9 +203,10 @@ const Dept: FC<DeptProps> = ({
               <Tree
                 // showLine
                 // onSelect={handleSelect}
-                treeData={deptTree?.tree}
+                treeData={menuTree?.tree}
                 fieldNames={{ title: 'name', key: 'id', children: 'children' }}
-                defaultExpandedKeys={['xinli000']}
+                // switcherIcon
+                // defaultExpandedKeys={['asdf']}
                 // selectedKeys={selectedKeys}
                 // onExpand={onExpand}
               />
@@ -235,19 +242,19 @@ const Dept: FC<DeptProps> = ({
             <Card>
               <Table
                 columns={columns}
-                dataSource={depts?.list}
+                dataSource={menus?.list}
                 rowKey="id"
-                loading={deptListLoading}
+                loading={menuListLoading}
                 pagination={false}
                 size="middle"
                 // request={requestHandler}
               />
               <Pagination
                 style={{ marginTop: '10px', textAlign: 'right' }}
-                total={depts?.total}
+                total={menus?.total}
                 size="small"
                 onChange={paginationHandler}
-                current={depts?.pageNum}
+                current={menus?.pageNum}
                 defaultPageSize={20}
                 pageSizeOptions={['10', '20', '50', '100']}
                 // onShowSizeChange={pageSizeHandler}
@@ -259,12 +266,12 @@ const Dept: FC<DeptProps> = ({
           </Space>
         </Col>
       </Row>
-      <DeptModal
+      <MenuModal
         visible={modalVisible}
         closeHandler={closeHandler}
         onFinish={onFinish}
         record={record}
-        deptTree={deptTree}
+        menuTree={menuTree}
         confirmLoading={confirmLoading}
       />
     </div>
@@ -272,21 +279,21 @@ const Dept: FC<DeptProps> = ({
 };
 
 const mapStateToProps = ({
-  depts,
-  deptTree,
+  menus,
+  menuTree,
   loading,
 }: {
-  depts: deptState;
-  deptTree: deptTreeState;
+  menus: menuState;
+  menuTree: menuTreeState;
   loading: Loading;
 }) => {
-  // console.log('uuuuuuuuu', depts);
-  // console.log('uuuuuuuuu2', deptTree);
+  console.log('uuuuuuuuu', menus);
+  console.log('uuuuuuuuu2', menuTree);
   return {
-    depts,
-    deptTree,
-    deptListLoading: loading.models.depts,
+    menus,
+    menuTree,
+    menuListLoading: loading.models.Menus,
   };
 };
 
-export default connect(mapStateToProps)(Dept);
+export default connect(mapStateToProps)(Menu);

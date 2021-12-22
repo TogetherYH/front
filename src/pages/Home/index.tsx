@@ -4,7 +4,7 @@ export default function IndexPage() {
   const { initialState } = useModel('@@initialState');
   return (
     <div>
-      <h1>{initialState?.currentUser?.username}, Hello~</h1>
+      <h1>Hello, {initialState?.currentUser?.username} ~</h1>
     </div>
   );
 }

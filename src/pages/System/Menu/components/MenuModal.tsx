@@ -1,19 +1,27 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Switch, TreeSelect, InputNumber } from 'antd';
-import { SingleDeptType, FormValues } from '../data';
-import { deptTreeState } from '../models/deptTree';
+import {
+  Modal,
+  Form,
+  Input,
+  Switch,
+  TreeSelect,
+  InputNumber,
+  Radio,
+} from 'antd';
+import { SingleMenuType, FormValues } from '../data';
+import { menuTreeState } from '../models/menuTree';
 
-interface DeptModalProps {
+interface MenuModalProps {
   visible: boolean;
-  record: SingleDeptType | undefined;
+  record: SingleMenuType | undefined;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
-  deptTree: deptTreeState;
+  menuTree: menuTreeState;
 }
 
-const DeptModal: FC<DeptModalProps> = (props) => {
-  const { visible, record, closeHandler, onFinish, confirmLoading, deptTree } =
+const MenuModal: FC<MenuModalProps> = (props) => {
+  const { visible, record, closeHandler, onFinish, confirmLoading, menuTree } =
     props;
   const [form] = Form.useForm();
 
@@ -39,7 +47,7 @@ const DeptModal: FC<DeptModalProps> = (props) => {
   return (
     <div>
       <Modal
-        title={record ? '修改部门信息' : '添加部门信息'}
+        title={record ? '修改菜单信息' : '添加菜单信息'}
         maskClosable={false}
         centered
         forceRender
@@ -61,29 +69,45 @@ const DeptModal: FC<DeptModalProps> = (props) => {
           }}
         >
           <Form.Item
-            label="上级部门"
+            label="上级菜单"
             name="parentId"
-            rules={[{ required: true, message: '部门名称不能为空' }]}
+            rules={[{ required: true, message: '菜单名称不能为空' }]}
           >
             <TreeSelect
-              treeData={deptTree?.tree}
+              treeData={menuTree?.tree}
               treeDefaultExpandedKeys={[record?.id]}
               fieldNames={{ label: 'name', value: 'id' }}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             />
           </Form.Item>
           <Form.Item
-            label="部门名称"
+            label="菜单名称"
             name="name"
-            rules={[{ required: true, message: '部门名称不能为空' }]}
+            rules={[{ required: true, message: '菜单名称不能为空' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="部门编码"
+            label="菜单编码"
             name="code"
-            rules={[{ required: true, message: '部门编码不能为空' }]}
+            rules={[{ required: true, message: '菜单编码不能为空' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="类型" name="type">
+            <Radio.Group>
+              <Radio value={'group'}>分组</Radio>
+              <Radio value={'menu'}>菜单</Radio>
+              <Radio value={'button'}>按钮</Radio>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item
+            label="路径"
+            name="path"
+            rules={[{ required: true, message: '菜单编码不能为空' }]}
           >
             <Input />
           </Form.Item>
@@ -101,4 +125,4 @@ const DeptModal: FC<DeptModalProps> = (props) => {
   );
 };
 
-export default DeptModal;
+export default MenuModal;

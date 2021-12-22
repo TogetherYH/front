@@ -1,17 +1,17 @@
 // import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
 import { tree } from '../service';
-import { DeptTreeType } from '../data';
+import { MenuTreeType } from '../data';
 
-export interface deptTreeState {
-  tree?: DeptTreeType[];
+export interface menuTreeState {
+  tree?: MenuTreeType[];
 }
 
-export interface DeptModelType {
-  namespace: 'deptTree';
-  state: deptTreeState;
+export interface MenuModelType {
+  namespace: 'menuTree';
+  state: menuTreeState;
   reducers: {
-    getTree: Reducer<deptTreeState>;
+    getTree: Reducer<menuTreeState>;
   };
   effects: {
     getRemote: Effect;
@@ -21,8 +21,8 @@ export interface DeptModelType {
   };
 }
 
-const DeptTreeModel: DeptModelType = {
-  namespace: 'deptTree',
+const MenuTreeModel: MenuModelType = {
+  namespace: 'menuTree',
   state: {},
   reducers: {
     getTree(state, action) {
@@ -45,7 +45,7 @@ const DeptTreeModel: DeptModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (location.pathname === '/system/dept') {
+        if (location.pathname === '/system/menu') {
           dispatch({
             type: 'getRemote',
             payload: { pageNum: 1, pageSize: 20 },
@@ -56,4 +56,4 @@ const DeptTreeModel: DeptModelType = {
   },
 };
 
-export default DeptTreeModel;
+export default MenuTreeModel;

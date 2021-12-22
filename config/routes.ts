@@ -11,13 +11,13 @@ export default [
   {
     name: '首页',
     path: '/home',
-    icon: 'smile',
+    icon: 'home',
     component: '@/pages/Home',
   },
   {
     name: '系统管理',
     path: '/system',
-    icon: 'crown',
+    icon: 'table',
     routes: [
       {
         path: '/system/user',
@@ -28,6 +28,11 @@ export default [
         path: '/system/dept',
         name: '部门管理',
         component: '@/pages/System/Dept',
+      },
+      {
+        path: '/system/menu',
+        name: '菜单管理',
+        component: '@/pages/System/Menu',
       },
     ],
   },

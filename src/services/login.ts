@@ -9,3 +9,7 @@ export async function currentUser() {
 export async function login(param: API.LoginParams): Promise<API.LoginResult> {
   return request.post('/api/login', param);
 }
+
+export async function menuData() {
+  return request.get('/api/menu', {});
+}
