@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { page, update, del, add } from './service';
-import { SingleUserType } from './data';
+import { page, update, del, add } from '../service';
+import { SingleUserType } from '../data';
 
 export interface userState {
   pageNum?: number;

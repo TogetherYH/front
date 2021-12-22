@@ -287,8 +287,8 @@ const mapStateToProps = ({
   menuTree: menuTreeState;
   loading: Loading;
 }) => {
-  console.log('uuuuuuuuu', menus);
-  console.log('uuuuuuuuu2', menuTree);
+  // console.log('uuuuuuuuu', menus);
+  // console.log('uuuuuuuuu2', menuTree);
   return {
     menus,
     menuTree,
