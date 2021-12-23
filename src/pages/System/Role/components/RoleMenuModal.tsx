@@ -16,7 +16,7 @@ const RoleMenuModal: FC<RoleMenuModalProps> = (props) => {
     props;
 
   useEffect(() => {
-    if (roleId !== '' && dispatch) {
+    if (roleId !== '' && dispatch && visible) {
       dispatch({
         type: 'roleMenu/fetchList',
         payload: { roleId },

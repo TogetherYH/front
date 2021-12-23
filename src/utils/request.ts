@@ -59,6 +59,7 @@ const request = extend({
 
 // request拦截器, 携带token
 request.interceptors.request.use((url: string, options: RequestOptionsInit) => {
+  console.log('fetch', url);
   // 给每个请求带上token
   let headers = {
     'Content-Type': 'application/json;',
@@ -87,7 +88,7 @@ const get = async (
   url: string,
   parameter?: Record<string, unknown>,
 ): Promise<any> => {
-  console.log('GET', url, parameter);
+  // console.log('GET', url, parameter);
   try {
     const res = await request(url, { method: 'get', params: parameter });
     return res;
@@ -110,7 +111,7 @@ const post = async (
   url: string,
   parameter?: Record<string, unknown>,
 ): Promise<any> => {
-  console.log('POST', url, parameter);
+  // console.log('POST', url, parameter);
   try {
     const res = await request(url, { method: 'post', data: parameter });
     return res;
