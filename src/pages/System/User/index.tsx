@@ -76,16 +76,20 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
           >
             修改
           </a>
-          <Popconfirm
-            title="Are you sure to delete this task?"
-            onConfirm={() => {
-              deleteHandler(record);
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a>删除</a>
-          </Popconfirm>
+          {record.username !== 'admin' ? (
+            <Popconfirm
+              title="Are you sure to delete this task?"
+              onConfirm={() => {
+                deleteHandler(record);
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a style={{}}>删除</a>
+            </Popconfirm>
+          ) : (
+            ''
+          )}
         </Space>
       ),
     },
