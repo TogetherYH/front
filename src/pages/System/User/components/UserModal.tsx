@@ -1,11 +1,11 @@
 import { FC, useEffect } from 'react';
 import { Modal, Form, Input, Radio, DatePicker, Switch } from 'antd';
 import moment from 'moment';
-import { SingleUserType, FormValues } from '../data';
+import { UserType, FormValues } from '../data';
 
 interface UserModalProps {
   visible: boolean;
-  record: SingleUserType | undefined;
+  record: UserType | undefined;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
