@@ -1,4 +1,4 @@
-export interface SingleRoleType {
+export interface RoleType {
   id: string;
   name: string;
   code: string;

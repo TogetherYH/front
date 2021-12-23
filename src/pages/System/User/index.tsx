@@ -11,11 +11,9 @@ import {
   Row,
   Col,
 } from 'antd';
-// import ProTable, { ProColumns, TableDropdown, ActionType } from '@ant-design/pro-table';
 import { connect, Dispatch, Loading, userState } from 'umi';
 import UserModal from './components/UserModal';
-// import { getReomteList } from './service';
-import { SingleUserType, FormValues } from './data';
+import { UserType, FormValues } from './data';
 
 interface UserProps {
   users: userState;
@@ -24,10 +22,9 @@ interface UserProps {
 }
 
 const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [userModalVisible, setUserModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<SingleUserType | undefined>(undefined);
-
+  const [record, setRecord] = useState<UserType | undefined>(undefined);
   const [searchForm] = Form.useForm();
 
   const columns = [
@@ -70,7 +67,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: SingleUserType) => (
+      render: (text: string, record: UserType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -82,7 +79,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
           <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
-              confirm(record);
+              deleteHandler(record);
             }}
             okText="Yes"
             cancelText="No"
@@ -94,25 +91,63 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
     },
   ];
 
-  const confirm = (record: SingleUserType) => {
-    setRecord(record);
-    const id = record.id;
+  // 分页
+  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
     dispatch({
-      type: 'users/del',
-      payload: { id },
+      type: 'users/fetchList',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum,
+        pageSize,
+      },
     });
   };
 
-  const editHandler = (record: SingleUserType) => {
+  // 搜索
+  const searchHandler = () => {
+    dispatch({
+      type: 'users/fetchList',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum: 1,
+        pageSize: users.pageSize,
+      },
+    });
+  };
+
+  // 刷新
+  const refreshHandler = () => {
+    dispatch({
+      type: 'users/fetchList',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum: users.pageNum,
+        pageSize: users.pageSize,
+      },
+    });
+  };
+
+  // 打开添加modal
+  const addHandler = () => {
+    setRecord(undefined);
+    setUserModalVisible(true);
+  };
+
+  // 打开编辑modal
+  const editHandler = (record: UserType) => {
     setRecord(record);
-    // console.log('rrr', record);
-    setModalVisible(true);
+    setUserModalVisible(true);
   };
 
+  // 关闭Modal
   const closeHandler = () => {
-    setModalVisible(false);
+    setUserModalVisible(false);
   };
 
+  // 添加、更新处理方法
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
@@ -122,7 +157,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
     }
     if (id) {
       dispatch({
-        type: 'users/edit',
+        type: 'users/fetchUpdate',
         payload: {
           id,
           values: {
@@ -133,7 +168,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
       });
     } else {
       dispatch({
-        type: 'users/add',
+        type: 'users/fetchAdd',
         payload: {
           values: {
             ...values,
@@ -143,48 +178,18 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
       });
     }
 
-    setModalVisible(false);
+    // 关闭modal
+    setUserModalVisible(false);
     setConfirmLoading(false);
   };
 
-  const addHandler = () => {
-    setRecord(undefined);
-    setModalVisible(true);
-  };
-
-  const refreshHandler = () => {
+  // 删除记录
+  const deleteHandler = (record: UserType) => {
+    setRecord(record);
+    const id = record.id;
     dispatch({
-      type: 'users/getRemote',
-      payload: {
-        username: searchForm.getFieldValue('username'),
-        realName: searchForm.getFieldValue('realName'),
-        pageNum: users.pageNum,
-        pageSize: users.pageSize,
-      },
-    });
-  };
-
-  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
-    dispatch({
-      type: 'users/getRemote',
-      payload: {
-        username: searchForm.getFieldValue('username'),
-        realName: searchForm.getFieldValue('realName'),
-        pageNum,
-        pageSize,
-      },
-    });
-  };
-
-  const searchHandler = () => {
-    dispatch({
-      type: 'users/getRemote',
-      payload: {
-        username: searchForm.getFieldValue('username'),
-        realName: searchForm.getFieldValue('realName'),
-        pageNum: users.pageNum,
-        pageSize: users.pageSize,
-      },
+      type: 'users/fetchDelete',
+      payload: { id },
     });
   };
 
@@ -231,7 +236,6 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
             pagination={false}
             size="middle"
             scroll={{ y: 600 }}
-            // request={requestHandler}
           />
           <Pagination
             style={{ marginTop: '10px', textAlign: 'right' }}
@@ -241,14 +245,13 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
             current={users?.pageNum}
             defaultPageSize={20}
             pageSizeOptions={['10', '20', '50', '100']}
-            // onShowSizeChange={pageSizeHandler}
             showSizeChanger
             showQuickJumper
             showTotal={(total) => `共 ${total} 条记录`}
           />
         </Card>
         <UserModal
-          visible={modalVisible}
+          visible={userModalVisible}
           closeHandler={closeHandler}
           onFinish={onFinish}
           record={record}
@@ -266,7 +269,6 @@ const mapStateToProps = ({
   users: userState;
   loading: Loading;
 }) => {
-  // console.log('uuuuuuuuu', users, loading);
   return {
     users,
     userListLoading: loading.models.users,

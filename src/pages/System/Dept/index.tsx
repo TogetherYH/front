@@ -13,7 +13,7 @@ import {
   Col,
 } from 'antd';
 import { connect, Dispatch, Loading, deptState, deptTreeState } from 'umi';
-import { SingleDeptType, FormValues } from './data';
+import { DeptType, FormValues } from './data';
 import DeptModal from './components/DeptModal';
 
 interface DeptProps {
@@ -29,9 +29,9 @@ const Dept: FC<DeptProps> = ({
   dispatch,
   deptListLoading,
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [deptModalVisible, setDeptModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<SingleDeptType | undefined>(undefined);
+  const [record, setRecord] = useState<DeptType | undefined>(undefined);
   const [searchForm] = Form.useForm();
 
   const columns = [
@@ -68,7 +68,7 @@ const Dept: FC<DeptProps> = ({
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: SingleDeptType) => (
+      render: (text: string, record: DeptType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -80,7 +80,7 @@ const Dept: FC<DeptProps> = ({
           <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
-              confirm(record);
+              deleteHandler(record);
             }}
             okText="Yes"
             cancelText="No"
@@ -92,25 +92,64 @@ const Dept: FC<DeptProps> = ({
     },
   ];
 
-  const confirm = (record: SingleDeptType) => {
-    setRecord(record);
-    const id = record.id;
+  // 分页
+  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
     dispatch({
-      type: 'depts/del',
-      payload: { id },
+      type: 'depts/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum,
+        pageSize,
+      },
     });
   };
 
-  const editHandler = (record: SingleDeptType) => {
+  // 搜索
+  const searchHandler = () => {
+    dispatch({
+      type: 'depts/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: 1,
+        pageSize: depts.pageSize,
+      },
+    });
+  };
+
+  // 刷新
+  const refreshHandler = () => {
+    dispatch({
+      type: 'depts/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: depts.pageNum,
+        pageSize: depts.pageSize,
+      },
+    });
+    dispatch({
+      type: 'deptTree/fetchTree',
+      payload: {},
+    });
+  };
+
+  // 打开添加modal
+  const addHandler = () => {
+    setRecord(undefined);
+    setDeptModalVisible(true);
+  };
+
+  // 打开编辑modal
+  const editHandler = (record: DeptType) => {
     setRecord(record);
-    // console.log('rrr', record);
-    setModalVisible(true);
+    setDeptModalVisible(true);
   };
 
+  // 关闭modal
   const closeHandler = () => {
-    setModalVisible(false);
+    setDeptModalVisible(false);
   };
 
+  // 添加、更新处理方法
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
@@ -120,7 +159,7 @@ const Dept: FC<DeptProps> = ({
     }
     if (id) {
       dispatch({
-        type: 'depts/edit',
+        type: 'depts/fetchUpdate',
         payload: {
           id,
           values: {
@@ -131,7 +170,7 @@ const Dept: FC<DeptProps> = ({
       });
     } else {
       dispatch({
-        type: 'depts/add',
+        type: 'depts/fetchAdd',
         payload: {
           values: {
             ...values,
@@ -141,49 +180,18 @@ const Dept: FC<DeptProps> = ({
       });
     }
 
-    setModalVisible(false);
+    // 关闭modal
+    setDeptModalVisible(false);
     setConfirmLoading(false);
   };
 
-  const addHandler = () => {
-    setRecord(undefined);
-    setModalVisible(true);
-  };
-
-  const refreshHandler = () => {
+  // 删除记录
+  const deleteHandler = (record: DeptType) => {
+    setRecord(record);
+    const id = record.id;
     dispatch({
-      type: 'depts/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: depts.pageNum,
-        pageSize: depts.pageSize,
-      },
-    });
-    dispatch({
-      type: 'deptTree/getRemote',
-      payload: {},
-    });
-  };
-
-  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
-    dispatch({
-      type: 'depts/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum,
-        pageSize,
-      },
-    });
-  };
-
-  const searchHandler = () => {
-    dispatch({
-      type: 'depts/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: depts.pageNum,
-        pageSize: depts.pageSize,
-      },
+      type: 'depts/fetchDelete',
+      payload: { id },
     });
   };
 
@@ -199,7 +207,7 @@ const Dept: FC<DeptProps> = ({
                 // onSelect={handleSelect}
                 treeData={deptTree?.tree}
                 fieldNames={{ title: 'name', key: 'id', children: 'children' }}
-                defaultExpandedKeys={['xinli000']}
+                // defaultExpandedKeys={['xinli000']}
                 // selectedKeys={selectedKeys}
                 // onExpand={onExpand}
               />
@@ -250,7 +258,6 @@ const Dept: FC<DeptProps> = ({
                 current={depts?.pageNum}
                 defaultPageSize={20}
                 pageSizeOptions={['10', '20', '50', '100']}
-                // onShowSizeChange={pageSizeHandler}
                 showSizeChanger
                 showQuickJumper
                 showTotal={(total) => `共 ${total} 条记录`}
@@ -260,7 +267,7 @@ const Dept: FC<DeptProps> = ({
         </Col>
       </Row>
       <DeptModal
-        visible={modalVisible}
+        visible={deptModalVisible}
         closeHandler={closeHandler}
         onFinish={onFinish}
         record={record}
@@ -280,8 +287,6 @@ const mapStateToProps = ({
   deptTree: deptTreeState;
   loading: Loading;
 }) => {
-  // console.log('uuuuuuuuu', depts);
-  // console.log('uuuuuuuuu2', deptTree);
   return {
     depts,
     deptTree,

@@ -1,18 +1,10 @@
 import { FC, useEffect } from 'react';
-import {
-  Modal,
-  Form,
-  Input,
-  Switch,
-  TreeSelect,
-  InputNumber,
-  Radio,
-} from 'antd';
-import { SingleRoleType, FormValues } from '../data';
+import { Modal, Form, Input, Switch } from 'antd';
+import { RoleType, FormValues } from '../data';
 
 interface RoleModalProps {
   visible: boolean;
-  record: SingleRoleType | undefined;
+  record: RoleType | undefined;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;

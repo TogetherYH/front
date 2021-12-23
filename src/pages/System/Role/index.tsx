@@ -8,25 +8,41 @@ import {
   Card,
   Pagination,
   Popconfirm,
-  Tree,
   Row,
   Col,
+  Menu,
+  // Icon,
+  Dropdown,
 } from 'antd';
-import { connect, Dispatch, Loading, roleState } from 'umi';
-import { SingleRoleType, FormValues } from './data';
+import {
+  DownOutlined,
+  UserOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
+import { connect, Dispatch, Loading, roleState, menuTreeState } from 'umi';
+import { RoleType, FormValues } from './data';
 import RoleModal from './components/RoleModal';
+import RoleMenuModal from './components/RoleMenuModal';
 
 interface RoleProps {
   roles: roleState;
+  menuTree: menuTreeState;
   dispatch: Dispatch;
   roleListLoading: boolean;
 }
 
-const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const Role: FC<RoleProps> = ({
+  roles,
+  menuTree,
+  dispatch,
+  roleListLoading,
+}) => {
+  const [roleModalVisible, setRoleModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<SingleRoleType | undefined>(undefined);
+  const [record, setRecord] = useState<RoleType | undefined>(undefined);
   const [searchForm] = Form.useForm();
+  const [roleId, setRoleId] = useState<string>('');
+  const [roleMenuModalVisible, setroleMenuModalVisible] = useState(false);
 
   const columns = [
     {
@@ -56,7 +72,7 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: SingleRoleType) => (
+      render: (text: string, record: RoleType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -68,37 +84,97 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
           <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
-              confirm(record);
+              deleteHandler(record);
             }}
             okText="Yes"
             cancelText="No"
           >
             <a>删除</a>
           </Popconfirm>
+          <Dropdown
+            overlay={() => {
+              return (
+                <Menu>
+                  <Menu.Item
+                    key="1"
+                    icon={<UnorderedListOutlined />}
+                    style={{ width: 100 }}
+                    onClick={() => {
+                      roleMenuHandler(record);
+                    }}
+                  >
+                    菜单权限
+                  </Menu.Item>
+                  <Menu.Item key="2" icon={<UserOutlined />}>
+                    角色用户
+                  </Menu.Item>
+                </Menu>
+              );
+            }}
+            trigger={['click']}
+          >
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              更多 <DownOutlined />
+            </a>
+          </Dropdown>
         </Space>
       ),
     },
   ];
 
-  const confirm = (record: SingleRoleType) => {
-    setRecord(record);
-    const id = record.id;
+  // 分页
+  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
     dispatch({
-      type: 'roles/del',
-      payload: { id },
+      type: 'roles/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum,
+        pageSize,
+      },
     });
   };
 
-  const editHandler = (record: SingleRoleType) => {
+  // 搜索
+  const searchHandler = () => {
+    dispatch({
+      type: 'roles/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: 1,
+        pageSize: roles.pageSize,
+      },
+    });
+  };
+
+  // 刷新
+  const refreshHandler = () => {
+    dispatch({
+      type: 'roles/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: roles.pageNum,
+        pageSize: roles.pageSize,
+      },
+    });
+  };
+
+  // 打开添加modal
+  const addHandler = () => {
+    setRecord(undefined);
+    setRoleModalVisible(true);
+  };
+
+  // 打开编辑modal
+  const editHandler = (record: RoleType) => {
     setRecord(record);
     // console.log('rrr', record);
-    setModalVisible(true);
+    setRoleModalVisible(true);
   };
 
-  const closeHandler = () => {
-    setModalVisible(false);
-  };
-
+  // 添加、更新处理方法
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
@@ -108,7 +184,7 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
     }
     if (id) {
       dispatch({
-        type: 'roles/edit',
+        type: 'roles/fetchUpdate',
         payload: {
           id,
           values: {
@@ -119,7 +195,7 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
       });
     } else {
       dispatch({
-        type: 'roles/add',
+        type: 'roles/fetchAdd',
         payload: {
           values: {
             ...values,
@@ -129,46 +205,35 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
       });
     }
 
-    setModalVisible(false);
+    // 关闭rolemodal
+    setRoleModalVisible(false);
     setConfirmLoading(false);
   };
 
-  const addHandler = () => {
-    setRecord(undefined);
-    setModalVisible(true);
+  // 关闭roleModal
+  const closeHandler = () => {
+    setRoleModalVisible(false);
   };
 
-  const refreshHandler = () => {
+  // 删除
+  const deleteHandler = (record: RoleType) => {
+    setRecord(record);
+    const id = record.id;
     dispatch({
-      type: 'roles/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: roles.pageNum,
-        pageSize: roles.pageSize,
-      },
+      type: 'roles/fetchDelete',
+      payload: { id },
     });
   };
 
-  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
-    dispatch({
-      type: 'roles/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum,
-        pageSize,
-      },
-    });
+  // 角色菜单moal
+  const roleMenuHandler = (record: RoleType) => {
+    setRoleId(record.id);
+    setroleMenuModalVisible(true);
   };
 
-  const searchHandler = () => {
-    dispatch({
-      type: 'roles/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: roles.pageNum,
-        pageSize: roles.pageSize,
-      },
-    });
+  // 关闭rolemodal
+  const closeRoleMenuModal = () => {
+    setroleMenuModalVisible(false);
   };
 
   return (
@@ -179,7 +244,7 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
             <Col span={18}>
               <Form form={searchForm} layout="inline">
                 <Form.Item
-                  label="部门名称"
+                  label="角色名称"
                   name="name"
                   style={{ marginBottom: '0' }}
                 >
@@ -216,7 +281,6 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
             current={roles?.pageNum}
             defaultPageSize={20}
             pageSizeOptions={['10', '20', '50', '100']}
-            // onShowSizeChange={pageSizeHandler}
             showSizeChanger
             showQuickJumper
             showTotal={(total) => `共 ${total} 条记录`}
@@ -224,11 +288,17 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
         </Card>
       </Space>
       <RoleModal
-        visible={modalVisible}
+        visible={roleModalVisible}
         closeHandler={closeHandler}
         onFinish={onFinish}
         record={record}
         confirmLoading={confirmLoading}
+      />
+      <RoleMenuModal
+        visible={roleMenuModalVisible}
+        roleId={roleId}
+        menuTree={menuTree}
+        closeRoleMenuModal={closeRoleMenuModal}
       />
     </div>
   );
@@ -236,15 +306,17 @@ const Role: FC<RoleProps> = ({ roles, dispatch, roleListLoading }) => {
 
 const mapStateToProps = ({
   roles,
+  menuTree,
   loading,
 }: {
   roles: roleState;
+  menuTree: menuTreeState;
   loading: Loading;
 }) => {
-  // console.log('uuuuuuuuu', roles);
   return {
     roles,
-    roleListLoading: loading.models.Roles,
+    menuTree,
+    roleListLoading: loading.models.roles,
   };
 };
 

@@ -1,11 +1,11 @@
 import { FC, useEffect } from 'react';
 import { Modal, Form, Input, Switch, TreeSelect, InputNumber } from 'antd';
-import { SingleDeptType, FormValues } from '../data';
+import { DeptType, FormValues } from '../data';
 import { deptTreeState } from '../models/deptTree';
 
 interface DeptModalProps {
   visible: boolean;
-  record: SingleDeptType | undefined;
+  record: DeptType | undefined;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
@@ -28,6 +28,7 @@ const DeptModal: FC<DeptModalProps> = (props) => {
     }
   }, [visible]);
 
+  // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
     form.submit();
   };

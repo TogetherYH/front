@@ -1,8 +1,8 @@
-import request from 'umi-request';
+import request from '@/utils/request';
 import { FormValues } from './data';
 
-/** 用户分页列表 GET /sysstem/user/list */
-export async function page({
+/** 用户分页列表 GET /system/user/list */
+export async function list({
   pageNum,
   pageSize,
   username,
@@ -21,7 +21,7 @@ export async function page({
   );
 }
 
-/** 更新用户信息 POST /sysstem/user/update */
+/** 更新用户信息 POST /system/user/update */
 export async function update({
   id,
   values,
@@ -30,18 +30,19 @@ export async function update({
   values: FormValues;
 }) {
   return request.post('/api/system/user/update', {
-    data: { id, ...values },
+    id,
+    ...values,
   });
 }
 
-/** 添加用户信息 POST /sysstem/user/add */
+/** 添加用户信息 POST /system/user/add */
 export async function add({ values }: { values: FormValues }) {
   return request.post('/api/system/user/add', {
-    data: values,
+    ...values,
   });
 }
 
-/** 删除用户信息 POST /sysstem/user/delete */
+/** 删除用户信息 POST /system/user/delete */
 export async function del({ id }: { id: string }) {
-  return request.delete(`/api/system/user/delete/${id}`, {});
+  return request.del(`/api/system/user/delete/${id}`, {});
 }

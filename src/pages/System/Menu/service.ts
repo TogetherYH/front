@@ -1,8 +1,8 @@
-import request from 'umi-request';
+import request from '@/utils/request';
 import { FormValues } from './data';
 
-/** 菜单分页列表 GET /sysstem/menu/list */
-export async function page({
+/** 菜单分页列表 GET /system/menu/list */
+export async function list({
   pageNum,
   pageSize,
   name,
@@ -19,12 +19,12 @@ export async function page({
   );
 }
 
-/** 菜单树 GET /sysstem/menu/tree */
+/** 菜单树 GET /system/menu/tree */
 export async function tree() {
   return request.get(`/api/system/menu/tree`, {});
 }
 
-/** 更新菜单信息 POST /sysstem/menu/update */
+/** 更新菜单信息 POST /system/menu/update */
 export async function update({
   id,
   values,
@@ -33,18 +33,19 @@ export async function update({
   values: FormValues;
 }) {
   return request.post('/api/system/menu/update', {
-    data: { id, ...values },
+    id,
+    ...values,
   });
 }
 
-/** 添加菜单信息 POST /sysstem/menu/add */
+/** 添加菜单信息 POST /system/menu/add */
 export async function add({ values }: { values: FormValues }) {
   return request.post('/api/system/menu/add', {
-    data: values,
+    ...values,
   });
 }
 
-/** 删除菜单信息 POST /sysstem/menu/delete */
+/** 删除菜单信息 POST /system/menu/delete */
 export async function del({ id }: { id: string }) {
-  return request.delete(`/api/system/menu/delete/${id}`, {});
+  return request.del(`/api/system/menu/delete/${id}`, {});
 }

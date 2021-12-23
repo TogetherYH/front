@@ -14,7 +14,7 @@ export interface MenuModelType {
     getTree: Reducer<menuTreeState>;
   };
   effects: {
-    getRemote: Effect;
+    fetchTree: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -32,7 +32,7 @@ const MenuTreeModel: MenuModelType = {
     },
   },
   effects: {
-    *getRemote({ payload }, { put, call }) {
+    *fetchTree({ payload }, { put, call }) {
       const data = yield call(tree);
       if (data) {
         yield put({
@@ -45,9 +45,12 @@ const MenuTreeModel: MenuModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (location.pathname === '/system/menu') {
+        if (
+          location.pathname === '/system/menu' ||
+          location.pathname === '/system/role'
+        ) {
           dispatch({
-            type: 'getRemote',
+            type: 'fetchTree',
             payload: { pageNum: 1, pageSize: 20 },
           });
         }

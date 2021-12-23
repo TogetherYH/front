@@ -1,4 +1,4 @@
-export interface SingleMenuType {
+export interface MenuType {
   id: string;
   name: string;
   code: string;
@@ -18,5 +18,5 @@ export interface MenuTreeType {
   name: string;
   path: string;
   parentId: string;
-  children: SingleMenuType[];
+  children: MenuTreeType[];
 }

@@ -8,12 +8,12 @@ import {
   InputNumber,
   Radio,
 } from 'antd';
-import { SingleMenuType, FormValues } from '../data';
+import { MenuType, FormValues } from '../data';
 import { menuTreeState } from '../models/menuTree';
 
 interface MenuModalProps {
   visible: boolean;
-  record: SingleMenuType | undefined;
+  record: MenuType | undefined;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
@@ -36,6 +36,7 @@ const MenuModal: FC<MenuModalProps> = (props) => {
     }
   }, [visible]);
 
+  // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
     form.submit();
   };

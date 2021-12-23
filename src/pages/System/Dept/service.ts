@@ -1,8 +1,8 @@
-import request from 'umi-request';
+import request from '@/utils/request';
 import { FormValues } from './data';
 
-/** 部门分页列表 GET /sysstem/user/list */
-export async function page({
+/** 部门分页列表 GET /system/dept/list */
+export async function list({
   pageNum,
   pageSize,
   name,
@@ -19,12 +19,12 @@ export async function page({
   );
 }
 
-/** 部门树 GET /sysstem/user/tree */
+/** 部门树 GET /system/dept/tree */
 export async function tree() {
   return request.get(`/api/system/dept/tree`, {});
 }
 
-/** 更新部门信息 POST /sysstem/dept/update */
+/** 更新部门信息 POST /system/dept/update */
 export async function update({
   id,
   values,
@@ -33,18 +33,19 @@ export async function update({
   values: FormValues;
 }) {
   return request.post('/api/system/dept/update', {
-    data: { id, ...values },
+    id,
+    ...values,
   });
 }
 
-/** 添加部门信息 POST /sysstem/dept/add */
+/** 添加部门信息 POST /system/dept/add */
 export async function add({ values }: { values: FormValues }) {
   return request.post('/api/system/dept/add', {
-    data: values,
+    ...values,
   });
 }
 
-/** 删除部门信息 POST /sysstem/dept/delete */
+/** 删除部门信息 POST /system/dept/delete */
 export async function del({ id }: { id: string }) {
-  return request.delete(`/api/system/dept/delete/${id}`, {});
+  return request.del(`/api/system/dept/delete/${id}`, {});
 }

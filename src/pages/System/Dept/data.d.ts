@@ -1,4 +1,4 @@
-export interface SingleDeptType {
+export interface DeptType {
   id: string;
   name: string;
   code: string;

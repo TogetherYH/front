@@ -1,4 +1,4 @@
-export interface SingleUserType {
+export interface UserType {
   id: string;
   username: string;
   realName: string;

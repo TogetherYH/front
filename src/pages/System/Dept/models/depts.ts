@@ -1,13 +1,13 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { page, update, del, add } from '../service';
-import { SingleDeptType } from '../data';
+import { list, update, del, add } from '../service';
+import { DeptType } from '../data';
 
 export interface deptState {
   pageNum?: number;
   pageSize?: number;
   total?: number;
-  list?: SingleDeptType[];
+  list?: DeptType[];
 }
 
 export interface DeptModelType {
@@ -17,10 +17,10 @@ export interface DeptModelType {
     getList: Reducer<deptState>;
   };
   effects: {
-    getRemote: Effect;
-    edit: Effect;
-    del: Effect;
-    add: Effect;
+    fetchList: Effect;
+    fetchUpdate: Effect;
+    fetchDelete: Effect;
+    fetchAdd: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -36,8 +36,8 @@ const DeptModel: DeptModelType = {
     },
   },
   effects: {
-    *getRemote({ payload: { pageNum, pageSize, name } }, { put, call }) {
-      const data = yield call(page, { pageNum, pageSize, name });
+    *fetchList({ payload: { pageNum, pageSize, name } }, { put, call }) {
+      const data = yield call(list, { pageNum, pageSize, name });
       if (data) {
         yield put({
           type: 'getList',
@@ -45,16 +45,16 @@ const DeptModel: DeptModelType = {
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call, select }) {
+    *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(update, { id, values });
       if (data) {
         message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
-        yield put({ type: 'deptTree/getRemote' });
+        yield put({ type: 'deptTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -62,16 +62,16 @@ const DeptModel: DeptModelType = {
         });
       }
     },
-    *add({ payload: { values } }, { put, call, select }) {
+    *fetchAdd({ payload: { values } }, { put, call, select }) {
       const data = yield call(add, { values });
       if (data) {
         message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
-        yield put({ type: 'deptTree/getRemote' });
+        yield put({ type: 'deptTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -79,16 +79,16 @@ const DeptModel: DeptModelType = {
         });
       }
     },
-    *del({ payload: { id } }, { put, call, select }) {
+    *fetchDelete({ payload: { id } }, { put, call, select }) {
       const data = yield call(del, { id });
       if (data) {
         message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.depts;
         });
-        yield put({ type: 'deptTree/getRemote' });
+        yield put({ type: 'deptTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -102,7 +102,7 @@ const DeptModel: DeptModelType = {
       return history.listen((location, action) => {
         if (location.pathname === '/system/dept') {
           dispatch({
-            type: 'getRemote',
+            type: 'fetchList',
             payload: { pageNum: 1, pageSize: 20 },
           });
         }

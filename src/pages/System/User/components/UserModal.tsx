@@ -13,8 +13,8 @@ interface UserModalProps {
 
 const UserModal: FC<UserModalProps> = (props) => {
   const { visible, record, closeHandler, onFinish, confirmLoading } = props;
-
   const [form] = Form.useForm();
+
   // 第二个参数是触发条件
   useEffect(() => {
     if (record === undefined) {
@@ -28,6 +28,7 @@ const UserModal: FC<UserModalProps> = (props) => {
     }
   }, [visible]);
 
+  // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
     form.submit();
   };

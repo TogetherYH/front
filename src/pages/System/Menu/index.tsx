@@ -13,7 +13,7 @@ import {
   Col,
 } from 'antd';
 import { connect, Dispatch, Loading, menuState, menuTreeState } from 'umi';
-import { SingleMenuType, FormValues } from './data';
+import { MenuType, FormValues } from './data';
 import MenuModal from './components/MenuModal';
 
 interface MenuProps {
@@ -29,9 +29,9 @@ const Menu: FC<MenuProps> = ({
   dispatch,
   menuListLoading,
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [menuModalVisible, setMenuModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<SingleMenuType | undefined>(undefined);
+  const [record, setRecord] = useState<MenuType | undefined>(undefined);
   const [searchForm] = Form.useForm();
 
   const columns = [
@@ -74,7 +74,7 @@ const Menu: FC<MenuProps> = ({
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: SingleMenuType) => (
+      render: (text: string, record: MenuType) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -86,7 +86,7 @@ const Menu: FC<MenuProps> = ({
           <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
-              confirm(record);
+              deleteHandler(record);
             }}
             okText="Yes"
             cancelText="No"
@@ -98,25 +98,65 @@ const Menu: FC<MenuProps> = ({
     },
   ];
 
-  const confirm = (record: SingleMenuType) => {
-    setRecord(record);
-    const id = record.id;
+  // 分页
+  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
     dispatch({
-      type: 'menus/del',
-      payload: { id },
+      type: 'menus/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum,
+        pageSize,
+      },
     });
   };
 
-  const editHandler = (record: SingleMenuType) => {
+  // 搜索
+  const searchHandler = () => {
+    dispatch({
+      type: 'menus/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: 1,
+        pageSize: menus.pageSize,
+      },
+    });
+  };
+
+  // 刷新
+  const refreshHandler = () => {
+    dispatch({
+      type: 'menus/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        pageNum: menus.pageNum,
+        pageSize: menus.pageSize,
+      },
+    });
+    dispatch({
+      type: 'menuTree/fetchTree',
+      payload: {},
+    });
+  };
+
+  // 打开添加modal
+  const addHandler = () => {
+    setRecord(undefined);
+    setMenuModalVisible(true);
+  };
+
+  // 打开编辑modal
+  const editHandler = (record: MenuType) => {
     setRecord(record);
     // console.log('rrr', record);
-    setModalVisible(true);
+    setMenuModalVisible(true);
   };
 
+  // 关闭modal
   const closeHandler = () => {
-    setModalVisible(false);
+    setMenuModalVisible(false);
   };
 
+  // 添加、更新处理方法
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
@@ -126,7 +166,7 @@ const Menu: FC<MenuProps> = ({
     }
     if (id) {
       dispatch({
-        type: 'menus/edit',
+        type: 'menus/fetchUpdate',
         payload: {
           id,
           values: {
@@ -137,7 +177,7 @@ const Menu: FC<MenuProps> = ({
       });
     } else {
       dispatch({
-        type: 'menus/add',
+        type: 'menus/fetchAdd',
         payload: {
           values: {
             ...values,
@@ -147,49 +187,18 @@ const Menu: FC<MenuProps> = ({
       });
     }
 
-    setModalVisible(false);
+    // 关闭modal
+    setMenuModalVisible(false);
     setConfirmLoading(false);
   };
 
-  const addHandler = () => {
-    setRecord(undefined);
-    setModalVisible(true);
-  };
-
-  const refreshHandler = () => {
+  // 删除
+  const deleteHandler = (record: MenuType) => {
+    setRecord(record);
+    const id = record.id;
     dispatch({
-      type: 'menus/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: menus.pageNum,
-        pageSize: menus.pageSize,
-      },
-    });
-    dispatch({
-      type: 'menuTree/getRemote',
-      payload: {},
-    });
-  };
-
-  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
-    dispatch({
-      type: 'menus/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum,
-        pageSize,
-      },
-    });
-  };
-
-  const searchHandler = () => {
-    dispatch({
-      type: 'menus/getRemote',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: menus.pageNum,
-        pageSize: menus.pageSize,
-      },
+      type: 'menus/fetchDelete',
+      payload: { id },
     });
   };
 
@@ -220,7 +229,7 @@ const Menu: FC<MenuProps> = ({
                 <Col span={18}>
                   <Form form={searchForm} layout="inline">
                     <Form.Item
-                      label="部门名称"
+                      label="菜单名称"
                       name="name"
                       style={{ marginBottom: '0' }}
                     >
@@ -267,7 +276,7 @@ const Menu: FC<MenuProps> = ({
         </Col>
       </Row>
       <MenuModal
-        visible={modalVisible}
+        visible={menuModalVisible}
         closeHandler={closeHandler}
         onFinish={onFinish}
         record={record}
@@ -292,7 +301,7 @@ const mapStateToProps = ({
   return {
     menus,
     menuTree,
-    menuListLoading: loading.models.Menus,
+    menuListLoading: loading.models.menus,
   };
 };
 

@@ -14,7 +14,7 @@ export interface DeptModelType {
     getTree: Reducer<deptTreeState>;
   };
   effects: {
-    getRemote: Effect;
+    fetchTree: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -32,7 +32,7 @@ const DeptTreeModel: DeptModelType = {
     },
   },
   effects: {
-    *getRemote({ payload }, { put, call }) {
+    *fetchTree({ payload }, { put, call }) {
       const data = yield call(tree);
       if (data) {
         yield put({
@@ -47,7 +47,7 @@ const DeptTreeModel: DeptModelType = {
       return history.listen((location, action) => {
         if (location.pathname === '/system/dept') {
           dispatch({
-            type: 'getRemote',
+            type: 'fetchTree',
             payload: { pageNum: 1, pageSize: 20 },
           });
         }

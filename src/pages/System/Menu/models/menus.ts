@@ -1,13 +1,13 @@
 import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { page, update, del, add } from '../service';
-import { SingleMenuType } from '../data';
+import { list, update, del, add } from '../service';
+import { MenuType } from '../data';
 
 export interface menuState {
   pageNum?: number;
   pageSize?: number;
   total?: number;
-  list?: SingleMenuType[];
+  list?: MenuType[];
 }
 
 export interface MenuModelType {
@@ -17,10 +17,10 @@ export interface MenuModelType {
     getList: Reducer<menuState>;
   };
   effects: {
-    getRemote: Effect;
-    edit: Effect;
-    del: Effect;
-    add: Effect;
+    fetchList: Effect;
+    fetchUpdate: Effect;
+    fetchDelete: Effect;
+    fetchAdd: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -36,8 +36,8 @@ const MenuModel: MenuModelType = {
     },
   },
   effects: {
-    *getRemote({ payload: { pageNum, pageSize, name } }, { put, call }) {
-      const data = yield call(page, { pageNum, pageSize, name });
+    *fetchList({ payload: { pageNum, pageSize, name } }, { put, call }) {
+      const data = yield call(list, { pageNum, pageSize, name });
       if (data) {
         yield put({
           type: 'getList',
@@ -45,16 +45,16 @@ const MenuModel: MenuModelType = {
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call, select }) {
+    *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(update, { id, values });
       if (data) {
         message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.menus;
         });
-        yield put({ type: 'menuTree/getRemote' });
+        yield put({ type: 'menuTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -62,16 +62,16 @@ const MenuModel: MenuModelType = {
         });
       }
     },
-    *add({ payload: { values } }, { put, call, select }) {
+    *fetchAdd({ payload: { values } }, { put, call, select }) {
       const data = yield call(add, { values });
       if (data) {
         message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.menus;
         });
-        yield put({ type: 'menuTree/getRemote' });
+        yield put({ type: 'menuTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -79,16 +79,16 @@ const MenuModel: MenuModelType = {
         });
       }
     },
-    *del({ payload: { id } }, { put, call, select }) {
+    *fetchDelete({ payload: { id } }, { put, call, select }) {
       const data = yield call(del, { id });
       if (data) {
         message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.menus;
         });
-        yield put({ type: 'menuTree/getRemote' });
+        yield put({ type: 'menuTree/fetchTree' });
         yield put({
-          type: 'getRemote',
+          type: 'fetchList',
           payload: {
             pageNum,
             pageSize,
@@ -102,7 +102,7 @@ const MenuModel: MenuModelType = {
       return history.listen((location, action) => {
         if (location.pathname === '/system/menu') {
           dispatch({
-            type: 'getRemote',
+            type: 'fetchList',
             payload: { pageNum: 1, pageSize: 20 },
           });
         }
