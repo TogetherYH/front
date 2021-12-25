@@ -1,32 +1,61 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Switch } from 'antd';
+import { Modal, Form, Input, Radio, DatePicker, Switch, Select } from 'antd';
+import { userState, Loading, Dispatch, connect } from 'umi';
 import moment from 'moment';
 import { UserType, FormValues } from '../data';
 
 interface UserModalProps {
   visible: boolean;
-  record: UserType | undefined;
+  userId?: string;
+  user: userState;
+  allRole: any;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
+  dispatch?: Dispatch;
 }
 
 const UserModal: FC<UserModalProps> = (props) => {
-  const { visible, record, closeHandler, onFinish, confirmLoading } = props;
+  const {
+    visible,
+    userId,
+    user,
+    allRole,
+    closeHandler,
+    onFinish,
+    confirmLoading,
+    dispatch,
+  } = props;
   const [form] = Form.useForm();
 
   // 第二个参数是触发条件
   useEffect(() => {
-    if (record === undefined) {
+    // 打开新建对话框
+    if (visible && userId === undefined) {
       form.resetFields();
-    } else {
-      form.setFieldsValue({
-        ...record,
-        birthday: record.birthday ? moment(record.birthday) : '',
-        status: record.status === '1' ? true : false,
-      });
+    }
+
+    // 打开修改对话框
+    if (visible && userId) {
+      if (dispatch) {
+        dispatch({
+          type: 'user/fetchOne',
+          payload: {
+            userId,
+          },
+        });
+      }
     }
   }, [visible]);
+
+  useEffect(() => {
+    // console.log('userState变化....')
+    form.setFieldsValue({
+      ...user,
+      birthday: user.birthday ? moment(user.birthday) : '',
+      status: user.status === '1' ? true : false,
+    });
+  }, [user]);
 
   // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
@@ -37,10 +66,15 @@ const UserModal: FC<UserModalProps> = (props) => {
     console.log('form submit failed');
   };
 
+  // const { Option } = Select;
+  // const children = [];
+  // for (let i = 10; i < 36; i++) {
+  //   children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+  // }
   return (
     <div>
       <Modal
-        title={record ? '修改用户信息' : '添加用户信息'}
+        title={userId === undefined ? '添加用户信息' : '修改用户信息'}
         maskClosable={false}
         centered
         forceRender
@@ -66,7 +100,7 @@ const UserModal: FC<UserModalProps> = (props) => {
             name="username"
             rules={[{ required: true, message: '账号不能为空' }]}
           >
-            <Input disabled={record ? true : false} />
+            <Input disabled={userId === undefined ? false : true} />
           </Form.Item>
 
           <Form.Item
@@ -75,6 +109,21 @@ const UserModal: FC<UserModalProps> = (props) => {
             rules={[{ required: true, message: '姓名不能为空' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="角色" name="roleIds">
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: '100%' }}
+              // placeholder="Please select"
+              fieldNames={{ label: 'name', value: 'id' }}
+              options={allRole}
+              optionLabelProp={'name'}
+              // value={user?.roleIds}
+            >
+              {/* {allRole} */}
+            </Select>
           </Form.Item>
 
           <Form.Item label="性别" name="sex">
@@ -97,4 +146,17 @@ const UserModal: FC<UserModalProps> = (props) => {
   );
 };
 
-export default UserModal;
+const mapStateToProps = ({
+  user,
+  loading,
+}: {
+  user: userState;
+  loading: Loading;
+}) => {
+  return {
+    user,
+    userLoading: loading.models.user,
+  };
+};
+
+export default connect(mapStateToProps)(UserModal);

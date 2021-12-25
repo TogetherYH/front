@@ -59,18 +59,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     menu: {
       // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
       params: {
-        // userId: initialState?.currentUser?.userid,
+        userId: initialState?.currentUser?.userId,
       },
       request: async (params, defaultMenuData) => {
         // initialState.currentUser 中包含了所有用户信息
-        const menuData = await fetchMenuData();
-
-        // menuData.data.map((mydata: any) => {
-        //   mydata.key = mydata.id;
-        //   return mydata;
-        // });
-
-        return menuData.data;
+        if (history.location.pathname !== loginPath) {
+          const menuData = await fetchMenuData();
+          return menuData.data;
+        } else {
+          return [];
+        }
       },
     },
     rightContentRender: () => <RightContent />,

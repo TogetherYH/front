@@ -117,7 +117,7 @@ const Menu: FC<MenuProps> = ({
       payload: {
         name: searchForm.getFieldValue('name'),
         pageNum: 1,
-        pageSize: menus.pageSize,
+        pageSize: menus?.pageSize,
       },
     });
   };
@@ -128,8 +128,8 @@ const Menu: FC<MenuProps> = ({
       type: 'menus/fetchList',
       payload: {
         name: searchForm.getFieldValue('name'),
-        pageNum: menus.pageNum,
-        pageSize: menus.pageSize,
+        pageNum: menus?.pageNum,
+        pageSize: menus?.pageSize,
       },
     });
     dispatch({

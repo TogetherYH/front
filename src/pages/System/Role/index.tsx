@@ -144,7 +144,7 @@ const Role: FC<RoleProps> = ({
       payload: {
         name: searchForm.getFieldValue('name'),
         pageNum: 1,
-        pageSize: roles.pageSize,
+        pageSize: roles?.pageSize,
       },
     });
   };
@@ -155,8 +155,8 @@ const Role: FC<RoleProps> = ({
       type: 'roles/fetchList',
       payload: {
         name: searchForm.getFieldValue('name'),
-        pageNum: roles.pageNum,
-        pageSize: roles.pageSize,
+        pageNum: roles?.pageNum,
+        pageSize: roles?.pageSize,
       },
     });
   };

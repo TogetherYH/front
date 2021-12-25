@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import {
   Table,
   Space,
@@ -11,12 +11,13 @@ import {
   Row,
   Col,
 } from 'antd';
-import { connect, Dispatch, Loading, userState } from 'umi';
+import { connect, Dispatch, Loading, userListState } from 'umi';
 import UserModal from './components/UserModal';
 import { UserType, FormValues } from './data';
+import { all } from '@/pages/System/Role/service';
 
 interface UserProps {
-  users: userState;
+  users: userListState;
   dispatch: Dispatch;
   userListLoading: boolean;
 }
@@ -24,8 +25,19 @@ interface UserProps {
 const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
   const [userModalVisible, setUserModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [record, setRecord] = useState<UserType | undefined>(undefined);
+  // const [record, setRecord] = useState<UserType | undefined>(undefined);
+  const [userId, setUserId] = useState<string | undefined>('');
   const [searchForm] = Form.useForm();
+  const [allRole, setAllRole] = useState<any[]>([]);
+
+  const fetchData = async () => {
+    const result = await all({});
+    setAllRole(result.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [setAllRole]);
 
   const columns = [
     {
@@ -116,7 +128,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
         username: searchForm.getFieldValue('username'),
         realName: searchForm.getFieldValue('realName'),
         pageNum: 1,
-        pageSize: users.pageSize,
+        pageSize: users?.pageSize,
       },
     });
   };
@@ -128,21 +140,21 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
       payload: {
         username: searchForm.getFieldValue('username'),
         realName: searchForm.getFieldValue('realName'),
-        pageNum: users.pageNum,
-        pageSize: users.pageSize,
+        pageNum: users?.pageNum,
+        pageSize: users?.pageSize,
       },
     });
   };
 
   // 打开添加modal
   const addHandler = () => {
-    setRecord(undefined);
+    setUserId(undefined);
     setUserModalVisible(true);
   };
 
   // 打开编辑modal
   const editHandler = (record: UserType) => {
-    setRecord(record);
+    setUserId(record.id);
     setUserModalVisible(true);
   };
 
@@ -156,8 +168,8 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
     // console.log('form on finish');
     setConfirmLoading(true);
     let id = '';
-    if (record) {
-      id = record.id;
+    if (userId) {
+      id = userId;
     }
     if (id) {
       dispatch({
@@ -189,7 +201,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
 
   // 删除记录
   const deleteHandler = (record: UserType) => {
-    setRecord(record);
+    // setRecord(record);
     const id = record.id;
     dispatch({
       type: 'users/fetchDelete',
@@ -258,7 +270,9 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
           visible={userModalVisible}
           closeHandler={closeHandler}
           onFinish={onFinish}
-          record={record}
+          // record={record}
+          userId={userId}
+          allRole={allRole}
           confirmLoading={confirmLoading}
         />
       </Space>
@@ -270,7 +284,7 @@ const mapStateToProps = ({
   users,
   loading,
 }: {
-  users: userState;
+  users: userListState;
   loading: Loading;
 }) => {
   return {

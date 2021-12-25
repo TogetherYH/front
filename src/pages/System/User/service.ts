@@ -46,3 +46,8 @@ export async function add({ values }: { values: FormValues }) {
 export async function del({ id }: { id: string }) {
   return request.del(`/api/system/user/delete/${id}`, {});
 }
+
+/** 获取单个用户信息 POST /system/user/ */
+export async function get({ userId }: { userId: string }) {
+  return request.get(`/api/system/user/${userId}`, {});
+}

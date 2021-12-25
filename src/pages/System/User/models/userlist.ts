@@ -1,20 +1,20 @@
-import { message } from 'antd';
+// import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
 import { list, update, del, add } from '../service';
 import { UserType } from '../data';
 
-export interface userState {
+export interface userListState {
   pageNum?: number;
   pageSize?: number;
   total?: number;
   list?: UserType[];
 }
 
-export interface UserModelType {
+export interface UserListModelType {
   namespace: 'users';
-  state: userState;
+  state: userListState;
   reducers: {
-    getList: Reducer<userState>;
+    getList: Reducer<userListState>;
   };
   effects: {
     fetchList: Effect;
@@ -27,7 +27,7 @@ export interface UserModelType {
   };
 }
 
-const UserModel: UserModelType = {
+const UserListModel: UserListModelType = {
   namespace: 'users',
   state: {},
   reducers: {
@@ -56,7 +56,7 @@ const UserModel: UserModelType = {
     *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(update, { id, values });
       if (data) {
-        message.success('Edit successfully');
+        // message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
@@ -72,7 +72,7 @@ const UserModel: UserModelType = {
     *fetchAdd({ payload: { values } }, { put, call, select }) {
       const data = yield call(add, { values });
       if (data) {
-        message.success('Add successfully');
+        // message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
@@ -88,7 +88,7 @@ const UserModel: UserModelType = {
     *fetchDelete({ payload: { id } }, { put, call, select }) {
       const data = yield call(del, { id });
       if (data) {
-        message.success('Delete successfully');
+        // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.users;
         });
@@ -116,4 +116,4 @@ const UserModel: UserModelType = {
   },
 };
 
-export default UserModel;
+export default UserListModel;

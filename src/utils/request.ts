@@ -26,6 +26,7 @@ const codeMessage: Record<number, string> = {
  */
 const errorHandler = (error: { response: Response }): Response => {
   console.log('err handler', error);
+  // console.log('resonse', response);
   const { response } = error;
   if (response && response.status) {
     let errorText = codeMessage[response.status] || response.statusText;
@@ -59,7 +60,7 @@ const request = extend({
 
 // request拦截器, 携带token
 request.interceptors.request.use((url: string, options: RequestOptionsInit) => {
-  console.log('fetch', url);
+  // console.log('fetch', url);
   // 给每个请求带上token
   let headers = {
     'Content-Type': 'application/json;',
@@ -71,16 +72,25 @@ request.interceptors.request.use((url: string, options: RequestOptionsInit) => {
   };
 });
 
+// response拦截器
 request.interceptors.response.use(async (response) => {
   // message.error(codeMaps[response.data.code]);
   const data = await response.clone().json();
+  // console.log('response', response);
   if (codeMessage[data.code] && data.code !== 200) {
     notification.error({
       description: `错误编码：${data.code}`,
       message: codeMessage[data.code],
     });
+    return Promise.resolve({ ...data, success: false });
+  } else {
+    if (data.message) {
+      notification.success({
+        message: data.message,
+      });
+    }
+    return response;
   }
-  return response;
 });
 
 // 封装的get,post.put,delete请求

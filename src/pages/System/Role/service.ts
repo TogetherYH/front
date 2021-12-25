@@ -66,3 +66,8 @@ export async function getMenuIdsByRoleId({ roleId }: { roleId: string }) {
     {},
   );
 }
+
+/** 所有角色列表 */
+export async function all({}) {
+  return request.get(`/api/system/role/all`, {});
+}

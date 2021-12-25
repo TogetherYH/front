@@ -111,7 +111,7 @@ const Dept: FC<DeptProps> = ({
       payload: {
         name: searchForm.getFieldValue('name'),
         pageNum: 1,
-        pageSize: depts.pageSize,
+        pageSize: depts?.pageSize,
       },
     });
   };
@@ -122,8 +122,8 @@ const Dept: FC<DeptProps> = ({
       type: 'depts/fetchList',
       payload: {
         name: searchForm.getFieldValue('name'),
-        pageNum: depts.pageNum,
-        pageSize: depts.pageSize,
+        pageNum: depts?.pageNum,
+        pageSize: depts?.pageSize,
       },
     });
     dispatch({

@@ -1,4 +1,4 @@
-import { message } from 'antd';
+// import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
 import { list, update, del, add } from '../service';
 import { RoleType } from '../data';
@@ -48,7 +48,7 @@ const RoleModel: RoleModelType = {
     *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(update, { id, values });
       if (data) {
-        message.success('Edit successfully');
+        // message.success('Edit successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.roles;
         });
@@ -64,7 +64,7 @@ const RoleModel: RoleModelType = {
     *fetchAdd({ payload: { values } }, { put, call, select }) {
       const data = yield call(add, { values });
       if (data) {
-        message.success('Add successfully');
+        // message.success('Add successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.roles;
         });
@@ -80,7 +80,7 @@ const RoleModel: RoleModelType = {
     *fetchDelete({ payload: { id } }, { put, call, select }) {
       const data = yield call(del, { id });
       if (data) {
-        message.success('Delete successfully');
+        // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.roles;
         });

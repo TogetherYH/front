@@ -1,4 +1,4 @@
-import { message } from 'antd';
+// import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
 import { getMenuIdsByRoleId, updateRoleMenu } from '../service';
 
@@ -28,7 +28,6 @@ const RoleMenuModel: RoleMenuModelType = {
       return action.payload;
     },
     update(state, action) {
-      console.log('aaa', action);
       return action.payload;
     },
   },
