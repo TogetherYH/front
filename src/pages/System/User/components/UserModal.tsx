@@ -46,6 +46,10 @@ const UserModal: FC<UserModalProps> = (props) => {
         });
       }
     }
+
+    if (!visible) {
+      form.resetFields();
+    }
   }, [visible]);
 
   useEffect(() => {
@@ -117,9 +121,10 @@ const UserModal: FC<UserModalProps> = (props) => {
               allowClear
               style={{ width: '100%' }}
               // placeholder="Please select"
-              fieldNames={{ label: 'name', value: 'id' }}
+              // fieldNames={{ label: 'name', value: 'id' }}
               options={allRole}
-              optionLabelProp={'name'}
+              optionLabelProp={'label'}
+              onSelect={() => {}}
               // value={user?.roleIds}
             >
               {/* {allRole} */}

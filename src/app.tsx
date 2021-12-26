@@ -63,12 +63,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       },
       request: async (params, defaultMenuData) => {
         // initialState.currentUser 中包含了所有用户信息
-        if (history.location.pathname !== loginPath) {
-          const menuData = await fetchMenuData();
-          return menuData.data;
-        } else {
-          return [];
-        }
+        // if (history.location.pathname !== loginPath) {
+        const menuData = await fetchMenuData();
+        return menuData.data;
+        // } else {
+        //   return [];
+        // }
       },
     },
     rightContentRender: () => <RightContent />,

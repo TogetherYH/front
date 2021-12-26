@@ -41,9 +41,9 @@ const Login: React.FC = () => {
       // console.log('msg', msg);
 
       if (msg.success === true) {
-        notification.success({
-          message: '登录成功',
-        });
+        // notification.success({
+        //   message: '登录成功',
+        // });
         // console.log('msg', msg);
         // 保存token到localStorage
         setToken(msg.data.token);

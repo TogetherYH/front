@@ -32,7 +32,14 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
 
   const fetchData = async () => {
     const result = await all({});
-    setAllRole(result.data);
+    setAllRole(
+      result?.data.map((menu: any) => {
+        return {
+          value: menu.id,
+          label: menu.name,
+        };
+      }),
+    );
   };
 
   useEffect(() => {
