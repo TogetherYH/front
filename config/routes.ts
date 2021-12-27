@@ -35,4 +35,26 @@ export default [
       },
     ],
   },
+  {
+    path: '/base',
+    icon: 'table',
+    routes: [
+      {
+        path: '/base/scale',
+        component: '@/pages/Base/Scale',
+      },
+      {
+        path: '/base/factor',
+        component: '@/pages/Base/Factor',
+      },
+      {
+        path: '/base/question',
+        component: '@/pages/Base/Question',
+      },
+      {
+        path: '/base/answer',
+        component: '@/pages/Base/Answer',
+      },
+    ],
+  },
 ];
