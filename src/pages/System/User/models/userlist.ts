@@ -29,7 +29,10 @@ export interface UserListModelType {
 
 const UserListModel: UserListModelType = {
   namespace: 'users',
-  state: {},
+  state: {
+    pageNum: 1,
+    pageSize: 20,
+  },
   reducers: {
     getList(state, action) {
       return action.payload;

@@ -2,6 +2,8 @@ import { FC, useState, useEffect } from 'react';
 import { Space, Card, Table, Button, Row, Input } from 'antd';
 import { commonListState, Loading, connect, Dispatch } from 'umi';
 import ScaleSelect from '@/components/System/ScaleSelect';
+import UserSelect from '@/components/System/UserSelect';
+import { UserType } from '@/pages/System/User/data';
 
 interface CommonProps {
   commons: commonListState;
@@ -21,7 +23,9 @@ const Common: FC<CommonProps> = ({
   // const [scaleId, setScaleId] = useState<string | undefined>('');
   // const [searchForm] = Form.useForm();
   const [scaleSelectVisible, setScaleSelectVisible] = useState(false);
+  const [userSelectVisible, setUserSelectVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [user, setUser] = useState<UserType | {}>({});
 
   useEffect(() => {
     // 为ScaleSelect初始化数据
@@ -46,25 +50,34 @@ const Common: FC<CommonProps> = ({
     setScaleSelectVisible(true);
   };
 
-  const openUserSelect = () => {};
+  const openUserSelect = () => {
+    setUserSelectVisible(true);
+  };
 
   const startTest = () => {};
 
-  const handleOk = () => {
+  const handleScaleModalCancel = () => {
     setScaleSelectVisible(false);
   };
 
-  const handleCancel = () => {
-    setScaleSelectVisible(false);
+  const handleUserModalCancel = () => {
+    setUserSelectVisible(false);
   };
 
-  // 保存
+  // 保存常用量表
   const saveCommons = (checkedKeys: string[]) => {
     dispatch({
       type: 'commons/fetchSave',
       payload: { scaleIds: checkedKeys },
     });
     setScaleSelectVisible(false);
+  };
+
+  // 选中用户
+  const onSelectUser = (user: UserType) => {
+    // console.log('wwwwwwwwwwww', user);
+    setUser(user);
+    setUserSelectVisible(false);
   };
 
   // // 打开添加modal
@@ -136,7 +149,7 @@ const Common: FC<CommonProps> = ({
         <Card>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Space direction="horizontal">
-              <Input />
+              <Input value={user?.realName} />
               <Button onClick={openUserSelect}>选择用户</Button>
               <Button onClick={openScaleSelect}>量表设置</Button>
               <Button onClick={startTest} type="primary">
@@ -162,8 +175,13 @@ const Common: FC<CommonProps> = ({
         isModalVisible={scaleSelectVisible}
         defaultChecked={selectedKeys}
         handleOk={saveCommons}
-        handleCancel={handleCancel}
-      ></ScaleSelect>
+        handleCancel={handleScaleModalCancel}
+      />
+      <UserSelect
+        isModalVisible={userSelectVisible}
+        handleCancel={handleUserModalCancel}
+        onSelectUser={onSelectUser}
+      />
     </div>
   );
 };
