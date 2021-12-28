@@ -57,4 +57,14 @@ export default [
       },
     ],
   },
+  {
+    path: '/publish',
+    icon: 'table',
+    routes: [
+      {
+        path: '/publish/common',
+        component: '@/pages/Publish/Common',
+      },
+    ],
+  },
 ];
