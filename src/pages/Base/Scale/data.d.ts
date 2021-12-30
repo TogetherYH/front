@@ -1,10 +1,11 @@
 export interface ScaleType {
-  id: string;
-  name: string;
-  code: string;
-  parentId: string;
-  createTime: string;
-  status: string;
+  id?: string;
+  name?: string;
+  code?: string;
+  parentId?: string;
+  createTime?: string;
+  status?: string;
+  introduction?: string;
 }
 
 export interface FormValues {

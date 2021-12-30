@@ -1,9 +1,11 @@
 import { FC, useState, useEffect } from 'react';
-import { Space, Card, Table, Button, Row, Input } from 'antd';
+import { Space, Card, Table, Button, Row, Input, notification } from 'antd';
 import { commonListState, Loading, connect, Dispatch } from 'umi';
 import ScaleSelect from '@/components/System/ScaleSelect';
 import UserSelect from '@/components/System/UserSelect';
+import Test from '@/pages/Test';
 import { UserType } from '@/pages/System/User/data';
+import { ScaleType } from '@/pages/Base/Scale/data';
 
 interface CommonProps {
   commons: commonListState;
@@ -11,21 +13,13 @@ interface CommonProps {
   dispatch: Dispatch;
 }
 
-const Common: FC<CommonProps> = ({
-  commons,
-  // scaleTree,
-  dispatch,
-  commonListLoading,
-}) => {
-  // const [scaleModalVisible, setScaleModalVisible] = useState(false);
-  // const [confirmLoading, setConfirmLoading] = useState(false);
-  // // const [record, setRecord] = useState<UserType | undefined>(undefined);
-  // const [scaleId, setScaleId] = useState<string | undefined>('');
-  // const [searchForm] = Form.useForm();
+const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
   const [scaleSelectVisible, setScaleSelectVisible] = useState(false);
   const [userSelectVisible, setUserSelectVisible] = useState(false);
+  const [testVisible, setTestVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [user, setUser] = useState<UserType | {}>({});
+  const [user, setUser] = useState<UserType>();
+  const [scale, setScale] = useState<ScaleType[]>();
 
   useEffect(() => {
     // 为ScaleSelect初始化数据
@@ -54,14 +48,16 @@ const Common: FC<CommonProps> = ({
     setUserSelectVisible(true);
   };
 
-  const startTest = () => {};
-
   const handleScaleModalCancel = () => {
     setScaleSelectVisible(false);
   };
 
   const handleUserModalCancel = () => {
     setUserSelectVisible(false);
+  };
+
+  const handleTestModalCancel = () => {
+    setTestVisible(false);
   };
 
   // 保存常用量表
@@ -78,6 +74,40 @@ const Common: FC<CommonProps> = ({
     // console.log('wwwwwwwwwwww', user);
     setUser(user);
     setUserSelectVisible(false);
+  };
+
+  // 选中量表
+  const rowSelection = {
+    onSelect: (
+      record: ScaleType,
+      selected: boolean,
+      selectedRows: ScaleType[],
+      nativeEvent: Event,
+    ) => {
+      // console.log('selectedRows',selectedRows);
+      setScale(selectedRows);
+    },
+  };
+
+  // 开始测评
+  const startTest = () => {
+    if (!scale || scale.length === 0) {
+      notification.warn({
+        message: '请选择要测评的量表',
+      });
+      return;
+    }
+    if (!user || !user.id) {
+      notification.warn({
+        message: '请选择要测评的用户',
+      });
+      return;
+    }
+    setTestVisible(true);
+  };
+
+  const handleTestOk = () => {
+    setTestVisible(false);
   };
 
   // // 打开添加modal
@@ -165,6 +195,7 @@ const Common: FC<CommonProps> = ({
               size="middle"
               rowSelection={{
                 type: 'checkbox',
+                ...rowSelection,
               }}
               // request={requestHandler}
             />
@@ -181,6 +212,13 @@ const Common: FC<CommonProps> = ({
         isModalVisible={userSelectVisible}
         handleCancel={handleUserModalCancel}
         onSelectUser={onSelectUser}
+      />
+      <Test
+        isModalVisible={testVisible}
+        user={user}
+        scale={scale}
+        handleOk={handleTestOk}
+        handleCancel={handleTestModalCancel}
       />
     </div>
   );
