@@ -1,24 +1,23 @@
-// import { message } from 'antd';
+import { Reducer, Effect } from 'umi';
 import { AnswerType } from '@/pages/Base/Answer/data';
 import { QuestionType } from '@/pages/Base/Question/data';
 import { ScaleType } from '@/pages/Base/Scale/data';
-import { Reducer, Effect, Subscription } from 'umi';
 import { scaleInfo } from '../service';
 
-export interface testState {
+export interface assessScaleState {
   scale: ScaleType;
   question: QuestionType[];
   answer: AnswerType[];
 }
 
-export interface TestModelType {
-  namespace: 'test';
-  state: testState;
+export interface AssessScaleModelType {
+  namespace: 'assessScale';
+  state: assessScaleState;
   reducers: {
-    getScaleInfo: Reducer<testState>;
+    getScaleInfo: Reducer<assessScaleState>;
   };
   effects: {
-    fetechScaleInfo: Effect;
+    fetchScaleInfo: Effect;
     fetchSave: Effect;
   };
   subscriptions: {
@@ -26,8 +25,8 @@ export interface TestModelType {
   };
 }
 
-const TestModel: TestModelType = {
-  namespace: 'test',
+const AssessScaleModel: AssessScaleModelType = {
+  namespace: 'assessScale',
   state: {
     scale: {},
     question: [],
@@ -39,7 +38,7 @@ const TestModel: TestModelType = {
     },
   },
   effects: {
-    *fetechScaleInfo({ payload: { scaleId } }, { put, call }) {
+    *fetchScaleInfo({ payload: { scaleId } }, { put, call }) {
       const data = yield call(scaleInfo, { scaleId });
       if (data) {
         yield put({
@@ -72,4 +71,4 @@ const TestModel: TestModelType = {
   },
 };
 
-export default TestModel;
+export default AssessScaleModel;

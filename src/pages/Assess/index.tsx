@@ -9,15 +9,18 @@ import {
   Space,
   notification,
 } from 'antd';
-import { Dispatch, connect, testState } from 'umi';
+import { Dispatch, connect, assessScaleState, assessResultState } from 'umi';
 import { UserType } from '@/pages/System/User/data';
 import { ScaleType } from '@/pages/Base/Scale/data';
+import AssessResultModel from './models/assessResult';
 
 interface TestProps {
   isModalVisible: boolean;
-  user: UserType;
-  scale: ScaleType[];
-  test: testState;
+  user?: UserType;
+  scale?: ScaleType[];
+  publishId: string;
+  assessScale: assessScaleState;
+  assessResult: assessResultState;
   dispatch: Dispatch;
   handleOk: () => void;
   handleCancel: () => void;
@@ -33,7 +36,9 @@ const Test: FC<TestProps> = (props) => {
     isModalVisible,
     user,
     scale,
-    test,
+    publishId,
+    assessScale,
+    assessResult,
     dispatch,
     handleOk,
     handleCancel,
@@ -73,7 +78,7 @@ const Test: FC<TestProps> = (props) => {
     if (isModalVisible) {
       // 加载量表信息
       dispatch({
-        type: 'test/fetechScaleInfo',
+        type: 'assessScale/fetchScaleInfo',
         payload: { scaleId: scale?.at(0)?.id },
       });
     }
@@ -85,7 +90,7 @@ const Test: FC<TestProps> = (props) => {
       setTimeout(() => {
         // console.log('currentA', currentA);
         if (current.currentA !== '') {
-          const questionId = test.question?.at(current.currentQ)?.id;
+          const questionId = assessScale.question?.at(current.currentQ)?.id;
           setQaValues([
             ...qaValues.slice(0, current.currentQ - 1),
             { questionId: questionId, answerId: current.currentA },
@@ -116,6 +121,14 @@ const Test: FC<TestProps> = (props) => {
       disabled: false,
     });
     setQaValues([]);
+    dispatch({
+      type: 'assessResult/fetchAdd',
+      payload: {
+        userId: user?.id,
+        scaleId: scale?.at(0)?.id,
+        publishId: publishId,
+      },
+    });
   };
 
   // 下一题
@@ -127,7 +140,7 @@ const Test: FC<TestProps> = (props) => {
       });
       return;
     }
-    if (current.currentQ + 1 <= test.question.length) {
+    if (current.currentQ + 1 <= assessScale.question.length) {
       setCurrent({
         currentQ: current.currentQ + 1,
         currentA: qaValues.at(current.currentQ)?.answerId,
@@ -145,7 +158,7 @@ const Test: FC<TestProps> = (props) => {
   // 上一题按钮
   const preButton = () => {
     if (current.currentQ - 1 >= 1) {
-      // const questionId = test.question?.at(current.currentQ - 1)?.id;
+      // const questionId = assess.question?.at(current.currentQ - 1)?.id;
       setCurrent({
         currentQ: current.currentQ - 1,
         currentA:
@@ -160,6 +173,7 @@ const Test: FC<TestProps> = (props) => {
 
   // 点击答案，更新currentA
   const clickAnswer = (e: RadioChangeEvent) => {
+    console.log(typeof e);
     setCurrent({
       currentQ: current.currentQ,
       currentA: e.target.value,
@@ -168,14 +182,27 @@ const Test: FC<TestProps> = (props) => {
     });
   };
 
+  const handleSubmit = () => {
+    dispatch({
+      type: 'assessResult/fetchSubmit',
+      payload: {
+        id: assessResult.resultId,
+        userId: user?.id,
+        scaleId: scale?.at(0)?.id,
+        publishId,
+        result: JSON.stringify(qaValues),
+      },
+    });
+  };
+
   // 渲染答案选项
   const renderAnswser = () => {
     // console.log('rrrrr', current.currentQ);
-    const q = test.question?.at(current.currentQ - 1);
+    const q = assessScale.question?.at(current.currentQ - 1);
     if (q !== undefined) {
       const qId = q.id;
       if (qId !== undefined) {
-        const answerGroupCode = test.question?.at(
+        const answerGroupCode = assessScale.question?.at(
           current.currentQ - 1,
         )?.answerGroupCode;
 
@@ -183,7 +210,7 @@ const Test: FC<TestProps> = (props) => {
           <Radio.Group value={current.currentA}>
             {/* <Radio.Group> */}
             <Space direction="vertical">
-              {test.answer?.map((a) => {
+              {assessScale.answer?.map((a) => {
                 if (a.groupCode === answerGroupCode) {
                   return (
                     <Radio
@@ -209,7 +236,7 @@ const Test: FC<TestProps> = (props) => {
   return (
     <div>
       <Modal
-        title={`测评-${test?.scale?.name}`}
+        title={`测评-${assessScale?.scale?.name}`}
         visible={isModalVisible}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -235,10 +262,10 @@ const Test: FC<TestProps> = (props) => {
         >
           {/* 量表名称 */}
           <Title style={{ display: started ? 'none' : 'block' }} level={4}>
-            {test?.scale?.name}
+            {assessScale?.scale?.name}
           </Title>
           {/* 提示信息 */}
-          <Title level={5}>{test?.scale?.introduction}</Title>
+          <Title level={5}>{assessScale?.scale?.introduction}</Title>
           {/* 开始测评按钮 */}
           <Button
             type="primary"
@@ -261,32 +288,34 @@ const Test: FC<TestProps> = (props) => {
           }}
         >
           <Progress
-            percent={(current.currentQ * 100) / test.question?.length}
-            format={() => `${current.currentQ}/${test.question?.length}`}
+            percent={(current.currentQ * 100) / assessScale.question?.length}
+            format={() => `${current.currentQ}/${assessScale.question?.length}`}
           />
           <Title level={5} style={{ width: '70%' }}>
-            {current.currentQ}. {test.question?.at(current.currentQ - 1)?.name}
+            {current.currentQ}.{' '}
+            {assessScale.question?.at(current.currentQ - 1)?.name}
           </Title>
           <div style={{}}>{renderAnswser()}</div>
           <Space direction="horizontal">
             <Button
+              onClick={preButton}
               style={{ display: started ? 'block' : 'none' }}
               disabled={current.currentQ === 1 ? true : false}
-              onClick={preButton}
             >
               上一题
             </Button>
             <Button
+              onClick={nextButton}
               style={{ display: started ? 'block' : 'none' }}
               disabled={
-                current.currentQ === test.question.length ? true : false
+                current.currentQ === assessScale.question.length ? true : false
               }
-              onClick={nextButton}
             >
               下一题
             </Button>
             <Button
               type="primary"
+              onClick={handleSubmit}
               style={{ display: started ? 'block' : 'none' }}
             >
               提交
@@ -298,9 +327,16 @@ const Test: FC<TestProps> = (props) => {
   );
 };
 
-const mapStateToProps = ({ test }: { test: testState }) => {
+const mapStateToProps = ({
+  assessScale,
+  assessResult,
+}: {
+  assessScale: assessScaleState;
+  assessResult: assessResultState;
+}) => {
   return {
-    test,
+    assessScale,
+    assessResult,
   };
 };
 

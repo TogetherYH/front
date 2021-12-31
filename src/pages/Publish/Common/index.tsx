@@ -3,7 +3,7 @@ import { Space, Card, Table, Button, Row, Input, notification } from 'antd';
 import { commonListState, Loading, connect, Dispatch } from 'umi';
 import ScaleSelect from '@/components/System/ScaleSelect';
 import UserSelect from '@/components/System/UserSelect';
-import Test from '@/pages/Test';
+import Assess from '@/pages/Assess';
 import { UserType } from '@/pages/System/User/data';
 import { ScaleType } from '@/pages/Base/Scale/data';
 
@@ -110,69 +110,6 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
     setTestVisible(false);
   };
 
-  // // 打开添加modal
-  // const addHandler = () => {
-  //   setScaleId(undefined);
-  //   setScaleModalVisible(true);
-  // };
-
-  // // 打开编辑modal
-  // const editHandler = (record: ScaleType) => {
-  //   setScaleId(record.id);
-  //   setScaleModalVisible(true);
-  // };
-
-  // // 关闭Modal
-  // const closeHandler = () => {
-  //   setScaleModalVisible(false);
-  // };
-
-  // // 添加、更新处理方法
-  // const onFinish = (values: FormValues) => {
-  //   // console.log('form on finish');
-  //   setConfirmLoading(true);
-  //   let id = '';
-  //   if (scaleId) {
-  //     id = scaleId;
-  //   }
-  //   if (id) {
-  //     dispatch({
-  //       type: 'scales/fetchUpdate',
-  //       payload: {
-  //         id,
-  //         values: {
-  //           ...values,
-  //           status: values.status ? '1' : '0',
-  //         },
-  //       },
-  //     });
-  //   } else {
-  //     dispatch({
-  //       type: 'scales/fetchAdd',
-  //       payload: {
-  //         values: {
-  //           ...values,
-  //           status: values.status ? '1' : '0',
-  //         },
-  //       },
-  //     });
-  //   }
-
-  //   // 关闭modal
-  //   setScaleModalVisible(false);
-  //   setConfirmLoading(false);
-  // };
-
-  // // 删除记录
-  // const deleteHandler = (record: ScaleType) => {
-  //   // setRecord(record);
-  //   const id = record.id;
-  //   dispatch({
-  //     type: 'scales/fetchDelete',
-  //     payload: { id },
-  //   });
-  // };
-
   return (
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -197,7 +134,6 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
                 type: 'checkbox',
                 ...rowSelection,
               }}
-              // request={requestHandler}
             />
           </Space>
         </Card>
@@ -213,10 +149,11 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
         handleCancel={handleUserModalCancel}
         onSelectUser={onSelectUser}
       />
-      <Test
+      <Assess
         isModalVisible={testVisible}
         user={user}
         scale={scale}
+        publishId="common"
         handleOk={handleTestOk}
         handleCancel={handleTestModalCancel}
       />
