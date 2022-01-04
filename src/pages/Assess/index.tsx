@@ -90,7 +90,7 @@ const Test: FC<TestProps> = (props) => {
       setTimeout(() => {
         // console.log('currentA', currentA);
         if (current.currentA !== '') {
-          const questionId = assessScale.question?.at(current.currentQ)?.id;
+          const questionId = assessScale.question?.at(current.currentQ - 1)?.id;
           setQaValues([
             ...qaValues.slice(0, current.currentQ - 1),
             { questionId: questionId, answerId: current.currentA },
@@ -214,7 +214,7 @@ const Test: FC<TestProps> = (props) => {
                 if (a.groupCode === answerGroupCode) {
                   return (
                     <Radio
-                      value={a.option}
+                      value={a.id}
                       key={a.id}
                       onClick={clickAnswer}
                       disabled={current.disabled}
