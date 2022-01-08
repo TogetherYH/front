@@ -141,9 +141,43 @@ const put = async (
   }
 };
 
+const download = (url: string, fileName: string, params: {}) => {
+  fetch(url, {
+    method: 'GET',
+    headers: new Headers({
+      'Content-Type': 'application/json;',
+      [TOKEN_KEY]: getToken() || '',
+    }),
+  })
+    .then((response) => {
+      response.blob().then((blob) => {
+        const aLink = document.createElement('a');
+        // console.log(response);
+        if (response && response.status === 500) {
+          notification.error({
+            description: `错误编码：${response.status}`,
+            message: codeMessage[response.status],
+          });
+        } else {
+          document.body.appendChild(aLink);
+          aLink.style.display = 'none';
+          const objectUrl = URL.createObjectURL(blob);
+          aLink.href = objectUrl;
+          aLink.download = fileName;
+          aLink.click();
+          document.body.removeChild(aLink);
+        }
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 export default {
   get,
   post,
   put,
   del,
+  download,
 };

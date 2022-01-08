@@ -15,7 +15,7 @@ export async function addResult({
   scaleId: string;
   publishId: string;
 }) {
-  return request.post(`/api/assess/result/add`, {
+  return request.post(`/api/assess/temp/add`, {
     userId,
     publishId,
     scaleId,
@@ -36,7 +36,7 @@ export async function submitResult({
   publishId: string;
   result: string;
 }) {
-  return request.post(`/api/assess/result/submit`, {
+  return request.post(`/api/assess/temp/submit`, {
     id,
     userId,
     publishId,

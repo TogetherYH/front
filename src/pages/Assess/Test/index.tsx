@@ -12,7 +12,7 @@ import {
 import { Dispatch, connect, assessScaleState, assessResultState } from 'umi';
 import { UserType } from '@/pages/System/User/data';
 import { ScaleType } from '@/pages/Base/Scale/data';
-import AssessResultModel from './models/assessResult';
+// import AssessResultModel from './models/assessResult';
 
 interface TestProps {
   isModalVisible: boolean;

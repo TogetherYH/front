@@ -67,4 +67,14 @@ export default [
       },
     ],
   },
+  {
+    path: '/assess',
+    icon: 'table',
+    routes: [
+      {
+        path: '/assess/result',
+        component: '@/pages/Assess/Result',
+      },
+    ],
+  },
 ];

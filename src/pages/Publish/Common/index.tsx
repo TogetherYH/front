@@ -3,7 +3,7 @@ import { Space, Card, Table, Button, Row, Input, notification } from 'antd';
 import { commonListState, Loading, connect, Dispatch } from 'umi';
 import ScaleSelect from '@/components/System/ScaleSelect';
 import UserSelect from '@/components/System/UserSelect';
-import Assess from '@/pages/Assess';
+import Test from '@/pages/Assess/Test';
 import { UserType } from '@/pages/System/User/data';
 import { ScaleType } from '@/pages/Base/Scale/data';
 
@@ -149,7 +149,7 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
         handleCancel={handleUserModalCancel}
         onSelectUser={onSelectUser}
       />
-      <Assess
+      <Test
         isModalVisible={testVisible}
         user={user}
         scale={scale}
