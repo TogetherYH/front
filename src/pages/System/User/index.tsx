@@ -12,6 +12,7 @@ import {
   Col,
 } from 'antd';
 import { connect, Dispatch, Loading, userListState } from 'umi';
+import moment from 'moment';
 import UserModal from './components/UserModal';
 import { UserType, FormValues } from './data';
 import { all } from '@/pages/System/Role/service';
@@ -174,6 +175,11 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
+    values = {
+      ...values,
+      status: values.status ? '1' : '0',
+      birthday: moment(values.birthday).utcOffset(8).format('YYYY-MM-DD'),
+    };
     let id = '';
     if (userId) {
       id = userId;
@@ -183,20 +189,14 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
         type: 'users/fetchUpdate',
         payload: {
           id,
-          values: {
-            ...values,
-            status: values.status ? '1' : '0',
-          },
+          values,
         },
       });
     } else {
       dispatch({
         type: 'users/fetchAdd',
         payload: {
-          values: {
-            ...values,
-            status: values.status ? '1' : '0',
-          },
+          values,
         },
       });
     }
