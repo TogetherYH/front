@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react';
 import { Modal, Collapse, Skeleton, Descriptions, Table } from 'antd';
 const { Panel } = Collapse;
+import { Bullet, Line } from '@ant-design/plots';
 import { Dispatch, resultState, connect, Loading } from 'umi';
 
 interface ResultViewProps {
@@ -38,6 +39,9 @@ const ResultView: FC<ResultViewProps> = (props) => {
       }
     }
   }, [visible]);
+
+  // const config = result.charts;
+  // console.log('ccc', config);
 
   const onOk = () => {};
 
@@ -108,14 +112,23 @@ const ResultView: FC<ResultViewProps> = (props) => {
             </Skeleton>
           </Panel>
           <Panel header="测评结果" key="assessResult">
-            <Table
-              columns={result.columns}
-              dataSource={result?.scores}
-              // rowKey="id"
-              loading={loading}
-              pagination={false}
-              size="small"
-            />
+            <Skeleton loading={loading}>
+              <Table
+                columns={result.columns}
+                dataSource={result?.scores}
+                // rowKey="id"
+                loading={loading}
+                pagination={false}
+                size="small"
+              />
+              {result.chartsType == 'Bullet' ? (
+                <Bullet {...result?.charts} />
+              ) : result.chartsType == 'Line' ? (
+                <Line {...result?.charts} />
+              ) : (
+                ''
+              )}
+            </Skeleton>
           </Panel>
           <Panel header="分析建议" key="assessConclusion">
             <Skeleton loading={loading}>
