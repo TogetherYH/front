@@ -19,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import { ResultType } from './data';
 import { report } from './service';
+import ResultView from './components/ResultView';
 
 interface ResultProps {
   results: resultListState;
@@ -28,6 +29,8 @@ interface ResultProps {
 
 const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
   const [searchForm] = Form.useForm();
+  const [resultId, setResultId] = useState<string>();
+  const [viewModalVisible, setViewModalVisible] = useState(false);
 
   const columns = [
     {
@@ -71,13 +74,13 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       key: 'action',
       render: (text: string, record: ResultType) => (
         <Space size="middle">
-          {/* <a
+          <a
             onClick={() => {
-              // editHandler(record);
+              viewHandler(record);
             }}
           >
-            修改
-          </a> */}
+            查看
+          </a>
           <a
             onClick={() => {
               downloadHandler(record);
@@ -155,6 +158,17 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     });
   };
 
+  // 查看报告
+  const viewHandler = (record: ResultType) => {
+    setResultId(record.id);
+    setViewModalVisible(true);
+  };
+
+  // 关闭ViewModal
+  const closeHandler = () => {
+    setViewModalVisible(false);
+  };
+
   // 下载报告
   const downloadHandler = (record: ResultType) => {
     // dispatch({
@@ -208,6 +222,11 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
           />
         </Card>
       </Space>
+      <ResultView
+        visible={viewModalVisible}
+        resultId={resultId}
+        closeHandler={closeHandler}
+      ></ResultView>
     </div>
   );
 };
