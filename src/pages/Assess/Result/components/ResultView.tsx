@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { Modal, Collapse, Skeleton, Descriptions, Table } from 'antd';
 const { Panel } = Collapse;
-import { Bullet, Column } from '@ant-design/plots';
+import { Bullet, Column, Line } from '@ant-design/plots';
 import { Dispatch, resultState, connect, Loading } from 'umi';
 import './ResultView.css';
 
@@ -127,6 +127,8 @@ const ResultView: FC<ResultViewProps> = (props) => {
                 <Bullet {...result?.charts} />
               ) : result.chartsType == 'Column' ? (
                 <Column {...result?.charts} />
+              ) : result.chartsType == 'Line' ? (
+                <Line {...result?.charts} />
               ) : (
                 ''
               )}
