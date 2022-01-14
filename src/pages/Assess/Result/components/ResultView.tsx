@@ -1,8 +1,9 @@
 import { FC, useEffect } from 'react';
 import { Modal, Collapse, Skeleton, Descriptions, Table } from 'antd';
 const { Panel } = Collapse;
-import { Bullet, Line } from '@ant-design/plots';
+import { Bullet, Column } from '@ant-design/plots';
 import { Dispatch, resultState, connect, Loading } from 'umi';
+import './ResultView.css';
 
 interface ResultViewProps {
   visible: boolean;
@@ -40,9 +41,6 @@ const ResultView: FC<ResultViewProps> = (props) => {
     }
   }, [visible]);
 
-  // const config = result.charts;
-  // console.log('ccc', config);
-
   const onOk = () => {};
 
   return (
@@ -52,7 +50,7 @@ const ResultView: FC<ResultViewProps> = (props) => {
         maskClosable={false}
         centered
         forceRender
-        width={800}
+        width={1000}
         bodyStyle={{ height: 600, overflowY: 'auto' }}
         // style={{ overflowY: 'auto', height: 700 }}
         visible={visible}
@@ -70,7 +68,11 @@ const ResultView: FC<ResultViewProps> = (props) => {
             'assessConclusion',
           ]}
         >
-          <Panel header="量表信息" key="scaleInfo">
+          <Panel
+            header="量表信息"
+            key="scaleInfo"
+            className="site-collapse-custom-panel"
+          >
             <Skeleton loading={loading}>
               <Descriptions column={1}>
                 <Descriptions.Item label="量表名称">
@@ -123,8 +125,8 @@ const ResultView: FC<ResultViewProps> = (props) => {
               />
               {result.chartsType == 'Bullet' ? (
                 <Bullet {...result?.charts} />
-              ) : result.chartsType == 'Line' ? (
-                <Line {...result?.charts} />
+              ) : result.chartsType == 'Column' ? (
+                <Column {...result?.charts} />
               ) : (
                 ''
               )}

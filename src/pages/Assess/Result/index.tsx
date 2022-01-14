@@ -240,7 +240,7 @@ const mapStateToProps = ({
 }) => {
   return {
     results,
-    commonListLoading: loading.models.results,
+    resultListLoading: loading.models.results,
   };
 };
 
