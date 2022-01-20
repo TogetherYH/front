@@ -103,7 +103,7 @@ const Test: FC<TestProps> = (props) => {
 
   // qaValues更新后，跳转到下一题。如果是新打开modal则qaValues为空，不会跳转
   useEffect(() => {
-    console.log('qa', qaValues);
+    // console.log('qa', qaValues);
     if (qaValues.length !== 0) {
       if (current.fromRadio) {
         nextQ();
@@ -133,7 +133,7 @@ const Test: FC<TestProps> = (props) => {
 
   // 下一题
   const nextQ = () => {
-    console.log('ca', current.currentA);
+    // console.log('ca', current.currentA);
     if (current.currentA === '' || current.currentA === undefined) {
       notification.warn({
         message: `不允许跳题。`,
@@ -173,7 +173,7 @@ const Test: FC<TestProps> = (props) => {
 
   // 点击答案，更新currentA
   const clickAnswer = (e: RadioChangeEvent) => {
-    console.log(typeof e);
+    // console.log(typeof e);
     setCurrent({
       currentQ: current.currentQ,
       currentA: e.target.value,
@@ -182,6 +182,7 @@ const Test: FC<TestProps> = (props) => {
     });
   };
 
+  // 提交
   const handleSubmit = () => {
     dispatch({
       type: 'assessResult/fetchSubmit',
@@ -192,6 +193,9 @@ const Test: FC<TestProps> = (props) => {
         publishId,
         result: JSON.stringify(qaValues),
       },
+    }).then((result: any) => {
+      // console.log('Tags result', result);
+      handleOk();
     });
   };
 

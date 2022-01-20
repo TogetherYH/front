@@ -13,6 +13,7 @@ export default [
     icon: 'home',
     component: '@/pages/Home',
   },
+  // 系统管理
   {
     path: '/system',
     icon: 'table',
@@ -35,6 +36,7 @@ export default [
       },
     ],
   },
+  // 量表管理
   {
     path: '/base',
     icon: 'table',
@@ -57,6 +59,7 @@ export default [
       },
     ],
   },
+  // 发布管理
   {
     path: '/publish',
     icon: 'table',
@@ -67,6 +70,7 @@ export default [
       },
     ],
   },
+  // 测评结果
   {
     path: '/assess',
     icon: 'table',

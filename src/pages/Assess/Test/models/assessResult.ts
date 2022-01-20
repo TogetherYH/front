@@ -33,7 +33,7 @@ const AssessResultModel: AssessResultModelType = {
   },
   reducers: {
     getResultInfo(state, action) {
-      console.log('ppp', action.payload);
+      // console.log('ppp', action.payload);
       return {
         resultId: action.payload,
         userId: '',
