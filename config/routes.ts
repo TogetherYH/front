@@ -79,6 +79,16 @@ export default [
         path: '/assess/result',
         component: '@/pages/Assess/Result',
       },
+      {
+        path: '/assess/publish',
+        component: '@/pages/Assess/Publish',
+      },
     ],
+  },
+  // 数据可视化
+  {
+    path: '/dv',
+    component: '@/pages/DV',
+    layout: false,
   },
 ];
