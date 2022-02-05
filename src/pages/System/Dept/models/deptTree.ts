@@ -45,7 +45,10 @@ const DeptTreeModel: DeptModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (location.pathname === '/system/dept') {
+        if (
+          location.pathname === '/system/dept' ||
+          location.pathname === '/system/user'
+        ) {
           dispatch({
             type: 'fetchTree',
             payload: { pageNum: 1, pageSize: 20 },

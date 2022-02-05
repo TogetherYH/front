@@ -12,6 +12,7 @@ export interface userState {
   createTime?: string;
   status?: string;
   roleIds?: string[];
+  deptId: string;
 }
 
 export interface UserModelType {

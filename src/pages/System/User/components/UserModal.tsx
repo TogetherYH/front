@@ -1,6 +1,15 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Switch, Select } from 'antd';
-import { userState, Loading, Dispatch, connect } from 'umi';
+import {
+  Modal,
+  Form,
+  Input,
+  Radio,
+  DatePicker,
+  Switch,
+  Select,
+  TreeSelect,
+} from 'antd';
+import { userState, deptTreeState, Loading, Dispatch, connect } from 'umi';
 import moment from 'moment';
 import { UserType, FormValues } from '../data';
 
@@ -9,6 +18,7 @@ interface UserModalProps {
   userId?: string;
   user: userState;
   allRole: any;
+  deptTree: deptTreeState;
   closeHandler: () => void;
   onFinish: (values: FormValues) => void;
   confirmLoading: boolean;
@@ -21,6 +31,7 @@ const UserModal: FC<UserModalProps> = (props) => {
     userId,
     user,
     allRole,
+    deptTree,
     closeHandler,
     onFinish,
     confirmLoading,
@@ -108,6 +119,19 @@ const UserModal: FC<UserModalProps> = (props) => {
             rules={[{ required: true, message: '姓名不能为空' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="上级部门"
+            name="deptId"
+            rules={[{ required: true, message: '部门名称不能为空' }]}
+          >
+            <TreeSelect
+              treeData={deptTree?.tree}
+              treeDefaultExpandedKeys={[user?.deptId]}
+              fieldNames={{ label: 'name', value: 'id' }}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            />
           </Form.Item>
 
           <Form.Item label="角色" name="roleIds">

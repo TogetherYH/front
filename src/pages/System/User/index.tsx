@@ -11,7 +11,7 @@ import {
   Row,
   Col,
 } from 'antd';
-import { connect, Dispatch, Loading, userListState } from 'umi';
+import { connect, Dispatch, Loading, userListState, deptTreeState } from 'umi';
 import moment from 'moment';
 import UserModal from './components/UserModal';
 import { UserType, FormValues } from './data';
@@ -19,11 +19,17 @@ import { all } from '@/pages/System/Role/service';
 
 interface UserProps {
   users: userListState;
+  deptTree: deptTreeState;
   dispatch: Dispatch;
   userListLoading: boolean;
 }
 
-const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
+const User: FC<UserProps> = ({
+  users,
+  deptTree,
+  dispatch,
+  userListLoading,
+}) => {
   const [userModalVisible, setUserModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   // const [record, setRecord] = useState<UserType | undefined>(undefined);
@@ -280,6 +286,7 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
           // record={record}
           userId={userId}
           allRole={allRole}
+          deptTree={deptTree}
           confirmLoading={confirmLoading}
         />
       </Space>
@@ -289,13 +296,16 @@ const User: FC<UserProps> = ({ users, dispatch, userListLoading }) => {
 
 const mapStateToProps = ({
   users,
+  deptTree,
   loading,
 }: {
   users: userListState;
+  deptTree: deptTreeState;
   loading: Loading;
 }) => {
   return {
     users,
+    deptTree,
     userListLoading: loading.models.users,
   };
 };
