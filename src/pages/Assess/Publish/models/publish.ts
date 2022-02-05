@@ -9,6 +9,7 @@ export interface publishState {
   endDate?: string;
   createTime?: string;
   status?: string;
+  scales?: any[];
 }
 
 export interface PublishModelType {

@@ -30,7 +30,7 @@ const PublishModal: FC<PublishModalProps> = (props) => {
   const [form] = Form.useForm();
 
   const [scaleSelectVisible, setScaleSelectVisible] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>([]);
   const [selectedScaleNames, setSelectedScaleNames] = useState('');
   const scaleIdRef = useRef<any>(null);
 
@@ -56,11 +56,22 @@ const PublishModal: FC<PublishModalProps> = (props) => {
     }
 
     if (!visible) {
+      setSelectedScaleNames('');
+      setSelectedKeys([]);
       form.resetFields();
     }
   }, [visible]);
 
   useEffect(() => {
+    var checkedKeys = publish?.scales?.map((item) => {
+      return item.id;
+    });
+    setSelectedKeys(checkedKeys);
+    var checkedNames = publish?.scales?.map((item) => {
+      return item.name;
+    });
+    setSelectedScaleNames(checkedNames ? checkedNames.join('\n') : '');
+
     form.setFieldsValue({
       ...publish,
       startDate: [
@@ -68,11 +79,13 @@ const PublishModal: FC<PublishModalProps> = (props) => {
         publish.endDate ? moment(publish.endDate) : '',
       ],
       status: publish.status === '1' ? true : false,
+      scaleIds: checkedKeys,
     });
   }, [publish]);
 
   // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
+    console.log('ff', form.getFieldsValue());
     form.submit();
   };
 

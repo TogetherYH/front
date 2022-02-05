@@ -160,20 +160,14 @@ const Publish: FC<PublishProps> = ({
         type: 'publishs/fetchUpdate',
         payload: {
           id,
-          values: {
-            ...values,
-            status: values.status ? '1' : '0',
-          },
+          values,
         },
       });
     } else {
       dispatch({
         type: 'publishs/fetchAdd',
         payload: {
-          values: {
-            ...values,
-            status: values.status ? '1' : '0',
-          },
+          values,
         },
       });
     }
