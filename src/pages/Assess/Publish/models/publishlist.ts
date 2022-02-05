@@ -1,6 +1,6 @@
 // import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, update, add } from '../service';
+import { list, update, add, del } from '../service';
 import { PublishType } from '../data';
 
 export interface publishListState {
@@ -20,6 +20,7 @@ export interface PublishListModelType {
     fetchList: Effect;
     fetchUpdate: Effect;
     fetchAdd: Effect;
+    fetchDelete: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -68,6 +69,22 @@ const PublishListModel: PublishListModelType = {
       const data = yield call(add, { values });
       if (data) {
         // message.success('Add successfully');
+        const { pageNum, pageSize } = yield select((state: any) => {
+          return state.publishs;
+        });
+        yield put({
+          type: 'fetchList',
+          payload: {
+            pageNum,
+            pageSize,
+          },
+        });
+      }
+    },
+    *fetchDelete({ payload: { id } }, { put, call, select }) {
+      const data = yield call(del, { id });
+      if (data) {
+        // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.publishs;
         });

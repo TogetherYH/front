@@ -61,7 +61,19 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
   };
 
   // 保存常用量表
-  const saveCommons = (checkedKeys: string[]) => {
+  // const saveCommons = (checkedKeys: string[]) => {
+  //   dispatch({
+  //     type: 'commons/fetchSave',
+  //     payload: { scaleIds: checkedKeys },
+  //   });
+  //   setScaleSelectVisible(false);
+  // };
+
+  // 保存常用量表
+  const saveCommons = (checkedNodes: any[]) => {
+    var checkedKeys = checkedNodes.map((item) => {
+      return item.id;
+    });
     dispatch({
       type: 'commons/fetchSave',
       payload: { scaleIds: checkedKeys },
@@ -71,7 +83,6 @@ const Common: FC<CommonProps> = ({ commons, dispatch, commonListLoading }) => {
 
   // 选中用户
   const onSelectUser = (user: UserType) => {
-    // console.log('wwwwwwwwwwww', user);
     setUser(user);
     setUserSelectVisible(false);
   };

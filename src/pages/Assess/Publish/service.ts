@@ -40,7 +40,12 @@ export async function add({ values }: { values: FormValues }) {
   });
 }
 
-/** 获取单个答案信息 POST /assess/publish/ */
+/** 删除发布记录 POST /system/user/delete */
+export async function del({ id }: { id: string }) {
+  return request.del(`/api/assess/publish/delete/${id}`, {});
+}
+
+/** 获取单个发布记录 POST /assess/publish/ */
 export async function get({ publishId }: { publishId: string }) {
   return request.get(`/api/assess/publish/${publishId}`, {});
 }

@@ -1,13 +1,17 @@
 import { FC, useState, useEffect } from 'react';
 import { Modal, Tree } from 'antd';
 import { connect, Dispatch, scaleTreeState } from 'umi';
+import type { TreeProps, TreeNodeProps } from 'rc-tree';
+import { Key } from 'rc-tree/lib/interface';
+// import { BasicDataNode } from 'rc-tree-select/node_modules/rc-tree/lib/interface';
+// import BasicDataNode from 'antd';
 
 interface ScaleSelectProps {
   isModalVisible: boolean;
   defaultChecked: string[];
   scaleTree: scaleTreeState;
   dispatch: Dispatch;
-  handleOk: (checkedKeys: string[]) => void;
+  handleOk: (checkedNodes: any[]) => void;
   handleCancel: () => void;
 }
 
@@ -20,7 +24,8 @@ const ScaleSelect: FC<ScaleSelectProps> = (props) => {
     handleOk,
     handleCancel,
   } = props;
-  const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
+  const [checkedKeys, setCheckedKeys] = useState<Key[]>([]);
+  const [checkedNodes, setCheckedNodes] = useState<Key[]>([]);
 
   useEffect(() => {
     // 打开对话框
@@ -35,18 +40,21 @@ const ScaleSelect: FC<ScaleSelectProps> = (props) => {
     }
   }, [isModalVisible]);
 
-  const onCheck = ({ checked }: { checked: React.Key[] }) => {
-    setCheckedKeys(checked);
+  const onCheck = (checkedKeys: React.Key[], info: any) => {
+    setCheckedKeys(checkedKeys);
+    setCheckedNodes(info.checkedNodes);
+    // console.log('onCheck', checkedKeys, info);
   };
 
   const onOk = () => {
-    handleOk(checkedKeys);
+    handleOk(checkedNodes);
   };
 
   return (
     <div>
       <Modal
         title="选择量表"
+        centered
         visible={isModalVisible}
         onOk={onOk}
         onCancel={handleCancel}
