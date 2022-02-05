@@ -6,6 +6,7 @@ import { publishState, Loading, Dispatch, connect } from 'umi';
 import moment from 'moment';
 import { PublishType, FormValues } from '../data';
 import ScaleSelect from '@/components/System/ScaleSelect';
+import DeptSelect from '@/components/System/DeptSelect';
 
 interface PublishModalProps {
   visible: boolean;
@@ -30,16 +31,27 @@ const PublishModal: FC<PublishModalProps> = (props) => {
   const [form] = Form.useForm();
 
   const [scaleSelectVisible, setScaleSelectVisible] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>([]);
+  const [selectedScaleKeys, setSelectedScaleKeys] = useState<
+    string[] | undefined
+  >([]);
   const [selectedScaleNames, setSelectedScaleNames] = useState('');
   const scaleIdRef = useRef<any>(null);
+
+  const [deptSelectVisible, setDeptSelectVisible] = useState(false);
+  const [selectedDeptKeys, setSelectedDeptKeys] = useState<
+    string[] | undefined
+  >([]);
+  const [selectedDeptNames, setSelectedDeptNames] = useState('');
+  const deptIdRef = useRef<any>(null);
 
   // 第二个参数是触发条件
   useEffect(() => {
     // 打开新建对话框
     if (visible && publishId === undefined) {
       setSelectedScaleNames('');
-      setSelectedKeys([]);
+      setSelectedScaleKeys([]);
+      setSelectedDeptNames('');
+      setSelectedDeptKeys([]);
       form.resetFields();
     }
 
@@ -57,20 +69,33 @@ const PublishModal: FC<PublishModalProps> = (props) => {
 
     if (!visible) {
       setSelectedScaleNames('');
-      setSelectedKeys([]);
+      setSelectedScaleKeys([]);
+      setSelectedDeptNames('');
+      setSelectedDeptKeys([]);
       form.resetFields();
     }
   }, [visible]);
 
   useEffect(() => {
-    var checkedKeys = publish?.scales?.map((item) => {
+    var checkedScaleKeys = publish?.scales?.map((item) => {
       return item.id;
     });
-    setSelectedKeys(checkedKeys);
-    var checkedNames = publish?.scales?.map((item) => {
+    setSelectedScaleKeys(checkedScaleKeys);
+    var checkedScaleNames = publish?.scales?.map((item) => {
       return item.name;
     });
-    setSelectedScaleNames(checkedNames ? checkedNames.join('\n') : '');
+    setSelectedScaleNames(
+      checkedScaleNames ? checkedScaleNames.join('\n') : '',
+    );
+
+    var checkedDeptKeys = publish?.depts?.map((item) => {
+      return item.id;
+    });
+    setSelectedDeptKeys(checkedDeptKeys);
+    var checkedDeptNames = publish?.depts?.map((item) => {
+      return item.name;
+    });
+    setSelectedDeptNames(checkedDeptNames ? checkedDeptNames.join('\n') : '');
 
     form.setFieldsValue({
       ...publish,
@@ -79,7 +104,8 @@ const PublishModal: FC<PublishModalProps> = (props) => {
         publish.endDate ? moment(publish.endDate) : '',
       ],
       status: publish.status === '1' ? true : false,
-      scaleIds: checkedKeys,
+      scaleIds: checkedScaleKeys,
+      deptIds: checkedDeptKeys,
     });
   }, [publish]);
 
@@ -101,14 +127,14 @@ const PublishModal: FC<PublishModalProps> = (props) => {
   };
 
   // 选择量表
-  const saveCommons = (checkedNodes: any[]) => {
+  const selectedScales = (checkedNodes: any[]) => {
     var checkedKeys = checkedNodes.map((item) => {
       return item.id;
     });
     var checkedNames = checkedNodes.map((item) => {
       return item.name;
     });
-    setSelectedKeys(checkedKeys);
+    setSelectedScaleKeys(checkedKeys);
     setSelectedScaleNames(checkedNames.join('\n'));
     form.setFieldsValue({ scaleIds: checkedKeys });
     // console.log('ccc', checkedKeys);
@@ -117,14 +143,43 @@ const PublishModal: FC<PublishModalProps> = (props) => {
   };
 
   // 清空选择量表
-  const onChange = (e: any) => {
+  const onScaleClear = (e: any) => {
     setSelectedScaleNames('');
-    setSelectedKeys([]);
+    setSelectedScaleKeys([]);
   };
 
   // 关闭选择量表对话框
   const handleScaleModalCancel = () => {
     setScaleSelectVisible(false);
+  };
+
+  // 打开选择部门对话框
+  const openDeptSelect = () => {
+    deptIdRef.current.blur();
+    setDeptSelectVisible(true);
+  };
+
+  const selectedDepts = (checkedNodes: any[]) => {
+    var checkedDeptKeys = checkedNodes.map((item) => {
+      return item.id;
+    });
+    var checkedDeptNames = checkedNodes.map((item) => {
+      return item.name;
+    });
+    setSelectedDeptKeys(checkedDeptKeys);
+    setSelectedDeptNames(checkedDeptNames.join('\n'));
+    form.setFieldsValue({ deptIds: checkedDeptKeys });
+    setDeptSelectVisible(false);
+  };
+
+  // 清空选择部门
+  const onDeptClear = (e: any) => {
+    setSelectedDeptNames('');
+    setSelectedDeptKeys([]);
+  };
+
+  const handleDeptModalCancel = () => {
+    setDeptSelectVisible(false);
   };
 
   return (
@@ -171,20 +226,25 @@ const PublishModal: FC<PublishModalProps> = (props) => {
                 onFocus={openScaleSelect}
                 ref={scaleIdRef}
                 value={selectedScaleNames}
-                onChange={onChange}
+                onChange={onScaleClear}
               />
-              <Button onClick={openScaleSelect}>选择量表</Button>
+              {/* <Button onClick={openScaleSelect}>选择量表</Button> */}
             </Space>
           </Form.Item>
 
-          {/* <Form.Item label="测评部门" name="scaleIds">
-            <Space direction="vertical" style={{width: '100%'}}>
-              <TextArea rows={4}
+          <Form.Item label="测评部门" name="deptIds">
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <TextArea
+                rows={4}
                 allowClear
+                onFocus={openDeptSelect}
+                ref={deptIdRef}
+                value={selectedDeptNames}
+                onChange={onDeptClear}
               />
-              <Button>选择部门</Button>
+              {/* <Button>选择部门</Button> */}
             </Space>
-          </Form.Item> */}
+          </Form.Item>
 
           <Form.Item label="状态" name="status" valuePropName="checked">
             <Switch checkedChildren="启用" unCheckedChildren="禁用" />
@@ -192,9 +252,15 @@ const PublishModal: FC<PublishModalProps> = (props) => {
         </Form>
         <ScaleSelect
           isModalVisible={scaleSelectVisible}
-          defaultChecked={selectedKeys}
-          handleOk={saveCommons}
+          defaultChecked={selectedScaleKeys}
+          handleOk={selectedScales}
           handleCancel={handleScaleModalCancel}
+        />
+        <DeptSelect
+          isModalVisible={deptSelectVisible}
+          defaultChecked={selectedDeptKeys}
+          handleOk={selectedDepts}
+          handleCancel={handleDeptModalCancel}
         />
       </Modal>
     </div>

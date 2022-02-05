@@ -6,6 +6,7 @@ export interface PublishType {
   createTime: string;
   status: string;
   scales: any[];
+  depts: any[];
 }
 
 export interface FormValues {
