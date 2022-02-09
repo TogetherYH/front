@@ -45,7 +45,7 @@ export async function del({ id }: { id: string }) {
   return request.del(`/api/assess/publish/delete/${id}`, {});
 }
 
-/** 获取单个发布记录 POST /assess/publish/ */
+/** 获取单个发布记录 POST /assess/publish/get/ */
 export async function get({ publishId }: { publishId: string }) {
-  return request.get(`/api/assess/publish/${publishId}`, {});
+  return request.get(`/api/assess/publish/get/${publishId}`, {});
 }
