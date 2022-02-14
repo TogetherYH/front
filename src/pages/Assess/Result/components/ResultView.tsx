@@ -1,7 +1,8 @@
 import { FC, useEffect } from 'react';
 import { Modal, Collapse, Skeleton, Descriptions, Table } from 'antd';
 const { Panel } = Collapse;
-import { Bullet, Column, Line } from '@ant-design/plots';
+import { Bullet, Column, Line } from '@ant-design/plots/es';
+// import Line from '@ant-design/charts/es/plots/line';
 import { Dispatch, resultState, connect, Loading } from 'umi';
 import './ResultView.css';
 
