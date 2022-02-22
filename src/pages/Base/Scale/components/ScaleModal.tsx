@@ -119,6 +119,10 @@ const ScaleModal: FC<ScaleModalProps> = (props) => {
             <Input />
           </Form.Item>
 
+          <Form.Item label="别名" name="alias">
+            <Input />
+          </Form.Item>
+
           <Form.Item
             label="编码"
             name="code"

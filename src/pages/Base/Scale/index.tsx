@@ -49,6 +49,12 @@ const Scale: FC<ScaleProps> = ({
       width: 300,
     },
     {
+      title: '别名',
+      dataIndex: 'alias',
+      key: 'alias',
+      width: 300,
+    },
+    {
       title: '编码',
       dataIndex: 'code',
       key: 'code',
