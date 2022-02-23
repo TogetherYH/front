@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { Modal, Form, Input, Switch } from 'antd';
+import { Modal, Form, Input, Switch, Radio } from 'antd';
 import { RoleType, FormValues } from '../data';
 
 interface RoleModalProps {
@@ -71,6 +71,14 @@ const RoleModal: FC<RoleModalProps> = (props) => {
             rules={[{ required: true, message: '角色编码不能为空' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="数据权限" name="dataAuthority">
+            <Radio.Group>
+              <Radio value={'OWN'}>本人</Radio>
+              <Radio value={'DEPT'}>本部门</Radio>
+              <Radio value={'ALL'}>所有</Radio>
+            </Radio.Group>
           </Form.Item>
 
           <Form.Item label="状态" name="status" valuePropName="checked">
