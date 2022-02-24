@@ -12,13 +12,31 @@ export async function view({ resultId }: { resultId: string }) {
 export async function report({
   id,
   fileName,
+  callBack,
 }: {
   id: string;
   fileName: string;
+  callBack: (status: boolean) => void;
 }) {
-  return request.download(`/api/assess/result/report/${id}`, fileName, {});
+  return request.download(
+    `/api/assess/result/report/${id}`,
+    fileName,
+    {},
+    callBack,
+  );
 }
 
-export async function zip({ fileName }: { fileName: string }) {
-  return request.download(`/api/assess/result/zip`, fileName, {});
+export async function zip({
+  fileName,
+  callBack,
+}: {
+  fileName: string;
+  callBack: (status: boolean) => void;
+}) {
+  return request.download(
+    `/api/assess/result/zip?${Math.random()}`,
+    fileName,
+    {},
+    callBack,
+  );
 }

@@ -9,7 +9,7 @@ import {
   Col,
   Form,
   Pagination,
-  Dropdown,
+  Spin,
 } from 'antd';
 import { resultListState, Loading, connect, Dispatch } from 'umi';
 import { ResultType } from './data';
@@ -26,6 +26,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
   const [searchForm] = Form.useForm();
   const [resultId, setResultId] = useState<string>();
   const [viewModalVisible, setViewModalVisible] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const columns = [
     {
@@ -166,13 +167,17 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
 
   // 下载报告
   const downloadHandler = (record: ResultType) => {
-    // dispatch({
-    report({ id: record.id, fileName: `${record.id}.docx` });
-    // })
+    setDownloading(true);
+    report({
+      id: record.id,
+      fileName: `${record.id}.docx`,
+      callBack: setDownloading,
+    });
   };
 
   const zipHandler = () => {
-    zip({ fileName: '测评结果.zip' });
+    setDownloading(true);
+    zip({ fileName: '测评结果.zip', callBack: setDownloading });
   };
 
   return (
@@ -201,27 +206,29 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
           </Row>
         </Card>
         <Card>
-          <Table
-            columns={columns}
-            dataSource={results?.list}
-            rowKey="id"
-            loading={resultListLoading}
-            pagination={false}
-            size="middle"
-            // request={requestHandler}
-          />
-          <Pagination
-            style={{ marginTop: '10px', textAlign: 'right' }}
-            total={results?.total}
-            size="small"
-            onChange={paginationHandler}
-            current={results?.pageNum}
-            defaultPageSize={20}
-            pageSizeOptions={['10', '20', '50', '100']}
-            showSizeChanger
-            showQuickJumper
-            showTotal={(total) => `共 ${total} 条记录`}
-          />
+          <Spin spinning={downloading}>
+            <Table
+              columns={columns}
+              dataSource={results?.list}
+              rowKey="id"
+              loading={resultListLoading}
+              pagination={false}
+              size="middle"
+              // request={requestHandler}
+            />
+            <Pagination
+              style={{ marginTop: '10px', textAlign: 'right' }}
+              total={results?.total}
+              size="small"
+              onChange={paginationHandler}
+              current={results?.pageNum}
+              defaultPageSize={20}
+              pageSizeOptions={['10', '20', '50', '100']}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total) => `共 ${total} 条记录`}
+            />
+          </Spin>
         </Card>
       </Space>
       <ResultView

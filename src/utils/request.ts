@@ -141,7 +141,12 @@ const put = async (
   }
 };
 
-const download = (url: string, fileName: string, params: {}) => {
+const download = (
+  url: string,
+  fileName: string,
+  params: {},
+  callBack: (status: boolean) => void,
+) => {
   fetch(url, {
     method: 'GET',
     headers: new Headers({
@@ -150,7 +155,17 @@ const download = (url: string, fileName: string, params: {}) => {
     }),
   })
     .then((response) => {
+      console.log('rr', response);
+      if (response.status !== 200) {
+        notification.error({
+          description: `错误编码：${response.status}`,
+          message: codeMessage[response.status],
+        });
+        callBack(false);
+        return;
+      }
       response.blob().then((blob) => {
+        callBack(false);
         const aLink = document.createElement('a');
         // console.log(response);
         if (response && response.status === 500) {
