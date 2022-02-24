@@ -18,3 +18,7 @@ export async function report({
 }) {
   return request.download(`/api/assess/result/report/${id}`, fileName, {});
 }
+
+export async function zip({ fileName }: { fileName: string }) {
+  return request.download(`/api/assess/result/zip`, fileName, {});
+}

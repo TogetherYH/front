@@ -12,13 +12,8 @@ import {
   Dropdown,
 } from 'antd';
 import { resultListState, Loading, connect, Dispatch } from 'umi';
-import {
-  DownOutlined,
-  UserOutlined,
-  UnorderedListOutlined,
-} from '@ant-design/icons';
 import { ResultType } from './data';
-import { report } from './service';
+import { report, zip } from './service';
 import ResultView from './components/ResultView';
 
 interface ResultProps {
@@ -176,6 +171,10 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     // })
   };
 
+  const zipHandler = () => {
+    zip({ fileName: '测评结果.zip' });
+  };
+
   return (
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -192,6 +191,9 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
               <Space>
                 <Button type="primary" onClick={searchHandler}>
                   搜索
+                </Button>
+                <Button type="primary" onClick={zipHandler}>
+                  批量下载
                 </Button>
                 <Button onClick={refreshHandler}>刷新</Button>
               </Space>
