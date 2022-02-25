@@ -122,7 +122,7 @@ const UserModal: FC<UserModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item
-            label="上级部门"
+            label="所属部门"
             name="deptId"
             rules={[{ required: true, message: '部门名称不能为空' }]}
           >

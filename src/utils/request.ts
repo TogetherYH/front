@@ -77,10 +77,14 @@ request.interceptors.response.use(async (response) => {
   // message.error(codeMaps[response.data.code]);
   const data = await response.clone().json();
   // console.log('response', response);
-  if (codeMessage[data.code] && data.code !== 200) {
+  if (data.code !== 200) {
+    var msg = codeMessage[data.code];
+    if (!msg) {
+      msg = data.message;
+    }
     notification.error({
       description: `错误编码：${data.code}`,
-      message: codeMessage[data.code],
+      message: msg,
     });
     return Promise.resolve({ ...data, success: false });
   } else {
@@ -144,8 +148,8 @@ const put = async (
 const download = (
   url: string,
   fileName: string,
-  params: {},
-  callBack: (status: boolean) => void,
+  params?: {},
+  callBack?: (status: boolean) => void,
 ) => {
   fetch(url, {
     method: 'GET',
@@ -161,11 +165,15 @@ const download = (
           description: `错误编码：${response.status}`,
           message: codeMessage[response.status],
         });
-        callBack(false);
+        if (callBack) {
+          callBack(false);
+        }
         return;
       }
       response.blob().then((blob) => {
-        callBack(false);
+        if (callBack) {
+          callBack(false);
+        }
         const aLink = document.createElement('a');
         // console.log(response);
         if (response && response.status === 500) {

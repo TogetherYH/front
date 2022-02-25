@@ -16,6 +16,7 @@ import moment from 'moment';
 import UserModal from './components/UserModal';
 import { UserType, FormValues } from './data';
 import { all } from '@/pages/System/Role/service';
+import UserUploadModal from './components/UploadModal';
 
 interface UserProps {
   users: userListState;
@@ -31,6 +32,7 @@ const User: FC<UserProps> = ({
   userListLoading,
 }) => {
   const [userModalVisible, setUserModalVisible] = useState(false);
+  const [userUploadModalVisible, setUserUploadModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   // const [record, setRecord] = useState<UserType | undefined>(undefined);
   const [userId, setUserId] = useState<string | undefined>('');
@@ -166,15 +168,26 @@ const User: FC<UserProps> = ({
     setUserModalVisible(true);
   };
 
+  // 打开上传modal
+  const uploadHandler = () => {
+    setUserUploadModalVisible(true);
+  };
+
   // 打开编辑modal
   const editHandler = (record: UserType) => {
     setUserId(record.id);
     setUserModalVisible(true);
   };
 
-  // 关闭Modal
+  // 关闭添加Modal
   const closeHandler = () => {
     setUserModalVisible(false);
+  };
+
+  // 关闭导入Modal
+  const closeUploadModal = () => {
+    setUserUploadModalVisible(false);
+    refreshHandler();
   };
 
   // 添加、更新处理方法
@@ -251,6 +264,7 @@ const User: FC<UserProps> = ({
                   搜索
                 </Button>
                 <Button onClick={addHandler}>添加</Button>
+                <Button onClick={uploadHandler}>导入</Button>
                 <Button onClick={refreshHandler}>刷新</Button>
               </Space>
             </Col>
@@ -288,6 +302,11 @@ const User: FC<UserProps> = ({
           allRole={allRole}
           deptTree={deptTree}
           confirmLoading={confirmLoading}
+        />
+        <UserUploadModal
+          visible={userUploadModalVisible}
+          deptTree={deptTree}
+          closeUploadModal={closeUploadModal}
         />
       </Space>
     </div>

@@ -51,3 +51,7 @@ export async function del({ id }: { id: string }) {
 export async function get({ userId }: { userId: string }) {
   return request.get(`/api/system/user/${userId}`, {});
 }
+
+export async function template() {
+  return request.download(`/api/system/user/template`, `用户信息导入模板.xlsx`);
+}
