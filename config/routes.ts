@@ -34,6 +34,10 @@ export default [
         path: '/system/role',
         component: '@/pages/System/Role',
       },
+      {
+        path: '/system/dict',
+        component: '@/pages/System/Dict',
+      },
     ],
   },
   // 量表管理

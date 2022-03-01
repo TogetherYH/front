@@ -26,8 +26,17 @@ const MenuTreeModel: MenuModelType = {
   state: {},
   reducers: {
     getTree(state, action) {
+      const root: MenuTreeType[] = [
+        {
+          id: 'root',
+          name: '根菜单',
+          path: '',
+          parentId: '',
+          children: action.payload,
+        },
+      ];
       return {
-        tree: action.payload,
+        tree: root,
       };
     },
   },
