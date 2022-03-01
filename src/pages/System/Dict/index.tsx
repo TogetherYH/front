@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { dictListState, Loading, connect, Dispatch } from 'umi';
 import DictModal from './components/DictModal';
-import { FormValues } from './data';
+import { FormValues, DictType } from './data';
 
 interface DictProps {
   dicts: dictListState;
@@ -22,9 +22,10 @@ interface DictProps {
 
 const Dict: FC<DictProps> = (props) => {
   const { dicts, dispatch, dictListLoading } = props;
-  const [dictId, setDictId] = useState('');
+  const [record, setRecord] = useState<DictType | undefined>(undefined);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [dictModalVisible, setDictModalVisible] = useState(false);
+  const [searchForm] = Form.useForm();
 
   const columns = [
     {
@@ -51,35 +52,21 @@ const Dict: FC<DictProps> = (props) => {
       key: 'status',
       width: 100,
     },
-    // {
-    //   title: '操作',
-    //   key: 'action',
-    //   render: (text: string, record: any) => (
-    //     <Space size="middle">
-    //       <a
-    //         onClick={() => {
-    //           editHandler(record);
-    //         }}
-    //       >
-    //         修改
-    //       </a>
-    //       {record.username !== 'admin' ? (
-    //         <Popconfirm
-    //           title="Are you sure to delete this task?"
-    //           onConfirm={() => {
-    //             deleteHandler(record);
-    //           }}
-    //           okText="Yes"
-    //           cancelText="No"
-    //         >
-    //           <a style={{}}>删除</a>
-    //         </Popconfirm>
-    //       ) : (
-    //         ''
-    //       )}
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: '操作',
+      key: 'action',
+      render: (text: string, record: any) => (
+        <Space size="middle">
+          <a
+            onClick={() => {
+              editHandler(record);
+            }}
+          >
+            修改
+          </a>
+        </Space>
+      ),
+    },
   ];
 
   // 分页
@@ -87,14 +74,28 @@ const Dict: FC<DictProps> = (props) => {
     dispatch({
       type: 'users/fetchList',
       payload: {
-        // username: searchForm.getFieldValue('username'),
-        // realName: searchForm.getFieldValue('realName'),
+        name: searchForm.getFieldValue('name'),
+        code: searchForm.getFieldValue('code'),
         pageNum,
         pageSize,
       },
     });
   };
 
+  // 搜索
+  const searchHandler = () => {
+    dispatch({
+      type: 'dicts/fetchList',
+      payload: {
+        name: searchForm.getFieldValue('name'),
+        code: searchForm.getFieldValue('code'),
+        pageNum: 1,
+        pageSize: dicts?.pageSize,
+      },
+    });
+  };
+
+  // 打开添加Modal
   const addHandler = () => {
     setDictModalVisible(true);
   };
@@ -102,6 +103,12 @@ const Dict: FC<DictProps> = (props) => {
   // 关闭添加Modal
   const closeHandler = () => {
     setDictModalVisible(false);
+  };
+
+  // 打开编辑modal
+  const editHandler = (record: DictType) => {
+    setRecord(record);
+    setDictModalVisible(true);
   };
 
   // 添加、更新处理方法
@@ -114,8 +121,8 @@ const Dict: FC<DictProps> = (props) => {
       status: values.status ? '1' : '0',
     };
     let id = '';
-    if (dictId) {
-      id = dictId;
+    if (record) {
+      id = record.id;
     }
     if (id) {
       dispatch({
@@ -140,69 +147,69 @@ const Dict: FC<DictProps> = (props) => {
 
   return (
     <div>
-      {/* <Space direction="vertical" style={{ width: '100%' }}> */}
-      <Card>
-        <Row gutter={24}>
-          <Col span={18}>
-            {/* <Form form={searchForm} layout="inline">
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Card>
+          <Row gutter={24}>
+            <Col span={18}>
+              <Form form={searchForm} layout="inline">
                 <Form.Item
-                  label="账号"
-                  name="username"
+                  label="字典名称"
+                  name="name"
                   style={{ marginBottom: '0' }}
                 >
                   <Input allowClear />
                 </Form.Item>
                 <Form.Item
-                  label="姓名"
-                  name="realName"
+                  label="字典编码"
+                  name="code"
                   style={{ marginBottom: '0' }}
                 >
                   <Input allowClear />
                 </Form.Item>
-              </Form> */}
-          </Col>
-          <Col span={6}>
-            <Space>
-              {/* <Button type="primary" onClick={searchHandler}>
+              </Form>
+            </Col>
+            <Col span={6}>
+              <Space>
+                <Button type="primary" onClick={searchHandler}>
                   搜索
-                </Button> */}
-              <Button onClick={addHandler}>添加</Button>
-              {/* <Button onClick={uploadHandler}>导入</Button>
+                </Button>
+                <Button onClick={addHandler}>添加</Button>
+                {/* <Button onClick={uploadHandler}>导入</Button>
                 <Button onClick={refreshHandler}>刷新</Button> */}
-            </Space>
-          </Col>
-        </Row>
-      </Card>
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={dicts?.list}
-          rowKey="id"
-          loading={dictListLoading}
-          pagination={false}
-          size="middle"
-          scroll={{ y: 600 }}
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+        <Card>
+          <Table
+            columns={columns}
+            dataSource={dicts?.list}
+            rowKey="id"
+            loading={dictListLoading}
+            pagination={false}
+            size="middle"
+            scroll={{ y: 600 }}
+          />
+          <Pagination
+            style={{ marginTop: '10px', textAlign: 'right' }}
+            total={dicts?.total}
+            size="small"
+            onChange={paginationHandler}
+            current={dicts?.pageNum}
+            defaultPageSize={20}
+            pageSizeOptions={['10', '20', '50', '100']}
+            showSizeChanger
+            showQuickJumper
+            showTotal={(total) => `共 ${total} 条记录`}
+          />
+        </Card>
+        <DictModal
+          visible={dictModalVisible}
+          record={record}
+          closeHandler={closeHandler}
+          onFinish={onFinish}
         />
-        <Pagination
-          style={{ marginTop: '10px', textAlign: 'right' }}
-          total={dicts?.total}
-          size="small"
-          onChange={paginationHandler}
-          current={dicts?.pageNum}
-          defaultPageSize={20}
-          pageSizeOptions={['10', '20', '50', '100']}
-          showSizeChanger
-          showQuickJumper
-          showTotal={(total) => `共 ${total} 条记录`}
-        />
-      </Card>
-      <DictModal
-        visible={dictModalVisible}
-        dictId={''}
-        closeHandler={closeHandler}
-        onFinish={onFinish}
-      />
-      {/* </Space> */}
+      </Space>
     </div>
   );
 };

@@ -1,18 +1,28 @@
-import { FC } from 'react';
-import { Modal, Form, Input } from 'antd';
-import { FormValues } from '../data';
+import { FC, useEffect } from 'react';
+import { Modal, Form, Input, Switch } from 'antd';
+import { FormValues, DictType } from '../data';
 
 interface DictModalProps {
   visible: boolean;
-  dictId: string;
+  record?: DictType;
   onFinish: (values: FormValues) => void;
   closeHandler: () => void;
 }
 
 const DictModal: FC<DictModalProps> = (props) => {
-  const { visible, dictId, onFinish, closeHandler } = props;
-
+  const { visible, record, onFinish, closeHandler } = props;
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (record === undefined) {
+      form.resetFields();
+    } else {
+      form.setFieldsValue({
+        ...record,
+        status: record.status === '1' ? true : false,
+      });
+    }
+  }, [visible]);
 
   // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
@@ -23,7 +33,7 @@ const DictModal: FC<DictModalProps> = (props) => {
   return (
     <div>
       <Modal
-        title={dictId === undefined ? '添加字典信息' : '修改字典信息'}
+        title={record === undefined ? '添加字典信息' : '修改字典信息'}
         // maskClosable={false}
         centered
         forceRender
@@ -52,6 +62,10 @@ const DictModal: FC<DictModalProps> = (props) => {
             rules={[{ required: true, message: '编码不能为空' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="状态" name="status" valuePropName="checked">
+            <Switch checkedChildren="启用" unCheckedChildren="禁用" />
           </Form.Item>
         </Form>
       </Modal>

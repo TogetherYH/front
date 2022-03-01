@@ -1,13 +1,6 @@
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, add } from '../service';
-
-interface DictType {
-  id: string;
-  name: string;
-  code: string;
-  createTime: string;
-  status: string;
-}
+import { list, add, update } from '../service';
+import { DictType } from '../data';
 
 export interface dictListState {
   pageNum?: number;
@@ -25,7 +18,6 @@ export interface DictListModelType {
   effects: {
     fetchList: Effect;
     fetchUpdate: Effect;
-    fetchDelete: Effect;
     fetchAdd: Effect;
   };
   subscriptions: {
@@ -58,11 +50,12 @@ const DictListModel: DictListModelType = {
         });
       }
     },
-    *fetchDelete() {},
-    *fetchList({ payload: { pageNum, pageSize } }, { put, call }) {
+    *fetchList({ payload: { pageNum, pageSize, name, code } }, { put, call }) {
       const data = yield call(list, {
         pageNum,
         pageSize,
+        name,
+        code,
       });
       if (data) {
         yield put({
@@ -71,7 +64,22 @@ const DictListModel: DictListModelType = {
         });
       }
     },
-    *fetchUpdate() {},
+    *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
+      const data = yield call(update, { id, values });
+      if (data) {
+        // message.success('Edit successfully');
+        const { pageNum, pageSize } = yield select((state: any) => {
+          return state.dicts;
+        });
+        yield put({
+          type: 'fetchList',
+          payload: {
+            pageNum,
+            pageSize,
+          },
+        });
+      }
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
