@@ -55,7 +55,7 @@ const CommonListModel: CommonListModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (location.pathname === '/publish/common') {
+        if (location.pathname === '/assess/common') {
           dispatch({
             type: 'fetchList',
             payload: {},

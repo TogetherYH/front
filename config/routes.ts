@@ -59,22 +59,15 @@ export default [
       },
     ],
   },
-  // 发布管理
-  {
-    path: '/publish',
-    icon: 'table',
-    routes: [
-      {
-        path: '/publish/common',
-        component: '@/pages/Publish/Common',
-      },
-    ],
-  },
   // 测评结果
   {
     path: '/assess',
     icon: 'table',
     routes: [
+      {
+        path: '/assess/common',
+        component: '@/pages/Assess/Common',
+      },
       {
         path: '/assess/result',
         component: '@/pages/Assess/Result',
