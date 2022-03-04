@@ -12,6 +12,7 @@ export interface DictItemListModelType {
   reducers: {
     getList: Reducer<dictItemListState>;
     addBlank: Reducer<dictItemListState>;
+    removeBlank: Reducer<dictItemListState>;
   };
   effects: {
     fetchList: Effect;
@@ -39,6 +40,16 @@ const DictItemListModel: DictItemListModelType = {
         return { list: [...state.list, n] };
       } else {
         return { list: [n] };
+      }
+    },
+    removeBlank(state, action) {
+      console.log('b', state);
+      if (state?.list?.length && state?.list?.length > 1) {
+        const a = state?.list?.slice(0, state?.list?.length - 1);
+        console.log('a', a);
+        return { list: a };
+      } else {
+        return { list: [] };
       }
     },
   },

@@ -123,7 +123,7 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
             >
               保存
             </Typography.Link>
-            <a onClick={cancel}>取消</a>
+            <a onClick={() => cancel(record)}>取消</a>
           </span>
         ) : (
           <Typography.Link
@@ -187,7 +187,13 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
     }
   };
 
-  const cancel = () => {
+  const cancel = async (record: DictItemType) => {
+    if (editingKey === 'new') {
+      dispatch({
+        type: 'dictitems/removeBlank',
+        payload: {},
+      });
+    }
     setEditingKey('');
   };
 
@@ -217,7 +223,12 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
         onOk={closeHandler}
         onCancel={closeHandler}
       >
-        <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
+        <Button
+          disabled={editingKey !== ''}
+          onClick={handleAdd}
+          type="primary"
+          style={{ marginBottom: 16 }}
+        >
           添加
         </Button>
         <Form form={form} component={false}>
