@@ -4,10 +4,20 @@ import { view } from '../service';
 export interface resultState {
   id?: string;
   scaleName?: string;
+  scaleCode?: string;
+  username?: string;
+  realName?: string;
+  sex?: string;
+  age?: string;
+  startTime: string;
+  endTime: string;
+  usedTime: string;
   userInfo?: {};
   columns?: [];
-  socres?: [];
+  scores?: [];
   charts?: {};
+  adviseList?: any[];
+  appendixList?: any[];
   chartsType?: string;
 }
 

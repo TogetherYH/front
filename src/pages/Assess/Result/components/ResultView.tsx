@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { Modal, Collapse, Skeleton, Descriptions, Table } from 'antd';
+import { Modal, Collapse, Skeleton, Descriptions, Table, Space } from 'antd';
 const { Panel } = Collapse;
 import { Bullet, Column, Line } from '@ant-design/plots/es';
 // import Line from '@ant-design/charts/es/plots/line';
@@ -116,23 +116,29 @@ const ResultView: FC<ResultViewProps> = (props) => {
           </Panel>
           <Panel header="测评结果" key="assessResult">
             <Skeleton loading={loading}>
-              <Table
-                columns={result.columns}
-                dataSource={result?.scores}
-                // rowKey="id"
-                loading={loading}
-                pagination={false}
-                size="small"
-              />
-              {result.chartsType == 'Bullet' ? (
-                <Bullet {...result?.charts} />
-              ) : result.chartsType == 'Column' ? (
-                <Column {...result?.charts} />
-              ) : result.chartsType == 'Line' ? (
-                <Line {...result?.charts} />
-              ) : (
-                ''
-              )}
+              <Space
+                size="large"
+                direction="vertical"
+                style={{ width: '100%' }}
+              >
+                <Table
+                  columns={result.columns}
+                  dataSource={result?.scores}
+                  // rowKey="id"
+                  loading={loading}
+                  pagination={false}
+                  size="small"
+                />
+                {result.chartsType == 'Bullet' ? (
+                  <Bullet {...result?.charts} />
+                ) : result.chartsType == 'Column' ? (
+                  <Column {...result?.charts} />
+                ) : result.chartsType == 'Line' ? (
+                  <Line {...result?.charts} />
+                ) : (
+                  ''
+                )}
+              </Space>
             </Skeleton>
           </Panel>
           <Panel header="分析建议" key="assessConclusion">
