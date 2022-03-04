@@ -6,6 +6,14 @@ export interface DictType {
   status: string;
 }
 
+export interface DictItemType {
+  id: string;
+  code: string;
+  label: string;
+  value: string;
+  order: number;
+}
+
 export interface FormValues {
   [name: string]: any;
 }

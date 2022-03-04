@@ -56,9 +56,9 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       } else {
-        notification.error({
-          message: '登录失败',
-        });
+        // notification.error({
+        //   message: '登录失败',
+        // });
       }
       console.log(msg);
       // 如果失败去设置用户错误信息

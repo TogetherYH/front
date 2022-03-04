@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { dictListState, Loading, connect, Dispatch } from 'umi';
 import DictModal from './components/DictModal';
+import DictItemModal from './components/DictItemModal';
 import { FormValues, DictType } from './data';
 
 interface DictProps {
@@ -22,10 +23,12 @@ interface DictProps {
 
 const Dict: FC<DictProps> = (props) => {
   const { dicts, dispatch, dictListLoading } = props;
-  const [record, setRecord] = useState<DictType | undefined>(undefined);
+  const [record, setRecord] = useState<DictType>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [dictModalVisible, setDictModalVisible] = useState(false);
   const [searchForm] = Form.useForm();
+
+  const [dictItemModalVisible, setDictItemModalVisible] = useState(false);
 
   const columns = [
     {
@@ -64,6 +67,13 @@ const Dict: FC<DictProps> = (props) => {
           >
             修改
           </a>
+          <a
+            onClick={() => {
+              itemHandler(record);
+            }}
+          >
+            字典项
+          </a>
         </Space>
       ),
     },
@@ -97,11 +107,12 @@ const Dict: FC<DictProps> = (props) => {
 
   // 打开添加Modal
   const addHandler = () => {
+    setRecord(undefined);
     setDictModalVisible(true);
   };
 
   // 关闭添加Modal
-  const closeHandler = () => {
+  const closeDictModalHandler = () => {
     setDictModalVisible(false);
   };
 
@@ -109,6 +120,16 @@ const Dict: FC<DictProps> = (props) => {
   const editHandler = (record: DictType) => {
     setRecord(record);
     setDictModalVisible(true);
+  };
+
+  // 打开字典项编辑Modal
+  const itemHandler = (record: DictType) => {
+    setRecord(record);
+    setDictItemModalVisible(true);
+  };
+
+  const closeDictItemModalHandler = () => {
+    setDictItemModalVisible(false);
   };
 
   // 添加、更新处理方法
@@ -206,8 +227,13 @@ const Dict: FC<DictProps> = (props) => {
         <DictModal
           visible={dictModalVisible}
           record={record}
-          closeHandler={closeHandler}
+          closeHandler={closeDictModalHandler}
           onFinish={onFinish}
+        />
+        <DictItemModal
+          visible={dictItemModalVisible}
+          dict={record}
+          closeHandler={closeDictItemModalHandler}
         />
       </Space>
     </div>

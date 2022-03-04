@@ -34,7 +34,7 @@ const DictModal: FC<DictModalProps> = (props) => {
     <div>
       <Modal
         title={record === undefined ? '添加字典信息' : '修改字典信息'}
-        // maskClosable={false}
+        maskClosable={false}
         centered
         forceRender
         visible={visible}
@@ -66,6 +66,10 @@ const DictModal: FC<DictModalProps> = (props) => {
 
           <Form.Item label="状态" name="status" valuePropName="checked">
             <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+          </Form.Item>
+
+          <Form.Item label="备注" name="remark">
+            <Input.TextArea />
           </Form.Item>
         </Form>
       </Modal>
