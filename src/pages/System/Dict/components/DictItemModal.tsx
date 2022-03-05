@@ -225,6 +225,7 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
         onCancel={closeHandler}
         bodyStyle={{
           height: 400,
+          overflow: 'auto',
         }}
       >
         <Button
