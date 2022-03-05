@@ -149,19 +149,6 @@ const User: FC<UserProps> = ({
     });
   };
 
-  // 刷新
-  const refreshHandler = () => {
-    dispatch({
-      type: 'users/fetchList',
-      payload: {
-        username: searchForm.getFieldValue('username'),
-        realName: searchForm.getFieldValue('realName'),
-        pageNum: users?.pageNum,
-        pageSize: users?.pageSize,
-      },
-    });
-  };
-
   // 打开添加modal
   const addHandler = () => {
     setUserId(undefined);
@@ -265,7 +252,6 @@ const User: FC<UserProps> = ({
                 </Button>
                 <Button onClick={addHandler}>添加</Button>
                 <Button onClick={uploadHandler}>导入</Button>
-                <Button onClick={refreshHandler}>刷新</Button>
               </Space>
             </Col>
           </Row>

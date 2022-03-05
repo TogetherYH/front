@@ -41,7 +41,7 @@ const Dict: FC<DictProps> = (props) => {
       title: '字典编码',
       dataIndex: 'code',
       key: 'code',
-      width: 100,
+      width: 200,
     },
     {
       title: '创建时间',

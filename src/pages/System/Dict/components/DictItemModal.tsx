@@ -41,6 +41,7 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
           dictCode: dict?.code,
         },
       });
+      setEditingKey('');
     }
   }, [visible]);
 
@@ -222,6 +223,9 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
         visible={visible}
         onOk={closeHandler}
         onCancel={closeHandler}
+        bodyStyle={{
+          height: 400,
+        }}
       >
         <Button
           disabled={editingKey !== ''}

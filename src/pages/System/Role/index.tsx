@@ -149,18 +149,6 @@ const Role: FC<RoleProps> = ({
     });
   };
 
-  // 刷新
-  const refreshHandler = () => {
-    dispatch({
-      type: 'roles/fetchList',
-      payload: {
-        name: searchForm.getFieldValue('name'),
-        pageNum: roles?.pageNum,
-        pageSize: roles?.pageSize,
-      },
-    });
-  };
-
   // 打开添加modal
   const addHandler = () => {
     setRecord(undefined);
@@ -258,7 +246,6 @@ const Role: FC<RoleProps> = ({
                   搜索
                 </Button>
                 <Button onClick={addHandler}>添加</Button>
-                <Button onClick={refreshHandler}>刷新</Button>
               </Space>
             </Col>
           </Row>
