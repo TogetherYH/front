@@ -26,7 +26,7 @@ const DictModal: FC<DictModalProps> = (props) => {
 
   // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
-    console.log('ok');
+    // console.log('ok');
     form.submit();
   };
 

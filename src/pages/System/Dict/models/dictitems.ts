@@ -43,10 +43,8 @@ const DictItemListModel: DictItemListModelType = {
       }
     },
     removeBlank(state, action) {
-      console.log('b', state);
       if (state?.list?.length && state?.list?.length > 1) {
         const a = state?.list?.slice(0, state?.list?.length - 1);
-        console.log('a', a);
         return { list: a };
       } else {
         return { list: [] };
@@ -55,7 +53,6 @@ const DictItemListModel: DictItemListModelType = {
   },
   effects: {
     *fetchAdd({ payload: { values } }, { put, call, select }) {
-      console.log('............', values);
       const data = yield call(addItem, { values });
       if (data) {
         // message.success('Add successfully');

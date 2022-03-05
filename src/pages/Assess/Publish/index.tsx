@@ -144,7 +144,6 @@ const Publish: FC<PublishProps> = ({
   const onFinish = (values: FormValues) => {
     // console.log('form on finish');
     setConfirmLoading(true);
-    console.log('ppppp', values.startDate);
     values = {
       ...values,
       status: values.status ? '1' : '0',

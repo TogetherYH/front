@@ -111,7 +111,7 @@ const PublishModal: FC<PublishModalProps> = (props) => {
 
   // 点击确定按钮，提交form表单，自动调用onFinish
   const onOk = () => {
-    console.log('ff', form.getFieldsValue());
+    // console.log('ff', form.getFieldsValue());
     form.submit();
   };
 

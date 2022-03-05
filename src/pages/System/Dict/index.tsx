@@ -134,7 +134,7 @@ const Dict: FC<DictProps> = (props) => {
 
   // 添加、更新处理方法
   const onFinish = (values: FormValues) => {
-    console.log('finish');
+    // console.log('finish');
     // console.log('form on finish');
     setConfirmLoading(true);
     values = {
