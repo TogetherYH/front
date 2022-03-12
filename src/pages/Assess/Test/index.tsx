@@ -54,12 +54,14 @@ const Test: FC<TestProps> = (props) => {
    */
   const [current, setCurrent] = useState<{
     currentQ: number;
-    currentA: '';
+    currentA: string;
+    currentO: string;
     fromRadio: boolean;
     disabled: boolean;
   }>({
     currentQ: 1,
     currentA: '',
+    currentO: '',
     fromRadio: true,
     disabled: false,
   });
@@ -71,6 +73,7 @@ const Test: FC<TestProps> = (props) => {
     setCurrent({
       currentQ: 1,
       currentA: '',
+      currentO: '',
       fromRadio: true,
       disabled: false,
     });
@@ -93,7 +96,11 @@ const Test: FC<TestProps> = (props) => {
           const questionId = assessScale.question?.at(current.currentQ - 1)?.id;
           setQaValues([
             ...qaValues.slice(0, current.currentQ - 1),
-            { questionId: questionId, answerId: current.currentA },
+            {
+              questionId: questionId,
+              answerId: current.currentA,
+              answerOption: current.currentO,
+            },
             ...qaValues.slice(current.currentQ, qaValues.length),
           ]);
         }
@@ -117,6 +124,7 @@ const Test: FC<TestProps> = (props) => {
     setCurrent({
       currentA: '',
       currentQ: 1,
+      currentO: '',
       fromRadio: true,
       disabled: false,
     });
@@ -144,6 +152,7 @@ const Test: FC<TestProps> = (props) => {
       setCurrent({
         currentQ: current.currentQ + 1,
         currentA: qaValues.at(current.currentQ)?.answerId,
+        currentO: qaValues.at(current.currentQ)?.option,
         fromRadio: false,
         disabled: false,
       });
@@ -165,6 +174,10 @@ const Test: FC<TestProps> = (props) => {
           qaValues.at(current.currentQ - 2) !== undefined
             ? qaValues.at(current.currentQ - 2).answerId
             : '',
+        currentO:
+          qaValues.at(current.currentQ - 2) !== undefined
+            ? qaValues.at(current.currentQ - 2).option
+            : '',
         fromRadio: false,
         disabled: false,
       });
@@ -174,12 +187,28 @@ const Test: FC<TestProps> = (props) => {
   // 点击答案，更新currentA
   const clickAnswer = (e: RadioChangeEvent) => {
     // console.log(typeof e);
+
+    const a: any = findAnswerObject(e.target.value);
+    // console.log('e', e.target.value);
+    // console.log('a', a);
     setCurrent({
       currentQ: current.currentQ,
-      currentA: e.target.value,
+      currentA: a.id,
+      currentO: a.option,
       fromRadio: true,
       disabled: true,
     });
+    // console.log('cc', assessScale);
+  };
+
+  const findAnswerObject = (id: string) => {
+    var o: any = {};
+    assessScale.answer?.map((a) => {
+      if (a.id === id) {
+        o = { ...a };
+      }
+    });
+    return o;
   };
 
   // 提交
@@ -197,6 +226,7 @@ const Test: FC<TestProps> = (props) => {
       // console.log('Tags result', result);
       handleOk();
     });
+    console.log('qaValues', qaValues);
   };
 
   // 渲染答案选项
