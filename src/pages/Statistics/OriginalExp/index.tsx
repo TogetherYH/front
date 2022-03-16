@@ -25,6 +25,7 @@ import {
   originalState,
 } from 'umi';
 import moment from 'moment';
+import { exp } from './service';
 
 interface OriginalExpProps {
   scaleTree: scaleTreeState;
@@ -49,51 +50,13 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
 
   const [searchForm] = Form.useForm();
 
-  // const columns = [
-  //   {
-  //     title: '量表名称',
-  //     dataIndex: 'scaleName',
-  //     key: 'scaleName',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '账号',
-  //     dataIndex: 'username',
-  //     key: 'username',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '姓名',
-  //     dataIndex: 'realName',
-  //     key: 'realName',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '性别',
-  //     dataIndex: 'sex',
-  //     key: 'sex',
-  //     width: 100,
-  //   },
-  //   {
-  //     title: '出生日期',
-  //     dataIndex: 'birthday',
-  //     key: 'birthday',
-  //     width: 100,
-  //   },
-  // ];
-
   const searchHandler = () => {
     searchForm.submit();
-    // console.log('aa', searchForm.getFieldsValue());
-
-    // // startDate: moment(startDate[0]).utcOffset(8).format('YYYY-MM-DD'),
-    // // endDate: moment(values.startDate[1]).utcOffset(8).format('YYYY-MM-DD'),
-    // console.log('bb', searchForm.getFieldValue('startDate'));
   };
 
   const onFinish = (values: any) => {
-    console.log('form on finish');
-    console.log(values);
+    // console.log('form on finish');
+    // console.log(values);
 
     dispatch({
       type: 'original/fetchSearch',
@@ -109,7 +72,25 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
     });
   };
 
-  const expHandler = () => {};
+  const setDownloading = () => {};
+
+  const expHandler = () => {
+    const formValues = searchForm.getFieldsValue();
+    // console.log('a', a);
+    exp({
+      param: {
+        ...formValues,
+        startDate: formValues.startDate
+          ? moment(formValues.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
+        endDate: formValues.startDate
+          ? moment(formValues.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
+      },
+      fileName: `原始数据导出.xlsx`,
+      callBack: setDownloading,
+    });
+  };
 
   return (
     <div>

@@ -159,7 +159,7 @@ const download = (
     }),
   })
     .then((response) => {
-      console.log('rr', response);
+      // console.log('rr', response);
       if (response.status !== 200) {
         notification.error({
           description: `错误编码：${response.status}`,

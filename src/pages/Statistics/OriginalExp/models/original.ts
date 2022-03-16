@@ -34,7 +34,7 @@ const OriginalModel: OriginalModelType = {
   },
   effects: {
     *fetchSearch({ payload }, { put, call, select }) {
-      console.log('dd', payload);
+      // console.log('dd', payload);
       const data = yield call(search, payload);
       if (data) {
         var { columns, list } = data.data;
