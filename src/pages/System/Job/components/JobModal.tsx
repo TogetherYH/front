@@ -1,16 +1,16 @@
 import { FC, useEffect } from 'react';
 import { Modal, Form, Input, Switch, Radio } from 'antd';
-import { RoleType, FormValues } from '../data';
+import { JobType } from '../data';
 
-interface RoleModalProps {
+interface JobModalProps {
   visible: boolean;
-  record: RoleType | undefined;
+  record: JobType | undefined;
   closeHandler: () => void;
-  onFinish: (values: FormValues) => void;
+  onFinish: (values: any) => void;
   confirmLoading: boolean;
 }
 
-const RoleModal: FC<RoleModalProps> = (props) => {
+const JobModal: FC<JobModalProps> = (props) => {
   const { visible, record, closeHandler, onFinish, confirmLoading } = props;
   const [form] = Form.useForm();
 
@@ -36,7 +36,7 @@ const RoleModal: FC<RoleModalProps> = (props) => {
   return (
     <div>
       <Modal
-        title={record ? '修改角色信息' : '添加角色信息'}
+        title={record ? '修改任务信息' : '添加任务信息'}
         maskClosable={false}
         centered
         forceRender
@@ -58,27 +58,35 @@ const RoleModal: FC<RoleModalProps> = (props) => {
           }}
         >
           <Form.Item
-            label="角色名称"
+            label="任务名称"
             name="name"
-            rules={[{ required: true, message: '角色名称不能为空' }]}
+            rules={[{ required: true, message: '任务名称不能为空' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="角色编码"
-            name="code"
-            rules={[{ required: true, message: '角色编码不能为空' }]}
+            label="任务分组"
+            name="group"
+            rules={[{ required: true, message: '任务分组不能为空' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="数据权限" name="dataAuthority">
-            <Radio.Group>
-              <Radio value={'OWN'}>本人</Radio>
-              <Radio value={'DEPT'}>本部门</Radio>
-              <Radio value={'ALL'}>所有</Radio>
-            </Radio.Group>
+          <Form.Item
+            label="任务调度字符串"
+            name="taskStr"
+            rules={[{ required: true, message: '任务调度字符串不能为空' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="cron表达式"
+            name="cronExpression"
+            rules={[{ required: true, message: 'cron表达式不能为空' }]}
+          >
+            <Input />
           </Form.Item>
 
           <Form.Item label="状态" name="status" valuePropName="checked">
@@ -90,4 +98,4 @@ const RoleModal: FC<RoleModalProps> = (props) => {
   );
 };
 
-export default RoleModal;
+export default JobModal;

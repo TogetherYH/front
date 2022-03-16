@@ -42,6 +42,10 @@ export default [
         path: '/system/ds',
         component: '@/pages/System/DataSource',
       },
+      {
+        path: '/system/job',
+        component: '@/pages/System/Job',
+      },
     ],
   },
   // 量表管理
