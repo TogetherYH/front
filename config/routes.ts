@@ -38,6 +38,10 @@ export default [
         path: '/system/dict',
         component: '@/pages/System/Dict',
       },
+      {
+        path: '/system/ds',
+        component: '@/pages/System/DataSource',
+      },
     ],
   },
   // 量表管理
@@ -63,22 +67,37 @@ export default [
       },
     ],
   },
-  // 测评结果
+  // 测评
   {
     path: '/assess',
     icon: 'table',
     routes: [
+      // 常用量表测评
       {
         path: '/assess/common',
         component: '@/pages/Assess/Common',
       },
+      // 测评结果查询
       {
         path: '/assess/result',
         component: '@/pages/Assess/Result',
       },
+      // 发布管理
       {
         path: '/assess/publish',
         component: '@/pages/Assess/Publish',
+      },
+    ],
+  },
+  // 统计分析
+  {
+    path: '/statistics',
+    icon: 'barChart',
+    routes: [
+      // 原始数据导出
+      {
+        path: '/statistics/originalExp',
+        component: '@/pages/Statistics/OriginalExp',
       },
     ],
   },

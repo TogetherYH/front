@@ -1,6 +1,6 @@
 // import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, update, add, del } from '../service';
+import { list, update, add, del, all } from '../service';
 import { PublishType } from '../data';
 
 export interface publishListState {
@@ -18,6 +18,7 @@ export interface PublishListModelType {
   };
   effects: {
     fetchList: Effect;
+    fetchAll: Effect;
     fetchUpdate: Effect;
     fetchAdd: Effect;
     fetchDelete: Effect;
@@ -46,6 +47,15 @@ const PublishListModel: PublishListModelType = {
         yield put({
           type: 'getList',
           payload: data.data,
+        });
+      }
+    },
+    *fetchAll({ payload }, { put, call }) {
+      const data = yield call(all, {});
+      if (data) {
+        yield put({
+          type: 'getList',
+          payload: { list: data.data },
         });
       }
     },
@@ -105,6 +115,11 @@ const PublishListModel: PublishListModelType = {
           dispatch({
             type: 'fetchList',
             payload: { pageNum: 1, pageSize: 20 },
+          });
+        }
+        if (location.pathname === '/statistics/originalExp') {
+          dispatch({
+            type: 'fetchAll',
           });
         }
       });

@@ -19,6 +19,11 @@ export async function list({
   );
 }
 
+/** 所有发布记录 GET /assess/publish/all */
+export async function all() {
+  return request.get(`/api/assess/publish/all`, {});
+}
+
 /** 更新发布信息 POST /assess/publish/update */
 export async function update({
   id,

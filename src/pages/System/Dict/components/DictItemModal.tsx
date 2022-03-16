@@ -243,6 +243,7 @@ const DictItemModal: FC<DictItemModalProps> = (props) => {
                 cell: EditableCell,
               },
             }}
+            loading={dictItemListLoading}
             dataSource={dictitems.list}
             rowKey="id"
             pagination={false}

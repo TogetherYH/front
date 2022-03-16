@@ -8,7 +8,7 @@ import { Key } from 'rc-tree/lib/interface';
 
 interface ScaleSelectProps {
   isModalVisible: boolean;
-  defaultChecked: string[];
+  defaultChecked: string[] | undefined;
   scaleTree: scaleTreeState;
   dispatch: Dispatch;
   handleOk: (checkedNodes: any[]) => void;
@@ -30,7 +30,7 @@ const ScaleSelect: FC<ScaleSelectProps> = (props) => {
   useEffect(() => {
     // 打开对话框
     if (isModalVisible) {
-      setCheckedKeys(defaultChecked);
+      setCheckedKeys(defaultChecked || []);
       if (dispatch) {
         dispatch({
           type: 'scaleTree/fetchTree',

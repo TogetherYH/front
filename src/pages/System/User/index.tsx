@@ -174,7 +174,7 @@ const User: FC<UserProps> = ({
   // 关闭导入Modal
   const closeUploadModal = () => {
     setUserUploadModalVisible(false);
-    refreshHandler();
+    // refreshHandler();
   };
 
   // 添加、更新处理方法

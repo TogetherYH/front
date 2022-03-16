@@ -47,11 +47,12 @@ const DeptTreeModel: DeptModelType = {
       return history.listen((location, action) => {
         if (
           location.pathname === '/system/dept' ||
-          location.pathname === '/system/user'
+          location.pathname === '/system/user' ||
+          location.pathname === '/statistics/originalExp'
         ) {
           dispatch({
             type: 'fetchTree',
-            payload: { pageNum: 1, pageSize: 20 },
+            payload: {},
           });
         }
       });

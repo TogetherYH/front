@@ -49,7 +49,8 @@ const ScaleTreeModel: ScaleModelType = {
           location.pathname === '/base/scale' ||
           location.pathname === '/base/answer' ||
           location.pathname === '/base/factor' ||
-          location.pathname === '/base/question'
+          location.pathname === '/base/question' ||
+          location.pathname === '/statistics/originalExp'
         ) {
           dispatch({
             type: 'fetchTree',
