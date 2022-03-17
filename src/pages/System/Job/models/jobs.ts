@@ -1,6 +1,6 @@
 // import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, update, del, add, pause, resume } from '../service';
+import { list, update, del, add, stop, start } from '../service';
 import { JobType } from '../data';
 
 export interface jobState {
@@ -20,8 +20,8 @@ export interface JobModelType {
     fetchList: Effect;
     fetchUpdate: Effect;
     fetchDelete: Effect;
-    fetchPause: Effect;
-    fetchResume: Effect;
+    fetchStop: Effect;
+    fetchStart: Effect;
     fetchAdd: Effect;
   };
   subscriptions: {
@@ -95,8 +95,8 @@ const JobModel: JobModelType = {
         });
       }
     },
-    *fetchPause({ payload: { id } }, { put, call, select }) {
-      const data = yield call(pause, { id });
+    *fetchStop({ payload: { id } }, { put, call, select }) {
+      const data = yield call(stop, { id });
       if (data) {
         // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {
@@ -111,8 +111,8 @@ const JobModel: JobModelType = {
         });
       }
     },
-    *fetchResume({ payload: { id } }, { put, call, select }) {
-      const data = yield call(resume, { id });
+    *fetchStart({ payload: { id } }, { put, call, select }) {
+      const data = yield call(start, { id });
       if (data) {
         // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {

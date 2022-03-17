@@ -38,12 +38,12 @@ export async function del({ id }: { id: string }) {
   return request.del(`/api/system/job/delete/${id}`, {});
 }
 
-/** 暂停任务 GET /system/job/pause/id */
-export async function pause({ id }: { id: string }) {
-  return request.get(`/api/system/job/pause/${id}`, {});
+/** 停止任务 GET /system/job/stop/id */
+export async function stop({ id }: { id: string }) {
+  return request.get(`/api/system/job/stop/${id}`, {});
 }
 
-/** 恢复任务 GET /system/job/resume */
-export async function resume({ id }: { id: string }) {
-  return request.get(`/api/system/job/resume/${id}`, {});
+/** 启动任务 GET /system/job/start */
+export async function start({ id }: { id: string }) {
+  return request.get(`/api/system/job/start/${id}`, {});
 }

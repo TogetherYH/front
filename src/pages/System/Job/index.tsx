@@ -78,17 +78,17 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
           </a>
           <a
             onClick={() => {
-              pauseHandler(record);
+              stopHandler(record);
             }}
           >
-            暂停
+            停止
           </a>
           <a
             onClick={() => {
-              resumeHandler(record);
+              startHandler(record);
             }}
           >
-            恢复
+            启动
           </a>
           {/* <Popconfirm
             title="Are you sure to delete this task?"
@@ -143,21 +143,21 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
   };
 
   // 暂停
-  const pauseHandler = (record: JobType) => {
+  const stopHandler = (record: JobType) => {
     setRecord(record);
     const id = record.id;
     dispatch({
-      type: 'jobs/fetchPause',
+      type: 'jobs/fetchStop',
       payload: { id },
     });
   };
 
   // 恢复
-  const resumeHandler = (record: JobType) => {
+  const startHandler = (record: JobType) => {
     setRecord(record);
     const id = record.id;
     dispatch({
-      type: 'jobs/fetchResume',
+      type: 'jobs/fetchStart',
       payload: { id },
     });
   };
