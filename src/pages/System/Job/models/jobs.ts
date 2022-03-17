@@ -1,6 +1,6 @@
 // import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, update, del, add } from '../service';
+import { list, update, del, add, pause, resume } from '../service';
 import { JobType } from '../data';
 
 export interface jobState {
@@ -20,6 +20,8 @@ export interface JobModelType {
     fetchList: Effect;
     fetchUpdate: Effect;
     fetchDelete: Effect;
+    fetchPause: Effect;
+    fetchResume: Effect;
     fetchAdd: Effect;
   };
   subscriptions: {
@@ -79,6 +81,38 @@ const JobModel: JobModelType = {
     },
     *fetchDelete({ payload: { id } }, { put, call, select }) {
       const data = yield call(del, { id });
+      if (data) {
+        // message.success('Delete successfully');
+        const { pageNum, pageSize } = yield select((state: any) => {
+          return state.jobs;
+        });
+        yield put({
+          type: 'fetchList',
+          payload: {
+            pageNum,
+            pageSize,
+          },
+        });
+      }
+    },
+    *fetchPause({ payload: { id } }, { put, call, select }) {
+      const data = yield call(pause, { id });
+      if (data) {
+        // message.success('Delete successfully');
+        const { pageNum, pageSize } = yield select((state: any) => {
+          return state.jobs;
+        });
+        yield put({
+          type: 'fetchList',
+          payload: {
+            pageNum,
+            pageSize,
+          },
+        });
+      }
+    },
+    *fetchResume({ payload: { id } }, { put, call, select }) {
+      const data = yield call(resume, { id });
       if (data) {
         // message.success('Delete successfully');
         const { pageNum, pageSize } = yield select((state: any) => {

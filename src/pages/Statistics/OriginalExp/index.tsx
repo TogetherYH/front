@@ -12,7 +12,7 @@ import {
   Col,
   DatePicker,
   // Icon,
-  Dropdown,
+  Spin,
 } from 'antd';
 const { RangePicker } = DatePicker;
 import {
@@ -49,6 +49,7 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
   } = prop;
 
   const [searchForm] = Form.useForm();
+  const [exporting, setExporting] = useState(false);
 
   const searchHandler = () => {
     searchForm.submit();
@@ -72,9 +73,12 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
     });
   };
 
-  const setDownloading = () => {};
+  // const setExporting = () => {
+
+  // };
 
   const expHandler = () => {
+    setExporting(true);
     const formValues = searchForm.getFieldsValue();
     // console.log('a', a);
     exp({
@@ -88,7 +92,7 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
           : '',
       },
       fileName: `原始数据导出.xlsx`,
-      callBack: setDownloading,
+      callBack: setExporting,
     });
   };
 
@@ -164,20 +168,22 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
           </Row>
         </Card>
         <Card>
-          <Table
-            dataSource={original.list}
-            columns={original.columns}
-            size="small"
-            loading={listLoading}
-            scroll={{
-              x: original?.columns?.length
-                ? original?.columns?.length * 80
-                : 2000,
-              y: 800,
-            }}
-            rowKey="resultId"
-            pagination={false}
-          ></Table>
+          <Spin spinning={exporting}>
+            <Table
+              dataSource={original.list}
+              columns={original.columns}
+              size="small"
+              loading={listLoading}
+              scroll={{
+                x: original?.columns?.length
+                  ? original?.columns?.length * 80
+                  : 2000,
+                y: 800,
+              }}
+              rowKey="resultId"
+              pagination={false}
+            ></Table>
+          </Spin>
         </Card>
       </Space>
     </div>

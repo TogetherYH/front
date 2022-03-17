@@ -26,8 +26,6 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [record, setRecord] = useState<JobType | undefined>(undefined);
   const [searchForm] = Form.useForm();
-  const [jobId, setJobId] = useState<string>('');
-  const [roleMenuModalVisible, setroleMenuModalVisible] = useState(false);
 
   const columns = [
     {
@@ -78,7 +76,21 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
           >
             修改
           </a>
-          <Popconfirm
+          <a
+            onClick={() => {
+              pauseHandler(record);
+            }}
+          >
+            暂停
+          </a>
+          <a
+            onClick={() => {
+              resumeHandler(record);
+            }}
+          >
+            恢复
+          </a>
+          {/* <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
               deleteHandler(record);
@@ -87,7 +99,7 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
             cancelText="No"
           >
             <a>删除</a>
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
@@ -128,6 +140,26 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
     setRecord(record);
     // console.log('rrr', record);
     setJobModalVisible(true);
+  };
+
+  // 暂停
+  const pauseHandler = (record: JobType) => {
+    setRecord(record);
+    const id = record.id;
+    dispatch({
+      type: 'jobs/fetchPause',
+      payload: { id },
+    });
+  };
+
+  // 恢复
+  const resumeHandler = (record: JobType) => {
+    setRecord(record);
+    const id = record.id;
+    dispatch({
+      type: 'jobs/fetchResume',
+      payload: { id },
+    });
   };
 
   // 添加、更新处理方法
@@ -189,7 +221,7 @@ const Job: FC<JobProps> = ({ jobs, dispatch, jobListLoading }) => {
             <Col span={18}>
               <Form form={searchForm} layout="inline">
                 <Form.Item
-                  label="角色名称"
+                  label="任务名称"
                   name="name"
                   style={{ marginBottom: '0' }}
                 >
@@ -251,7 +283,7 @@ const mapStateToProps = ({
 }) => {
   return {
     jobs,
-    roleListLoading: loading.models.jobs,
+    jobListLoading: loading.models.jobs,
   };
 };
 

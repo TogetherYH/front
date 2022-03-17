@@ -37,3 +37,13 @@ export async function add({ values }: { values: any }) {
 export async function del({ id }: { id: string }) {
   return request.del(`/api/system/job/delete/${id}`, {});
 }
+
+/** 暂停任务 GET /system/job/pause/id */
+export async function pause({ id }: { id: string }) {
+  return request.get(`/api/system/job/pause/${id}`, {});
+}
+
+/** 恢复任务 GET /system/job/resume */
+export async function resume({ id }: { id: string }) {
+  return request.get(`/api/system/job/resume/${id}`, {});
+}
