@@ -65,6 +65,7 @@ const RoleMenuModal: FC<RoleMenuModalProps> = (props) => {
         visible={visible}
         onOk={onOk}
         onCancel={closeRoleMenuModal}
+        bodyStyle={{ overflowY: 'auto' }}
       >
         <Tree
           // showLine
