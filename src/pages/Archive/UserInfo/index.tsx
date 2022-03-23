@@ -14,7 +14,7 @@ const UserInfo: FC<UserInfoProps> = (props) => {
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
-    console.log('uu', userInfo);
+    // console.log('uu', userInfo);
     form.setFieldsValue({
       ...userInfo?.userInfo,
     });
@@ -80,7 +80,7 @@ const UserInfo: FC<UserInfoProps> = (props) => {
         </Row>
         <Form {...formProps}>
           <Form.Item name="householdRegister" label="户口类型">
-            <Select disabled={!editing} allowClear>
+            <Select disabled={!editing}>
               <Option value="agricultural">农业户口</Option>
               <Option value="non-agriculturalucy">非农业户口</Option>
             </Select>

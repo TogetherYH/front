@@ -46,13 +46,13 @@ const Scale: FC<ScaleProps> = ({
       title: '量表名称',
       dataIndex: 'name',
       key: 'name',
-      width: 300,
+      width: 250,
     },
     {
       title: '别名',
       dataIndex: 'alias',
       key: 'alias',
-      width: 200,
+      width: 150,
     },
     {
       title: '编码',
@@ -70,7 +70,7 @@ const Scale: FC<ScaleProps> = ({
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 80,
     },
     {
       title: '操作',
@@ -201,7 +201,7 @@ const Scale: FC<ScaleProps> = ({
   return (
     <div>
       <Row gutter={12}>
-        <Col span={5}>
+        <Col span={6}>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Card>
               <Input.Search style={{ marginBottom: 8 }} placeholder="Search" />
@@ -218,7 +218,7 @@ const Scale: FC<ScaleProps> = ({
             </Card>
           </Space>
         </Col>
-        <Col span={19}>
+        <Col span={18}>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Card>
               <Row gutter={24}>

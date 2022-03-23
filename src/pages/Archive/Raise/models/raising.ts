@@ -1,47 +1,46 @@
-// import { message } from 'antd';
 import { Reducer, Effect, Subscription } from 'umi';
-import { get, update, add } from '../service';
-import { UserInfoType } from '../data';
+import { list, update, add, del } from '../service';
+import { RaisingHistoryType } from '../data';
 
-export interface userInfoState {
-  userInfo?: UserInfoType;
+export interface raisingHistoryState {
+  raisingHistory?: RaisingHistoryType[];
 }
 
-export interface UserInfoModelType {
-  namespace: 'userInfo';
-  state: userInfoState;
+export interface RaisingHistoryModelType {
+  namespace: 'raising';
+  state: raisingHistoryState;
   reducers: {
-    getOne: Reducer<userInfoState>;
+    getList: Reducer<raisingHistoryState>;
   };
   effects: {
-    fetchOne: Effect;
+    fetchList: Effect;
     fetchUpdate: Effect;
     fetchAdd: Effect;
+    fetchDel: Effect;
   };
   subscriptions: {
     setup: Subscription;
   };
 }
 
-const UserInofModel: UserInfoModelType = {
-  namespace: 'userInfo',
+const RaisingHistoryModel: RaisingHistoryModelType = {
+  namespace: 'raising',
   state: {},
   reducers: {
-    getOne(state, action) {
+    getList(state, action) {
       return action.payload;
     },
   },
   effects: {
-    *fetchOne({ payload: { userId } }, { put, call }) {
-      const data = yield call(get, {
-        userId,
+    *fetchList({ payload: { userId } }, { put, call }) {
+      const data = yield call(list, {
+        userId: userId ? userId : '',
       });
       if (data) {
-        console.log('dd', data);
         yield put({
-          type: 'getOne',
+          type: 'getList',
           payload: {
-            userInfo: data.data,
+            raisingHistory: data.data,
           },
         });
       }
@@ -50,7 +49,7 @@ const UserInofModel: UserInfoModelType = {
       const data = yield call(update, { id, values });
       if (data) {
         yield put({
-          type: 'fetchOne',
+          type: 'fetchList',
           payload: {},
         });
       }
@@ -58,9 +57,17 @@ const UserInofModel: UserInfoModelType = {
     *fetchAdd({ payload: { values } }, { put, call, select }) {
       const data = yield call(add, { values });
       if (data) {
-        // message.success('Add successfully');
         yield put({
-          type: 'fetchOne',
+          type: 'fetchList',
+          payload: {},
+        });
+      }
+    },
+    *fetchDel({ payload: { id } }, { put, call, select }) {
+      const data = yield call(del, { id });
+      if (data) {
+        yield put({
+          type: 'fetchList',
           payload: {},
         });
       }
@@ -71,7 +78,7 @@ const UserInofModel: UserInfoModelType = {
       return history.listen((location, action) => {
         if (location.pathname === '/archive/personal') {
           dispatch({
-            type: 'fetchOne',
+            type: 'fetchList',
             payload: {},
           });
         }
@@ -80,4 +87,4 @@ const UserInofModel: UserInfoModelType = {
   },
 };
 
-export default UserInofModel;
+export default RaisingHistoryModel;

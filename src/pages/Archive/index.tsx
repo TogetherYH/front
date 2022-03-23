@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Space, Card, Tabs } from 'antd';
 import UserInfo from './UserInfo';
+import RaisingHistory from './Raise';
 const { TabPane } = Tabs;
 
 const Archive: FC = () => {
@@ -17,7 +18,7 @@ const Archive: FC = () => {
             成长史
           </TabPane>
           <TabPane tab="抚养史" key="raiseInfo">
-            抚养史
+            <RaisingHistory />
           </TabPane>
           <TabPane tab="父母信息" key="parentInfo">
             父母信息
