@@ -105,6 +105,18 @@ export default [
       },
     ],
   },
+  // 档案
+  {
+    path: '/archive',
+    icon: 'barChart',
+    routes: [
+      // 个人档案
+      {
+        path: '/archive/personal',
+        component: '@/pages/Archive',
+      },
+    ],
+  },
   // 数据可视化
   {
     path: '/dv',
