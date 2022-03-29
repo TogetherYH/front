@@ -117,6 +117,18 @@ export default [
       },
     ],
   },
+  // 知识科普
+  {
+    path: '/knowledge',
+    icon: 'barChart',
+    routes: [
+      // 知识谱图
+      {
+        path: '/knowledge/graph',
+        component: '@/pages/knowledge/G',
+      },
+    ],
+  },
   // 数据可视化
   {
     path: '/dv',
