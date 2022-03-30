@@ -127,10 +127,6 @@ export default [
         path: '/knowledge/graph',
         component: '@/pages/knowledge/G',
       },
-      {
-        path: '/knowledge/graph2',
-        component: '@/pages/knowledge/G3',
-      },
     ],
   },
   // 数据可视化
