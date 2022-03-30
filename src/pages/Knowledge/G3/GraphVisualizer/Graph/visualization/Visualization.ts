@@ -1,38 +1,64 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Neo4j is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import { easeCubic } from 'd3-ease';
 import { BaseType, Selection, select as d3Select } from 'd3-selection';
 import {
   D3ZoomEvent,
   ZoomBehavior,
   zoom as d3Zoom,
-  // zoomIdentity
+  zoomIdentity,
 } from 'd3-zoom';
 
-import { ForceSimulation } from './ForceSimulation';
+import {
+  ZOOM_FIT_PADDING_PERCENT,
+  ZOOM_MAX_SCALE,
+  ZOOM_MIN_SCALE,
+} from '../../../constants';
+import { GraphModel } from '../../../models/Graph';
 import { GraphGeometryModel } from './GraphGeometryModel';
-import { GraphModel } from './m/Graph';
-import { GraphStyleModel } from './m/GraphStyle';
-import { NodeModel } from './m/Node';
-// import { ZoomLimitsReached } from './types';
+import { GraphStyleModel } from '../../../models/GraphStyle';
+import { NodeModel } from '../../../models/Node';
+import { RelationshipModel } from '../../../models/Relationship';
+import { isNullish } from '../../../utils/utils';
+import { ForceSimulation } from './ForceSimulation';
+import {
+  nodeEventHandlers,
+  relationshipEventHandlers,
+} from './mouseEventHandlers';
 import {
   node as nodeRenderer,
   relationship as relationshipRenderer,
 } from './renderers/init';
-import { RelationshipModel } from './m/Relationship';
-import { MeasureSizeFn } from './types';
 import { nodeMenuRenderer } from './renderers/menu';
-import { relationshipEventHandlers } from './mouseEventHandlers';
+import { ZoomLimitsReached, ZoomType } from '../../../types';
+
+type MeasureSizeFn = () => { width: number; height: number };
 
 export class Visualization {
-  ZOOM_MIN_SCALE = 0.1;
-  ZOOM_MAX_SCALE = 2;
-  ZOOM_FIT_PADDING_PERCENT = 0.05;
-
   private readonly root: Selection<SVGElement, unknown, BaseType, unknown>;
   private baseGroup: Selection<SVGGElement, unknown, BaseType, unknown>;
   private rect: Selection<SVGRectElement, unknown, BaseType, unknown>;
   private container: Selection<SVGGElement, unknown, BaseType, unknown>;
   private geometry: GraphGeometryModel;
   private zoomBehavior: ZoomBehavior<SVGElement, unknown>;
-  private zoomMinScaleExtent: number = this.ZOOM_MIN_SCALE;
+  private zoomMinScaleExtent: number = ZOOM_MIN_SCALE;
   private callbacks: Record<
     string,
     undefined | Array<(...args: any[]) => void>
@@ -40,13 +66,10 @@ export class Visualization {
 
   forceSim: ForceSimulation;
 
+  // This flags that a panning is ongoing and won't trigger
+  // 'canvasClick' event when panning ends.
   private draw = false;
   private isZoomClick = false;
-
-  // measureSize (): void({
-  //   width: this.svgElement.current?.parentElement?.clientWidth ?? 200,
-  //   height: this.svgElement.current?.parentElement?.clientHeight ?? 200
-  // })
 
   constructor(
     element: SVGElement,
@@ -70,8 +93,8 @@ export class Visualization {
       .style('fill', 'none')
       .style('pointer-events', 'all')
       // Make the rect cover the whole surface, center of the svg viewbox is in (0,0)
-      // .attr('x', () => -Math.floor(measureSize().width / 2))
-      // .attr('y', () => -Math.floor(measureSize().height / 2))
+      .attr('x', () => -Math.floor(measureSize().width / 2))
+      .attr('y', () => -Math.floor(measureSize().height / 2))
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('transform', 'scale(1)')
@@ -87,47 +110,52 @@ export class Visualization {
     this.geometry = new GraphGeometryModel(style);
 
     this.zoomBehavior = d3Zoom<SVGElement, unknown>()
-      .scaleExtent([this.zoomMinScaleExtent, this.ZOOM_MAX_SCALE])
+      .scaleExtent([this.zoomMinScaleExtent, ZOOM_MAX_SCALE])
       .on('zoom', (e: D3ZoomEvent<SVGElement, unknown>) => {
-        // const isZoomClick = this.isZoomClick
-        // this.draw = true
-        // this.isZoomClick = false
-        // const currentZoomScale = e.transform.k
-        // const limitsReached: ZoomLimitsReached = {
-        //   zoomInLimitReached: currentZoomScale >= this.ZOOM_MAX_SCALE,
-        //   zoomOutLimitReached: currentZoomScale <= this.zoomMinScaleExtent
-        // }
-        // // onZoomEvent(limitsReached)
-        // return this.container
-        //   .transition()
-        //   .duration(isZoomClick ? 400 : 20)
-        //   .call(sel => (isZoomClick ? sel.ease(easeCubic) : sel))
-        //   .attr('transform', String(e.transform))
+        const isZoomClick = this.isZoomClick;
+        this.draw = true;
+        this.isZoomClick = false;
+
+        const currentZoomScale = e.transform.k;
+        const limitsReached: ZoomLimitsReached = {
+          zoomInLimitReached: currentZoomScale >= ZOOM_MAX_SCALE,
+          zoomOutLimitReached: currentZoomScale <= this.zoomMinScaleExtent,
+        };
+        // onZoomEvent(limitsReached)
+
+        return this.container
+          .transition()
+          .duration(isZoomClick ? 400 : 20)
+          .call((sel) => (isZoomClick ? sel.ease(easeCubic) : sel))
+          .attr('transform', String(e.transform));
       });
 
     const zoomEventHandler = (
       selection: Selection<SVGElement, unknown, BaseType, unknown>,
     ) => {
-      // const handleZoomOnShiftScroll = (e: WheelEvent) => {
-      //   const modKeySelected = e.metaKey || e.ctrlKey || e.shiftKey
-      //   if (modKeySelected || this.isFullscreen) {
-      //     e.preventDefault()
-      //     // This is the default implementation of wheelDelta function in d3-zoom v3.0.0
-      //     // For some reasons typescript complains when trying to get it by calling zoomBehaviour.wheelDelta() instead
-      //     // but it should be the same (and indeed it works at runtime).
-      //     // https://github.com/d3/d3-zoom/blob/1bccd3fd56ea24e9658bd7e7c24e9b89410c8967/README.md#zoom_wheelDelta
-      //     const delta =
-      //       -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002)
-      //     return this.zoomBehavior.scaleBy(this.root, 1 + delta)
-      //   } else {
-      //     onDisplayZoomWheelInfoMessage()
-      //   }
-      // }
-      // return selection
-      //   .on('dblclick.zoom', null)
-      //   .on('DOMMouseScroll.zoom', handleZoomOnShiftScroll)
-      //   .on('wheel.zoom', handleZoomOnShiftScroll)
-      //   .on('mousewheel.zoom', handleZoomOnShiftScroll)
+      const handleZoomOnShiftScroll = (e: WheelEvent) => {
+        const modKeySelected = e.metaKey || e.ctrlKey || e.shiftKey;
+        if (modKeySelected || this.isFullscreen) {
+          e.preventDefault();
+
+          // This is the default implementation of wheelDelta function in d3-zoom v3.0.0
+          // For some reasons typescript complains when trying to get it by calling zoomBehaviour.wheelDelta() instead
+          // but it should be the same (and indeed it works at runtime).
+          // https://github.com/d3/d3-zoom/blob/1bccd3fd56ea24e9658bd7e7c24e9b89410c8967/README.md#zoom_wheelDelta
+          const delta =
+            -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002);
+
+          return this.zoomBehavior.scaleBy(this.root, 1 + delta);
+        } else {
+          // onDisplayZoomWheelInfoMessage();
+        }
+      };
+
+      return selection
+        .on('dblclick.zoom', null)
+        .on('DOMMouseScroll.zoom', handleZoomOnShiftScroll)
+        .on('wheel.zoom', handleZoomOnShiftScroll)
+        .on('mousewheel.zoom', handleZoomOnShiftScroll);
     };
 
     this.root
@@ -169,7 +197,6 @@ export class Visualization {
   };
 
   init(): void {
-    console.log('Visualization init');
     this.container
       .selectAll('g.layer')
       .data(['relationships', 'nodes'])
@@ -235,6 +262,33 @@ export class Visualization {
     this.forceSim.updateRelationships(this.graph);
   }
 
+  private handleZoomClick = (zoomType: ZoomType): void => {
+    this.draw = true;
+    this.isZoomClick = true;
+
+    if (zoomType === ZoomType.IN) {
+      this.zoomBehavior.scaleBy(this.root, 1.3);
+    } else if (zoomType === ZoomType.OUT) {
+      this.zoomBehavior.scaleBy(this.root, 0.7);
+    } else if (zoomType === ZoomType.FIT) {
+      this.zoomToFit();
+    }
+  };
+
+  private zoomToFit = () => {
+    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    if (scaleAndOffset) {
+      const { scale, centerPointOffset } = scaleAndOffset;
+      // Do not zoom in more than zoom max scale for really small graphs
+      this.zoomBehavior.transform(
+        this.root,
+        zoomIdentity
+          .scale(Math.min(scale, ZOOM_MAX_SCALE))
+          .translate(centerPointOffset.x, centerPointOffset.y),
+      );
+    }
+  };
+
   private adjustZoomMinScaleExtentToFitGraph = (): void => {
     const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
     const PADDING_FACTOR = 0.75;
@@ -245,7 +299,7 @@ export class Visualization {
       this.zoomMinScaleExtent = scaleToFitGraphWithPadding;
       this.zoomBehavior.scaleExtent([
         scaleToFitGraphWithPadding,
-        this.ZOOM_MAX_SCALE,
+        ZOOM_MAX_SCALE,
       ]);
     }
   };
@@ -267,7 +321,7 @@ export class Visualization {
       if (graphWidth === 0 || graphHeight === 0) return;
 
       const scale =
-        (1 - this.ZOOM_FIT_PADDING_PERCENT) /
+        (1 - ZOOM_FIT_PADDING_PERCENT) /
         Math.max(graphWidth / availableWidth, graphHeight / availableHeight);
 
       const centerPointOffset = { x: -graphCenterX, y: -graphCenterY };
@@ -276,4 +330,67 @@ export class Visualization {
     }
     return;
   };
+
+  on = (event: string, callback: (...args: any[]) => void) => {
+    if (isNullish(this.callbacks[event])) {
+      this.callbacks[event] = [];
+    }
+
+    this.callbacks[event]?.push(callback);
+    return this;
+  };
+
+  update(options: {
+    updateNodes: boolean;
+    updateRelationships: boolean;
+    restartSimulation?: boolean;
+  }): void {
+    if (options.updateNodes) {
+      this.updateNodes();
+    }
+
+    if (options.updateRelationships) {
+      this.updateRelationships();
+    }
+
+    if (options.restartSimulation ?? true) {
+      this.forceSim.restart();
+    }
+    this.trigger('updated');
+  }
+
+  boundingBox(): DOMRect | undefined {
+    return this.container.node()?.getBBox();
+  }
+
+  resize(isFullscreen: boolean): void {
+    const size = this.measureSize();
+    this.isFullscreen = isFullscreen;
+
+    this.rect
+      .attr('x', () => -Math.floor(size.width / 2))
+      .attr('y', () => -Math.floor(size.height / 2));
+
+    this.root.attr(
+      'viewBox',
+      [
+        -Math.floor(size.width / 2),
+        -Math.floor(size.height / 2),
+        size.width,
+        size.height,
+      ].join(' '),
+    );
+  }
+
+  zoomInClick(): void {
+    this.handleZoomClick(ZoomType.IN);
+  }
+
+  zoomOutClick(): void {
+    this.handleZoomClick(ZoomType.OUT);
+  }
+
+  zoomToFitClick(): void {
+    this.handleZoomClick(ZoomType.FIT);
+  }
 }

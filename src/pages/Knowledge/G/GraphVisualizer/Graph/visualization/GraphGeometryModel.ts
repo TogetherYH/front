@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { PairwiseArcsRelationshipRouting } from './utils/PairwiseArcsRelationshipRouting';
-import { measureText } from './utils/textMeasurement';
-import { GraphModel } from './m/Graph';
-import { GraphStyleModel } from './m/GraphStyle';
-import { NodeCaptionLine, NodeModel } from './m/Node';
-import { RelationshipModel } from './m/Relationship';
+import { measureText } from '../../../utils/textMeasurement';
+import { GraphModel } from '../../../models/Graph';
+import { GraphStyleModel } from '../../../models/GraphStyle';
+import { NodeCaptionLine, NodeModel } from '../../../models/Node';
+import { RelationshipModel } from '../../../models/Relationship';
 
 export class GraphGeometryModel {
   relationshipRouting: PairwiseArcsRelationshipRouting;

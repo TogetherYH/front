@@ -17,9 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { GraphModel } from '../m/Graph';
-import { NodeModel } from '../m/Node';
-import { RelationshipModel } from '../m/Relationship';
+import { GraphModel } from '../models/Graph';
+import { NodeModel } from '../models/Node';
+import { RelationshipModel } from '../models/Relationship';
 import { BasicNode, BasicRelationship } from '../types';
 import { optionalToString } from './utils';
 

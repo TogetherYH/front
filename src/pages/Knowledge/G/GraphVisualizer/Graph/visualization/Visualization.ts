@@ -32,16 +32,16 @@ import {
   ZOOM_MIN_SCALE,
 } from '../../../constants';
 import { GraphModel } from '../../../models/Graph';
-// import { GraphGeometryModel } from './GraphGeometryModel'
+import { GraphGeometryModel } from './GraphGeometryModel';
 import { GraphStyleModel } from '../../../models/GraphStyle';
 import { NodeModel } from '../../../models/Node';
 import { RelationshipModel } from '../../../models/Relationship';
 import { isNullish } from '../../../utils/utils';
 import { ForceSimulation } from './ForceSimulation';
-// import {
-//   nodeEventHandlers,
-//   relationshipEventHandlers
-// } from './mouseEventHandlers'
+import {
+  nodeEventHandlers,
+  relationshipEventHandlers,
+} from './mouseEventHandlers';
 import {
   node as nodeRenderer,
   relationship as relationshipRenderer,
@@ -56,7 +56,7 @@ export class Visualization {
   private baseGroup: Selection<SVGGElement, unknown, BaseType, unknown>;
   private rect: Selection<SVGRectElement, unknown, BaseType, unknown>;
   private container: Selection<SVGGElement, unknown, BaseType, unknown>;
-  // private geometry: GraphGeometryModel
+  private geometry: GraphGeometryModel;
   private zoomBehavior: ZoomBehavior<SVGElement, unknown>;
   private zoomMinScaleExtent: number = ZOOM_MIN_SCALE;
   private callbacks: Record<
@@ -107,7 +107,7 @@ export class Visualization {
       });
 
     this.container = this.baseGroup.append('g');
-    // this.geometry = new GraphGeometryModel(style)
+    this.geometry = new GraphGeometryModel(style);
 
     this.zoomBehavior = d3Zoom<SVGElement, unknown>()
       .scaleExtent([this.zoomMinScaleExtent, ZOOM_MAX_SCALE])
@@ -117,10 +117,10 @@ export class Visualization {
         this.isZoomClick = false;
 
         const currentZoomScale = e.transform.k;
-        // const limitsReached: ZoomLimitsReached = {
-        //   zoomInLimitReached: currentZoomScale >= ZOOM_MAX_SCALE,
-        //   zoomOutLimitReached: currentZoomScale <= this.zoomMinScaleExtent
-        // }
+        const limitsReached: ZoomLimitsReached = {
+          zoomInLimitReached: currentZoomScale >= ZOOM_MAX_SCALE,
+          zoomOutLimitReached: currentZoomScale <= this.zoomMinScaleExtent,
+        };
         // onZoomEvent(limitsReached)
 
         return this.container
@@ -147,7 +147,7 @@ export class Visualization {
 
           return this.zoomBehavior.scaleBy(this.root, 1 + delta);
         } else {
-          onDisplayZoomWheelInfoMessage();
+          // onDisplayZoomWheelInfoMessage();
         }
       };
 
@@ -168,8 +168,7 @@ export class Visualization {
   }
 
   private render() {
-    console.log('Visualization render()');
-    // this.geometry.onTick(this.graph)
+    this.geometry.onTick(this.graph);
 
     const nodeGroups = this.container
       .selectAll<SVGGElement, NodeModel>('g.node')
@@ -192,12 +191,31 @@ export class Visualization {
     );
   }
 
+  trigger = (event: string, ...args: any[]) => {
+    const callbacksForEvent = this.callbacks[event] ?? [];
+    callbacksForEvent.forEach((callback) => callback.apply(null, args));
+  };
+
+  init(): void {
+    this.container
+      .selectAll('g.layer')
+      .data(['relationships', 'nodes'])
+      .join('g')
+      .attr('class', (d) => `layer ${d}`);
+
+    this.updateNodes();
+    this.updateRelationships();
+    this.forceSim.precompute();
+
+    this.adjustZoomMinScaleExtentToFitGraph();
+  }
+
   private updateNodes() {
     const nodes = this.graph.nodes();
-    // this.geometry.onGraphChange(this.graph, {
-    //   updateNodes: true,
-    //   updateRelationships: false
-    // })
+    this.geometry.onGraphChange(this.graph, {
+      updateNodes: true,
+      updateRelationships: false,
+    });
 
     const nodeGroups = this.container
       .select('g.layer.nodes')
@@ -223,10 +241,10 @@ export class Visualization {
 
   private updateRelationships() {
     const relationships = this.graph.relationships();
-    // this.geometry.onGraphChange(this.graph, {
-    //   updateNodes: false,
-    //   updateRelationships: true
-    // })
+    this.geometry.onGraphChange(this.graph, {
+      updateNodes: false,
+      updateRelationships: true,
+    });
 
     const relationshipGroups = this.container
       .select('g.layer.relationships')
@@ -234,7 +252,7 @@ export class Visualization {
       .data(relationships, (d) => d.id)
       .join('g')
       .attr('class', 'relationship')
-      // .call(relationshipEventHandlers, this.trigger)
+      .call(relationshipEventHandlers, this.trigger)
       .classed('selected', (relationship) => relationship.selected);
 
     relationshipRenderer.forEach((renderer) =>
@@ -244,32 +262,47 @@ export class Visualization {
     this.forceSim.updateRelationships(this.graph);
   }
 
-  // private handleZoomClick = (zoomType: ZoomType): void => {
-  //   this.draw = true
-  //   this.isZoomClick = true
+  private handleZoomClick = (zoomType: ZoomType): void => {
+    this.draw = true;
+    this.isZoomClick = true;
 
-  //   if (zoomType === ZoomType.IN) {
-  //     this.zoomBehavior.scaleBy(this.root, 1.3)
-  //   } else if (zoomType === ZoomType.OUT) {
-  //     this.zoomBehavior.scaleBy(this.root, 0.7)
-  //   } else if (zoomType === ZoomType.FIT) {
-  //     this.zoomToFit()
-  //   }
-  // }
+    if (zoomType === ZoomType.IN) {
+      this.zoomBehavior.scaleBy(this.root, 1.3);
+    } else if (zoomType === ZoomType.OUT) {
+      this.zoomBehavior.scaleBy(this.root, 0.7);
+    } else if (zoomType === ZoomType.FIT) {
+      this.zoomToFit();
+    }
+  };
 
-  // private zoomToFit = () => {
-  //   const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph()
-  //   if (scaleAndOffset) {
-  //     const { scale, centerPointOffset } = scaleAndOffset
-  //     // Do not zoom in more than zoom max scale for really small graphs
-  //     this.zoomBehavior.transform(
-  //       this.root,
-  //       zoomIdentity
-  //         .scale(Math.min(scale, ZOOM_MAX_SCALE))
-  //         .translate(centerPointOffset.x, centerPointOffset.y)
-  //     )
-  //   }
-  // }
+  private zoomToFit = () => {
+    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    if (scaleAndOffset) {
+      const { scale, centerPointOffset } = scaleAndOffset;
+      // Do not zoom in more than zoom max scale for really small graphs
+      this.zoomBehavior.transform(
+        this.root,
+        zoomIdentity
+          .scale(Math.min(scale, ZOOM_MAX_SCALE))
+          .translate(centerPointOffset.x, centerPointOffset.y),
+      );
+    }
+  };
+
+  private adjustZoomMinScaleExtentToFitGraph = (): void => {
+    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    const PADDING_FACTOR = 0.75;
+    const scaleToFitGraphWithPadding = scaleAndOffset
+      ? scaleAndOffset.scale * PADDING_FACTOR
+      : this.zoomMinScaleExtent;
+    if (scaleToFitGraphWithPadding <= this.zoomMinScaleExtent) {
+      this.zoomMinScaleExtent = scaleToFitGraphWithPadding;
+      this.zoomBehavior.scaleExtent([
+        scaleToFitGraphWithPadding,
+        ZOOM_MAX_SCALE,
+      ]);
+    }
+  };
 
   private getZoomScaleFactorToFitWholeGraph = ():
     | { scale: number; centerPointOffset: { x: number; y: number } }
@@ -298,21 +331,6 @@ export class Visualization {
     return;
   };
 
-  private adjustZoomMinScaleExtentToFitGraph = (): void => {
-    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
-    const PADDING_FACTOR = 0.75;
-    const scaleToFitGraphWithPadding = scaleAndOffset
-      ? scaleAndOffset.scale * PADDING_FACTOR
-      : this.zoomMinScaleExtent;
-    if (scaleToFitGraphWithPadding <= this.zoomMinScaleExtent) {
-      this.zoomMinScaleExtent = scaleToFitGraphWithPadding;
-      this.zoomBehavior.scaleExtent([
-        scaleToFitGraphWithPadding,
-        ZOOM_MAX_SCALE,
-      ]);
-    }
-  };
-
   on = (event: string, callback: (...args: any[]) => void) => {
     if (isNullish(this.callbacks[event])) {
       this.callbacks[event] = [];
@@ -321,25 +339,6 @@ export class Visualization {
     this.callbacks[event]?.push(callback);
     return this;
   };
-
-  trigger = (event: string, ...args: any[]) => {
-    const callbacksForEvent = this.callbacks[event] ?? [];
-    callbacksForEvent.forEach((callback) => callback.apply(null, args));
-  };
-
-  init(): void {
-    this.container
-      .selectAll('g.layer')
-      .data(['relationships', 'nodes'])
-      .join('g')
-      .attr('class', (d) => `layer ${d}`);
-
-    this.updateNodes();
-    this.updateRelationships();
-    this.forceSim.precompute();
-
-    this.adjustZoomMinScaleExtentToFitGraph();
-  }
 
   update(options: {
     updateNodes: boolean;
@@ -384,14 +383,14 @@ export class Visualization {
   }
 
   zoomInClick(): void {
-    // this.handleZoomClick(ZoomType.IN)
+    this.handleZoomClick(ZoomType.IN);
   }
 
   zoomOutClick(): void {
-    // this.handleZoomClick(ZoomType.OUT)
+    this.handleZoomClick(ZoomType.OUT);
   }
 
   zoomToFitClick(): void {
-    // this.handleZoomClick(ZoomType.FIT)
+    this.handleZoomClick(ZoomType.FIT);
   }
 }

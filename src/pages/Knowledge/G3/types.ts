@@ -26,3 +26,9 @@ export type ZoomLimitsReached = {
 };
 
 export type MeasureSizeFn = () => { width: number; height: number };
+
+export enum ZoomType {
+  IN = 'in',
+  OUT = 'out',
+  FIT = 'fit',
+}

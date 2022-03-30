@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RelationshipCaptionLayout } from '../m/Relationship';
+import { RelationshipCaptionLayout } from '../models/Relationship';
 
 type Point = { x: number; y: number };
 const square = (l: number) => l * l;

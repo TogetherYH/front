@@ -1,11 +1,9 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { BasicNode, BasicRelationship } from './common';
-import { GraphStyleModel } from './models/GraphStyle';
 import { GraphModel } from './models/Graph';
-// import { BasicNode, BasicRelationship } from './types';
+import { GraphStyleModel } from './models/GraphStyle';
+import { BasicNode, BasicRelationship } from './common';
 import { mapNodes, mapRelationships } from './utils/mapper';
 import { Visualization } from './GraphVisualizer/Graph/visualization/Visualization';
-// import { Visualization } from './Visualization';
 import { StyledVisContainer } from './styled';
 
 interface G3Props {}
@@ -90,8 +88,8 @@ const G3: FC<G3Props> = (props) => {
   };
 
   const measureSize = () => ({
-    width: svgElement.current?.parentElement?.clientWidth ?? 800,
-    height: svgElement.current?.parentElement?.clientHeight ?? 800,
+    width: svgElement.current?.parentElement?.clientWidth ?? 200,
+    height: svgElement.current?.parentElement?.clientHeight ?? 200,
   });
 
   console.log('ss', svgElement);

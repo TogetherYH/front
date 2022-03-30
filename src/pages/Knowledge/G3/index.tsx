@@ -1,9 +1,9 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { GraphModel } from './m/Graph';
-import { GraphStyleModel } from './m/GraphStyle';
+import { GraphModel } from './models/Graph';
+import { GraphStyleModel } from './models/GraphStyle';
 import { BasicNode, BasicRelationship } from './types';
 import { mapNodes, mapRelationships } from './utils/mapper';
-import { Visualization } from './Visualization';
+import { Visualization } from './GraphVisualizer/Graph/visualization/Visualization';
 
 interface G3Props {}
 
