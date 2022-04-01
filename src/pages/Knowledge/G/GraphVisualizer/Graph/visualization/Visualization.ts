@@ -88,9 +88,9 @@ export class Visualization {
     this.root.selectAll('g').remove();
     this.baseGroup = this.root.append('g').attr('transform', 'translate(0,0)');
 
-    console.log('mm', measureSize());
-    console.log('xxx', Math.floor(measureSize().width / 2));
-    console.log('yyy', Math.floor(measureSize().height / 2));
+    // console.log('mm', measureSize());
+    // console.log('xxx', Math.floor(measureSize().width / 2));
+    // console.log('yyy', Math.floor(measureSize().height / 2));
 
     this.rect = this.baseGroup
       .append('rect')

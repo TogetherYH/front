@@ -56,8 +56,8 @@ export class ForceSimulation {
     this.simulation = forceSimulation<NodeModel, RelationshipModel>()
       .velocityDecay(VELOCITY_DECAY)
       .force('charge', forceManyBody().strength(FORCE_CHARGE))
-      .force('centerX', forceX(0).strength(FORCE_CENTER_X))
-      .force('centerY', forceY(0).strength(FORCE_CENTER_Y))
+      .force('centerX', forceX(400).strength(FORCE_CENTER_X))
+      .force('centerY', forceY(300).strength(FORCE_CENTER_Y))
       .on('tick', () => {
         this.simulation.tick(TICKS_PER_RENDER);
         render();

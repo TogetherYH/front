@@ -139,7 +139,7 @@ const G: FC<G3Props> = (props) => {
         ),
       );
 
-      console.log('vv', visualization);
+      // console.log('vv', visualization);
     }
   }, [graph]);
 
