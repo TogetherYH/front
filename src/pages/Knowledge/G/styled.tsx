@@ -163,12 +163,12 @@ export const dim = {
 
 export const StyledVisContainer = styled.div<{ isFullscreen: boolean }>`
   width: 100%;
-  height: ${(props) =>
-    props.isFullscreen
-      ? '100%'
-      : dim.frameBodyHeight - dim.frameTitlebarHeight * 2 + 'px'};
+  height: 600px;
   > svg {
     width: 100%;
+  }
+  > .neod3viz {
+    height: 100%;
   }
   > .neod3viz .node .ring {
     fill: none;

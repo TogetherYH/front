@@ -88,6 +88,10 @@ export class Visualization {
     this.root.selectAll('g').remove();
     this.baseGroup = this.root.append('g').attr('transform', 'translate(0,0)');
 
+    console.log('mm', measureSize());
+    console.log('xxx', Math.floor(measureSize().width / 2));
+    console.log('yyy', Math.floor(measureSize().height / 2));
+
     this.rect = this.baseGroup
       .append('rect')
       .style('fill', 'none')
@@ -172,7 +176,9 @@ export class Visualization {
 
     const nodeGroups = this.container
       .selectAll<SVGGElement, NodeModel>('g.node')
-      .attr('transform', (d) => `translate(${d.x},${d.y})`);
+      .attr('transform', (d) => {
+        return `translate(${d.x},${d.y})`;
+      });
 
     nodeRenderer.forEach((renderer) => nodeGroups.call(renderer.onTick, this));
 
@@ -191,25 +197,6 @@ export class Visualization {
     );
   }
 
-  trigger = (event: string, ...args: any[]) => {
-    const callbacksForEvent = this.callbacks[event] ?? [];
-    callbacksForEvent.forEach((callback) => callback.apply(null, args));
-  };
-
-  init(): void {
-    this.container
-      .selectAll('g.layer')
-      .data(['relationships', 'nodes'])
-      .join('g')
-      .attr('class', (d) => `layer ${d}`);
-
-    this.updateNodes();
-    this.updateRelationships();
-    this.forceSim.precompute();
-
-    this.adjustZoomMinScaleExtentToFitGraph();
-  }
-
   private updateNodes() {
     const nodes = this.graph.nodes();
     this.geometry.onGraphChange(this.graph, {
@@ -224,7 +211,7 @@ export class Visualization {
       .join('g')
       .attr('class', 'node')
       .attr('aria-label', (d) => `graph-node${d.id}`)
-      // .call(nodeEventHandlers, this.trigger, this.forceSim.simulation)
+      .call(nodeEventHandlers, this.trigger, this.forceSim.simulation)
       .classed('selected', (node) => node.selected);
 
     nodeRenderer.forEach((renderer) =>
@@ -288,22 +275,6 @@ export class Visualization {
       );
     }
   };
-
-  private adjustZoomMinScaleExtentToFitGraph = (): void => {
-    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
-    const PADDING_FACTOR = 0.75;
-    const scaleToFitGraphWithPadding = scaleAndOffset
-      ? scaleAndOffset.scale * PADDING_FACTOR
-      : this.zoomMinScaleExtent;
-    if (scaleToFitGraphWithPadding <= this.zoomMinScaleExtent) {
-      this.zoomMinScaleExtent = scaleToFitGraphWithPadding;
-      this.zoomBehavior.scaleExtent([
-        scaleToFitGraphWithPadding,
-        ZOOM_MAX_SCALE,
-      ]);
-    }
-  };
-
   private getZoomScaleFactorToFitWholeGraph = ():
     | { scale: number; centerPointOffset: { x: number; y: number } }
     | undefined => {
@@ -331,6 +302,20 @@ export class Visualization {
     return;
   };
 
+  private adjustZoomMinScaleExtentToFitGraph = (): void => {
+    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    const PADDING_FACTOR = 0.75;
+    const scaleToFitGraphWithPadding = scaleAndOffset
+      ? scaleAndOffset.scale * PADDING_FACTOR
+      : this.zoomMinScaleExtent;
+    if (scaleToFitGraphWithPadding <= this.zoomMinScaleExtent) {
+      this.zoomMinScaleExtent = scaleToFitGraphWithPadding;
+      this.zoomBehavior.scaleExtent([
+        scaleToFitGraphWithPadding,
+        ZOOM_MAX_SCALE,
+      ]);
+    }
+  };
   on = (event: string, callback: (...args: any[]) => void) => {
     if (isNullish(this.callbacks[event])) {
       this.callbacks[event] = [];
@@ -340,6 +325,24 @@ export class Visualization {
     return this;
   };
 
+  trigger = (event: string, ...args: any[]) => {
+    const callbacksForEvent = this.callbacks[event] ?? [];
+    callbacksForEvent.forEach((callback) => callback.apply(null, args));
+  };
+
+  init(): void {
+    this.container
+      .selectAll('g.layer')
+      .data(['relationships', 'nodes'])
+      .join('g')
+      .attr('class', (d) => `layer ${d}`);
+
+    this.updateNodes();
+    this.updateRelationships();
+    this.forceSim.precompute();
+
+    this.adjustZoomMinScaleExtentToFitGraph();
+  }
   update(options: {
     updateNodes: boolean;
     updateRelationships: boolean;
