@@ -40,15 +40,19 @@ export function createGraph(
 }
 
 export function mapNodes(nodes: BasicNode[]): NodeModel[] {
-  return nodes.map(
-    (node) =>
-      new NodeModel(
-        node.id,
-        node.labels,
-        mapProperties(node.properties),
-        node.propertyTypes,
-      ),
-  );
+  if (nodes && nodes.length > 0) {
+    return nodes.map(
+      (node) =>
+        new NodeModel(
+          node.id,
+          node.labels,
+          mapProperties(node.properties),
+          node.propertyTypes,
+        ),
+    );
+  } else {
+    return [];
+  }
 }
 
 export function mapRelationships(

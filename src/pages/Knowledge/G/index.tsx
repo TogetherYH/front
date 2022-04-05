@@ -1,5 +1,6 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import { Card } from 'antd';
+import { psychosisState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
 import { GraphStyleModel } from './models/GraphStyle';
@@ -12,121 +13,126 @@ import { debounce } from 'lodash';
 import { StyledSvgWrapper } from './GraphVisualizer/Graph/styled';
 import './style.css';
 
-interface G3Props {}
+interface G3Props {
+  psychosis: psychosisState;
+  loading: boolean;
+  dispatch: Dispatch;
+}
 
 const G: FC<G3Props> = (props) => {
+  const { psychosis, loading, dispatch } = props;
+
   const svgElement = useRef<SVGSVGElement>();
 
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [visualization, setVisualization] = useState<Visualization>();
   const [graph, setGraph] = useState<GraphModel>();
-  const [nodes, setNodes] = useState<BasicNode[]>([]);
+  // const [nodes, setNodes] = useState<BasicNode[]>([]);
   const [relationships, setRelationships] = useState<BasicRelationship[]>([]);
   const [selectedItem, setSelectedItem] = useState<VizItem>();
 
   useEffect(() => {
+    dispatch({
+      type: 'psychosis/fetchList',
+      payload: {
+        name: '',
+      },
+    });
+
     if (svgElement.current) {
-      const ns = [
-        {
-          id: '1',
-          labels: ['11'],
-          properties: {
-            name: '11',
-          },
-          propertyTypes: {
-            value: '1',
-          },
-        },
-        {
-          id: '2',
-          labels: ['22'],
-          properties: {
-            name: '22',
-          },
-          propertyTypes: {
-            value: '2',
-          },
-        },
-        {
-          id: '3',
-          labels: ['22'],
-          properties: {
-            name: '33',
-          },
-          propertyTypes: {
-            value: '2',
-          },
-        },
-        {
-          id: '4',
-          labels: ['22'],
-          properties: {
-            name: '44',
-          },
-          propertyTypes: {
-            value: '2',
-          },
-        },
-        {
-          id: '5',
-          labels: ['22'],
-          properties: {
-            name: '55',
-          },
-          propertyTypes: {
-            value: '2',
-          },
-        },
-      ];
-      setNodes(ns);
-
-      const r = [
-        {
-          id: '12',
-          startNodeId: '1',
-          endNodeId: '2',
-          type: '4',
-          properties: {},
-          propertyTypes: {},
-        },
-        {
-          id: '13',
-          startNodeId: '1',
-          endNodeId: '3',
-          type: '4',
-          properties: {},
-          propertyTypes: {},
-        },
-        {
-          id: '14',
-          startNodeId: '1',
-          endNodeId: '4',
-          type: '4',
-          properties: {},
-          propertyTypes: {},
-        },
-        {
-          id: '15',
-          startNodeId: '1',
-          endNodeId: '5',
-          type: '4',
-          properties: {},
-          propertyTypes: {},
-        },
-      ];
-
-      setRelationships(r);
-
-      setGraph(createGraph(ns, r));
+      // const ns = [
+      //   {
+      //     id: '1',
+      //     labels: ['11'],
+      //     properties: {
+      //       name: '11',
+      //     },
+      //     propertyTypes: {
+      //     },
+      //   },
+      //   {
+      //     id: '2',
+      //     labels: ['22'],
+      //     properties: {
+      //       name: '22',
+      //     },
+      //     propertyTypes: {
+      //     },
+      //   },
+      //   {
+      //     id: '3',
+      //     labels: ['22'],
+      //     properties: {
+      //       name: '33',
+      //     },
+      //     propertyTypes: {
+      //     },
+      //   },
+      //   {
+      //     id: '4',
+      //     labels: ['22'],
+      //     properties: {
+      //       name: '44',
+      //     },
+      //     propertyTypes: {
+      //     },
+      //   },
+      //   {
+      //     id: '5',
+      //     labels: ['22'],
+      //     properties: {
+      //       name: '55',
+      //     },
+      //     propertyTypes: {
+      //     },
+      //   },
+      // ];
+      // setNodes(ns);
+      // const r = [
+      //   {
+      //     id: '12',
+      //     startNodeId: '1',
+      //     endNodeId: '2',
+      //     type: '4',
+      //     properties: {},
+      //     propertyTypes: {},
+      //   },
+      //   {
+      //     id: '13',
+      //     startNodeId: '1',
+      //     endNodeId: '3',
+      //     type: '4',
+      //     properties: {},
+      //     propertyTypes: {},
+      //   },
+      //   {
+      //     id: '14',
+      //     startNodeId: '1',
+      //     endNodeId: '4',
+      //     type: '4',
+      //     properties: {},
+      //     propertyTypes: {},
+      //   },
+      //   {
+      //     id: '15',
+      //     startNodeId: '1',
+      //     endNodeId: '5',
+      //     type: '4',
+      //     properties: {},
+      //     propertyTypes: {},
+      //   },
+      // ];
+      // setRelationships(r);
+      // setGraph(createGraph(psychosis.nodes, r));
     }
   }, [svgElement]);
 
   useEffect(() => {
-    if (graph) {
-      // console.log('ss', svgElement.current);
-      // console.log('mm', measureSize);
-      // console.log('gg', graph);
-      // console.log('ii', isFullscreen);
+    setGraph(createGraph(psychosis.nodes, relationships));
+  }, [psychosis, relationships]);
+
+  useEffect(() => {
+    if (graph && svgElement.current) {
       setVisualization(
         new Visualization(
           svgElement.current,
@@ -138,8 +144,6 @@ const G: FC<G3Props> = (props) => {
           isFullscreen,
         ),
       );
-
-      // console.log('vv', visualization);
     }
   }, [graph]);
 
@@ -208,4 +212,17 @@ const G: FC<G3Props> = (props) => {
   );
 };
 
-export default G;
+const mapStateToProps = ({
+  psychosis,
+  loading,
+}: {
+  psychosis: psychosisState;
+  loading: Loading;
+}) => {
+  return {
+    psychosis,
+    psychosisLoading: loading.models.psychosis,
+  };
+};
+
+export default connect(mapStateToProps)(G);
