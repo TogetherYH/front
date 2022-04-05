@@ -25,3 +25,95 @@ button .faded {
   opacity: 0.3;
   cursor: auto;
 } */
+
+/* .symptom {
+  color: #fff;
+  background: #03cee0;
+  border-color: #03cee0;
+}
+
+.symptom :hover {
+  color: #fff;
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.symptom :active {
+  color: #fff;
+  background: #4dff97;
+  border-color: #4dff97;
+} */
+
+.psyChecked {
+  color: #fff !important;
+  border-color: #c41d7f !important;
+  background: #c41d7f !important;
+}
+
+.psyChecked :hover {
+  color: #fff !important;
+  border-color: #c41d7f !important;
+  background: #c41d7f !important;
+}
+
+.psyChecked :active {
+  color: #fff !important;
+  border-color: #c41d7f !important;
+  background: #c41d7f !important;
+}
+
+
+.psyUnchecked {
+  color: #c41d7f !important;
+  background: #fff0f6 !important;
+  border-color: #ffadd2 !important;
+}
+
+.psyUnchecked :hover {
+  color: #c41d7f !important;
+  background: #fff0f6 !important;
+  border-color: #ffadd2 !important;
+}
+
+.psyUnchecked :active {
+  color: #c41d7f !important;
+  background: #fff0f6 !important;
+  border-color: #ffadd2 !important;
+}
+
+
+.symptomChecked {
+  color: #fff !important;
+  border-color: #d4380d !important;
+  background: #d4380d !important;
+}
+
+.symptomChecked :hover {
+  color: #fff !important;
+  border-color: #d4380d !important;
+  background: #d4380d !important;
+}
+
+.symptomChecked :active {
+  color: #fff !important;
+  border-color: #d4380d !important;
+  background: #d4380d !important;
+}
+
+.symptomUnchecked {
+  color: #d4380d !important;
+  background: #fff2e8 !important;
+  border-color: #ffbb96 !important;
+}
+
+.symptomUnchecked :hover {
+  color: #d4380d !important;
+  background: #fff2e8 !important;
+  border-color: #ffbb96 !important;
+}
+
+.symptomUnchecked :active {
+  color: #d4380d !important;
+  background: #fff2e8 !important;
+  border-color: #ffbb96 !important;
+}

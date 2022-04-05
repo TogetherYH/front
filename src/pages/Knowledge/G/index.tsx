@@ -1,5 +1,5 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { Card } from 'antd';
+import { Card, Row, Button, Space } from 'antd';
 import { psychosisState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
@@ -49,6 +49,9 @@ const G: FC<G3Props> = (props) => {
   const [zoomInLimitReached, setZoomInLimitReached] = useState<boolean>(false);
   const [zoomOutLimitReached, setZoomOutLimitReached] =
     useState<boolean>(false);
+
+  const [psy, setPsy] = useState<boolean>(false);
+  const [symptom, setSymptom] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch({
@@ -239,38 +242,71 @@ const G: FC<G3Props> = (props) => {
   };
 
   return (
-    <Card>
-      <StyledVisContainer isFullscreen={false}>
-        <StyledSvgWrapper>
-          <svg className="neod3viz" ref={svgElement} />
-          <StyledZoomHolder offset={offset} isFullscreen={isFullscreen}>
-            <StyledZoomButton
-              aria-label={'zoom-in'}
-              className={zoomInLimitReached ? 'faded zoom-in' : 'zoom-in'}
-              onClick={zoomInClicked}
+    <>
+      <Card>
+        <Row>关键字：</Row>
+        <Row>
+          <Space>
+            标签：
+            <Button
+              className={psy ? 'psyChecked' : 'psyUnchecked'}
+              size="small"
+              shape="round"
+              onClick={() => {
+                setPsy(!psy);
+              }}
             >
-              {/* <ZoomInIcon large={isFullscreen} /> */}
-              <ZoomInOutlined />
-            </StyledZoomButton>
-            <StyledZoomButton
-              aria-label={'zoom-out'}
-              className={zoomOutLimitReached ? 'faded zoom-out' : 'zoom-out'}
-              onClick={zoomOutClicked}
+              精神疾病
+            </Button>
+            <Button
+              className={symptom ? 'symptomChecked' : 'symptomUnchecked'}
+              size="small"
+              shape="round"
+              onClick={() => {
+                setSymptom(!symptom);
+              }}
             >
-              {/* <ZoomOutIcon large={isFullscreen} /> */}
-              <ZoomOutOutlined />
-            </StyledZoomButton>
-            <StyledZoomButton
-              aria-label={'zoom-to-fit'}
-              onClick={zoomToFitClicked}
-            >
-              {/* <ZoomToFitIcon large={isFullscreen} /> */}
-              <ExpandOutlined />
-            </StyledZoomButton>
-          </StyledZoomHolder>
-        </StyledSvgWrapper>
-      </StyledVisContainer>
-    </Card>
+              症状
+            </Button>
+            {/* <CheckableTag key='Psychosis' checked={false} >精神疾病</CheckableTag>
+            <CheckableTag key='Symptom' checked={false} >症状</CheckableTag> */}
+          </Space>
+        </Row>
+        <Row>关系：</Row>
+      </Card>
+      <Card>
+        <StyledVisContainer isFullscreen={false}>
+          <StyledSvgWrapper>
+            <svg className="neod3viz" ref={svgElement} />
+            <StyledZoomHolder offset={offset} isFullscreen={isFullscreen}>
+              <StyledZoomButton
+                aria-label={'zoom-in'}
+                className={zoomInLimitReached ? 'faded zoom-in' : 'zoom-in'}
+                onClick={zoomInClicked}
+              >
+                {/* <ZoomInIcon large={isFullscreen} /> */}
+                <ZoomInOutlined />
+              </StyledZoomButton>
+              <StyledZoomButton
+                aria-label={'zoom-out'}
+                className={zoomOutLimitReached ? 'faded zoom-out' : 'zoom-out'}
+                onClick={zoomOutClicked}
+              >
+                {/* <ZoomOutIcon large={isFullscreen} /> */}
+                <ZoomOutOutlined />
+              </StyledZoomButton>
+              <StyledZoomButton
+                aria-label={'zoom-to-fit'}
+                onClick={zoomToFitClicked}
+              >
+                {/* <ZoomToFitIcon large={isFullscreen} /> */}
+                <ExpandOutlined />
+              </StyledZoomButton>
+            </StyledZoomHolder>
+          </StyledSvgWrapper>
+        </StyledVisContainer>
+      </Card>
+    </>
   );
 };
 
