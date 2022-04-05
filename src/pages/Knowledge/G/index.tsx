@@ -4,14 +4,29 @@ import { psychosisState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
 import { GraphStyleModel } from './models/GraphStyle';
-import { BasicNode, BasicRelationship } from './common';
+import {
+  BasicNode,
+  BasicRelationship,
+  ZoomInIcon,
+  ZoomOutIcon,
+  ZoomToFitIcon,
+} from './common';
 import { GraphStats, mapNodes, mapRelationships } from './utils/mapper';
 import { Visualization } from './GraphVisualizer/Graph/visualization/Visualization';
 import { StyledVisContainer } from './styled';
 import { VizItem } from './types';
 import { debounce } from 'lodash';
-import { StyledSvgWrapper } from './GraphVisualizer/Graph/styled';
+import {
+  StyledSvgWrapper,
+  StyledZoomButton,
+  StyledZoomHolder,
+} from './GraphVisualizer/Graph/styled';
 import './style.css';
+import {
+  ExpandOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined,
+} from '@ant-design/icons';
 
 interface G3Props {
   psychosis: psychosisState;
@@ -30,6 +45,10 @@ const G: FC<G3Props> = (props) => {
   // const [nodes, setNodes] = useState<BasicNode[]>([]);
   const [relationships, setRelationships] = useState<BasicRelationship[]>([]);
   const [selectedItem, setSelectedItem] = useState<VizItem>();
+  const [offset, setOffset] = useState<number>(1);
+  const [zoomInLimitReached, setZoomInLimitReached] = useState<boolean>(false);
+  const [zoomOutLimitReached, setZoomOutLimitReached] =
+    useState<boolean>(false);
 
   useEffect(() => {
     dispatch({
@@ -201,11 +220,54 @@ const G: FC<G3Props> = (props) => {
   //   }
   // }
 
+  const zoomInClicked = () => {
+    if (visualization) {
+      visualization.zoomInClick();
+    }
+  };
+
+  const zoomOutClicked = () => {
+    if (visualization) {
+      visualization.zoomOutClick();
+    }
+  };
+
+  const zoomToFitClicked = () => {
+    if (visualization) {
+      visualization.zoomToFitClick();
+    }
+  };
+
   return (
     <Card>
       <StyledVisContainer isFullscreen={false}>
         <StyledSvgWrapper>
           <svg className="neod3viz" ref={svgElement} />
+          <StyledZoomHolder offset={offset} isFullscreen={isFullscreen}>
+            <StyledZoomButton
+              aria-label={'zoom-in'}
+              className={zoomInLimitReached ? 'faded zoom-in' : 'zoom-in'}
+              onClick={zoomInClicked}
+            >
+              {/* <ZoomInIcon large={isFullscreen} /> */}
+              <ZoomInOutlined />
+            </StyledZoomButton>
+            <StyledZoomButton
+              aria-label={'zoom-out'}
+              className={zoomOutLimitReached ? 'faded zoom-out' : 'zoom-out'}
+              onClick={zoomOutClicked}
+            >
+              {/* <ZoomOutIcon large={isFullscreen} /> */}
+              <ZoomOutOutlined />
+            </StyledZoomButton>
+            <StyledZoomButton
+              aria-label={'zoom-to-fit'}
+              onClick={zoomToFitClicked}
+            >
+              {/* <ZoomToFitIcon large={isFullscreen} /> */}
+              <ExpandOutlined />
+            </StyledZoomButton>
+          </StyledZoomHolder>
         </StyledSvgWrapper>
       </StyledVisContainer>
     </Card>

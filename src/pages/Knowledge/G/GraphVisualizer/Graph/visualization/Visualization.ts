@@ -263,7 +263,15 @@ export class Visualization {
   };
 
   private zoomToFit = () => {
-    const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    // const scaleAndOffset = this.getZoomScaleFactorToFitWholeGraph();
+    const scaleAndOffset = {
+      centerPointOffset: {
+        x: 500,
+        y: 300,
+      },
+      scale: 0.5,
+    };
+    // console.log('aa', scaleAndOffset);
     if (scaleAndOffset) {
       const { scale, centerPointOffset } = scaleAndOffset;
       // Do not zoom in more than zoom max scale for really small graphs

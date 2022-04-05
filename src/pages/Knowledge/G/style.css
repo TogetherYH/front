@@ -2,3 +2,26 @@
   stroke-width: 2px;
   fill: #d2d5da;
 }
+/* 
+button {
+  border: none;
+  background: transparent;
+  padding: 8px;
+}
+  
+button :hover {
+  background-color: #717780;
+  opacity: 0.1;
+  border-radius: 2px;
+}
+button :active {
+  background-color: #717780;
+  opacity: 0.2;
+}
+button :focus {
+  outline: none;
+}
+button .faded {
+  opacity: 0.3;
+  cursor: auto;
+} */
