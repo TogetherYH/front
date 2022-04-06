@@ -88,27 +88,27 @@ const Answer: FC<AnswerProps> = ({
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: AnswerType) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              editHandler(record);
-            }}
-          >
-            修改
-          </a>
-          <Popconfirm
-            title="Are you sure to delete this task?"
-            onConfirm={() => {
-              deleteHandler(record);
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a style={{}}>删除</a>
-          </Popconfirm>
-        </Space>
-      ),
+      // render: (text: string, record: AnswerType) => (
+      //   <Space size="middle">
+      //     <a
+      //       onClick={() => {
+      //         editHandler(record);
+      //       }}
+      //     >
+      //       修改
+      //     </a>
+      //     <Popconfirm
+      //       title="Are you sure to delete this task?"
+      //       onConfirm={() => {
+      //         deleteHandler(record);
+      //       }}
+      //       okText="Yes"
+      //       cancelText="No"
+      //     >
+      //       <a style={{}}>删除</a>
+      //     </Popconfirm>
+      //   </Space>
+      // ),
     },
   ];
 
