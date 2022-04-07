@@ -1,5 +1,5 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { Card, Row, Button, Space } from 'antd';
+import { Card, Row, Button, Space, Select, Form, Input } from 'antd';
 import { queryState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
@@ -28,6 +28,8 @@ import {
   ZoomOutOutlined,
 } from '@ant-design/icons';
 
+const { Option } = Select;
+
 interface G3Props {
   query: queryState;
   loading: boolean;
@@ -52,6 +54,8 @@ const G: FC<G3Props> = (props) => {
 
   const [psy, setPsy] = useState<boolean>(false);
   const [symptom, setSymptom] = useState<boolean>(false);
+
+  const [searchForm] = Form.useForm();
 
   useEffect(() => {
     dispatch({
@@ -150,7 +154,7 @@ const G: FC<G3Props> = (props) => {
   }, [svgElement]);
 
   useEffect(() => {
-    if (query.nodes.length > 0) {
+    if (query.nodes && query.nodes.length > 0) {
       setGraph(createGraph(query.nodes, query.relationships));
     }
     // console.log('qqq', query);
@@ -184,7 +188,13 @@ const G: FC<G3Props> = (props) => {
       );
       graphEventHandler.bindEventHandlers();
 
-      visualization?.init();
+      visualization.init();
+
+      visualization.update({
+        updateNodes: true,
+        updateRelationships: true,
+        restartSimulation: true,
+      });
     }
   }, [visualization]);
 
@@ -244,38 +254,86 @@ const G: FC<G3Props> = (props) => {
     }
   };
 
+  const queryHandler = () => {
+    dispatch({
+      type: 'query/fetchQuery',
+      payload: {
+        label: searchForm.getFieldValue('label'),
+        keyword: searchForm.getFieldValue('keyword'),
+      },
+    });
+  };
+
   return (
-    <>
+    <Space direction="vertical" style={{ width: '100%' }}>
       <Card>
-        <Row>关键字：</Row>
-        <Row>
-          <Space>
-            标签：
-            <Button
-              className={psy ? 'psyChecked' : 'psyUnchecked'}
-              size="small"
-              shape="round"
-              onClick={() => {
-                setPsy(!psy);
-              }}
-            >
-              精神疾病
-            </Button>
-            <Button
-              className={symptom ? 'symptomChecked' : 'symptomUnchecked'}
-              size="small"
-              shape="round"
-              onClick={() => {
-                setSymptom(!symptom);
-              }}
-            >
-              症状
-            </Button>
-            {/* <CheckableTag key='Psychosis' checked={false} >精神疾病</CheckableTag>
-            <CheckableTag key='Symptom' checked={false} >症状</CheckableTag> */}
+        <Form form={searchForm}>
+          <Space direction="vertical">
+            <Row>
+              <Space>
+                <Form.Item
+                  label="查找"
+                  name="label"
+                  style={{ marginBottom: '0' }}
+                >
+                  <Select style={{ width: 120 }}>
+                    <Option key="Psychosis" value="Psychosis">
+                      精神疾病
+                    </Option>
+                    <Option key="Symptom" value="Symptom">
+                      症状
+                    </Option>
+                    <Option key="Treat" value="Treat">
+                      治疗方法
+                    </Option>
+                    <Option key="Check" value="Check">
+                      检查项目
+                    </Option>
+                    <Option key="Drug" value="Drug">
+                      推荐用药
+                    </Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  label="名称"
+                  name="keyword"
+                  style={{ marginBottom: '0' }}
+                >
+                  <Input allowClear />
+                </Form.Item>
+                <Button onClick={queryHandler}>查找</Button>
+              </Space>
+            </Row>
+            <Row>
+              <Space>
+                <label title="关联">
+                  关联<span style={{ marginLeft: '2px' }}>:</span>
+                </label>
+                <Button
+                  className={psy ? 'psyChecked' : 'psyUnchecked'}
+                  size="small"
+                  shape="round"
+                  onClick={() => {
+                    setPsy(!psy);
+                  }}
+                >
+                  精神疾病
+                </Button>
+                <Button
+                  className={symptom ? 'symptomChecked' : 'symptomUnchecked'}
+                  size="small"
+                  shape="round"
+                  onClick={() => {
+                    setSymptom(!symptom);
+                  }}
+                >
+                  症状
+                </Button>
+              </Space>
+            </Row>
           </Space>
-        </Row>
-        <Row>关系：</Row>
+        </Form>
       </Card>
       <Card>
         <StyledVisContainer isFullscreen={false}>
@@ -309,7 +367,7 @@ const G: FC<G3Props> = (props) => {
           </StyledSvgWrapper>
         </StyledVisContainer>
       </Card>
-    </>
+    </Space>
   );
 };
 

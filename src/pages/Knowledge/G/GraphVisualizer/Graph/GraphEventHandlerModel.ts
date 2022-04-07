@@ -34,7 +34,7 @@ export class GraphEventHandlerModel {
   // getNodeNeighbours: GetNodeNeighboursFn
   graph: GraphModel;
   visualization: Visualization;
-  onGraphModelChange: (stats: GraphStats) => void;
+  // onGraphModelChange: (stats: GraphStats) => void;
   // onItemMouseOver: (item: VizItem) => void
   onItemSelected: (item: VizItem) => void;
   selectedItem: NodeModel | RelationshipModel | null;
@@ -96,6 +96,7 @@ export class GraphEventHandlerModel {
   }
 
   nodeClose(d: NodeModel): void {
+    console.log('...........');
     this.graph.removeConnectedRelationships(d);
     this.graph.removeNode(d);
     this.deselectItem();

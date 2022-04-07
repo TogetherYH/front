@@ -33,9 +33,10 @@ const QueryModel: QueryModelType = {
     },
   },
   effects: {
-    *fetchQuery({ payload: { name } }, { put, call }) {
+    *fetchQuery({ payload: { label, keyword } }, { put, call }) {
       const data = yield call(query, {
-        name,
+        label,
+        keyword,
       });
       if (data) {
         yield put({
