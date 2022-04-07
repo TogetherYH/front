@@ -1,6 +1,6 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import { Card, Row, Button, Space } from 'antd';
-import { psychosisState, connect, Dispatch, Loading } from 'umi';
+import { queryState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
 import { GraphStyleModel } from './models/GraphStyle';
@@ -29,13 +29,13 @@ import {
 } from '@ant-design/icons';
 
 interface G3Props {
-  psychosis: psychosisState;
+  query: queryState;
   loading: boolean;
   dispatch: Dispatch;
 }
 
 const G: FC<G3Props> = (props) => {
-  const { psychosis, loading, dispatch } = props;
+  const { query, loading, dispatch } = props;
 
   const svgElement = useRef<SVGSVGElement>();
 
@@ -55,7 +55,7 @@ const G: FC<G3Props> = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'psychosis/fetchList',
+      type: 'query/fetchQuery',
       payload: {
         name: '',
       },
@@ -150,8 +150,11 @@ const G: FC<G3Props> = (props) => {
   }, [svgElement]);
 
   useEffect(() => {
-    setGraph(createGraph(psychosis.nodes, relationships));
-  }, [psychosis, relationships]);
+    if (query.nodes.length > 0) {
+      setGraph(createGraph(query.nodes, query.relationships));
+    }
+    // console.log('qqq', query);
+  }, [query.nodes, query.relationships]);
 
   useEffect(() => {
     if (graph && svgElement.current) {
@@ -311,15 +314,15 @@ const G: FC<G3Props> = (props) => {
 };
 
 const mapStateToProps = ({
-  psychosis,
+  query,
   loading,
 }: {
-  psychosis: psychosisState;
+  query: queryState;
   loading: Loading;
 }) => {
   return {
-    psychosis,
-    psychosisLoading: loading.models.psychosis,
+    query,
+    psychosisLoading: loading.models.query,
   };
 };
 
