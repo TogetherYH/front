@@ -82,3 +82,15 @@ button .faded {
   background: #fff7e6 !important;
   border-color: #ffd591 !important;
 } 
+
+.recommendDrugChecked, .recommendDrugChecked :hover, .recommendDrugChecked :active {
+  color: #fff !important;
+  background: #d48806 !important;
+  border-color: #d48806 !important;
+}
+
+.recommendDrugUnchecked, .recommendDrugUnchecked :hover, .recommendDrugUnchecked :active {
+  color: #d48806 !important;
+  background: #fffbe6 !important;
+  border-color: #ffe58f !important;
+}

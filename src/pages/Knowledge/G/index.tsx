@@ -1,5 +1,14 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { Card, Row, Button, Space, Select, Form, Input } from 'antd';
+import {
+  Card,
+  Row,
+  Button,
+  Space,
+  Select,
+  Form,
+  Input,
+  notification,
+} from 'antd';
 import { queryState, connect, Dispatch, Loading } from 'umi';
 import { GraphModel } from './models/Graph';
 import { GraphEventHandlerModel } from './GraphVisualizer/Graph/GraphEventHandlerModel';
@@ -45,28 +54,29 @@ const G: FC<G3Props> = (props) => {
   const [visualization, setVisualization] = useState<Visualization>();
   const [graph, setGraph] = useState<GraphModel>();
   // const [nodes, setNodes] = useState<BasicNode[]>([]);
-  const [relationships, setRelationships] = useState<BasicRelationship[]>([]);
+  // const [relationships, setRelationships] = useState<BasicRelationship[]>([]);
   const [selectedItem, setSelectedItem] = useState<VizItem>();
   const [offset, setOffset] = useState<number>(1);
   const [zoomInLimitReached, setZoomInLimitReached] = useState<boolean>(false);
   const [zoomOutLimitReached, setZoomOutLimitReached] =
     useState<boolean>(false);
 
-  const [psy, setPsy] = useState<boolean>(false);
-  const [symptom, setSymptom] = useState<boolean>(false);
+  // const [psy, setPsy] = useState<boolean>(false);
+  // const [symptom, setSymptom] = useState<boolean>(false);
 
   const [searchForm] = Form.useForm();
   const [hasSymptom, setHasSymptom] = useState<boolean>(false);
   const [needCheck, setNeedCheck] = useState<boolean>(false);
   const [hasTreat, setHasTreat] = useState<boolean>(false);
+  const [recommendDrug, setRecommendDrug] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch({
-      type: 'query/fetchQuery',
-      payload: {
-        name: '',
-      },
-    });
+    // dispatch({
+    //   type: 'query/fetchQuery',
+    //   payload: {
+    //     name: '',
+    //   },
+    // });
 
     if (svgElement.current) {
       // const ns = [
@@ -202,8 +212,9 @@ const G: FC<G3Props> = (props) => {
   }, [visualization]);
 
   useEffect(() => {
+    console.log('xxxx');
     queryHandler();
-  }, [hasTreat, needCheck, hasSymptom]);
+  }, [hasTreat, needCheck, hasSymptom, recommendDrug]);
 
   const createGraph = (
     nodes: BasicNode[],
@@ -262,9 +273,19 @@ const G: FC<G3Props> = (props) => {
   };
 
   const queryHandler = () => {
-    console.log('hasSymptom: ', hasSymptom);
-    console.log('needCheck: ', needCheck);
-    console.log('hasTreat: ', hasTreat);
+    // console.log('hasSymptom: ', hasSymptom);
+    // console.log('needCheck: ', needCheck);
+    // console.log('hasTreat: ', hasTreat);
+
+    if (
+      !searchForm.getFieldValue('label') ||
+      !searchForm.getFieldValue('keyword')
+    ) {
+      notification.warning({
+        message: '请选择查询类型及名称',
+      });
+      return;
+    }
 
     dispatch({
       type: 'query/fetchQuery',
@@ -273,7 +294,9 @@ const G: FC<G3Props> = (props) => {
         keyword: searchForm.getFieldValue('keyword'),
         relationship: `${hasSymptom ? 'HasSymptom,' : ''}${
           needCheck ? 'NeedCheck,' : ''
-        }${hasTreat ? 'HasTreat,' : ''}`,
+        }${hasTreat ? 'HasTreat,' : ''}${
+          recommendDrug ? 'RecommendDrug,' : ''
+        }`,
       },
     });
   };
@@ -301,11 +324,11 @@ const G: FC<G3Props> = (props) => {
                     <Option key="Symptom" value="Symptom">
                       症状
                     </Option>
-                    <Option key="Treat" value="Treat">
-                      治疗方法
-                    </Option>
                     <Option key="Check" value="Check">
                       检查项目
+                    </Option>
+                    <Option key="Treat" value="Treat">
+                      治疗方法
                     </Option>
                     <Option key="Drug" value="Drug">
                       推荐用药
@@ -363,7 +386,21 @@ const G: FC<G3Props> = (props) => {
                     relationChangeHandler(setHasTreat, hasTreat);
                   }}
                 >
-                  治疗手段
+                  治疗方法
+                </Button>
+                <Button
+                  className={
+                    recommendDrug
+                      ? 'recommendDrugChecked'
+                      : 'recommendDrugUnchecked'
+                  }
+                  size="small"
+                  shape="round"
+                  onClick={() => {
+                    relationChangeHandler(setRecommendDrug, recommendDrug);
+                  }}
+                >
+                  推荐用药
                 </Button>
               </Space>
             </Row>
