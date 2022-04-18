@@ -56,6 +56,9 @@ const G: FC<G3Props> = (props) => {
   const [symptom, setSymptom] = useState<boolean>(false);
 
   const [searchForm] = Form.useForm();
+  const [hasSymptom, setHasSymptom] = useState<boolean>(false);
+  const [needCheck, setNeedCheck] = useState<boolean>(false);
+  const [hasTreat, setHasTreat] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch({
@@ -198,6 +201,10 @@ const G: FC<G3Props> = (props) => {
     }
   }, [visualization]);
 
+  useEffect(() => {
+    queryHandler();
+  }, [hasTreat, needCheck, hasSymptom]);
+
   const createGraph = (
     nodes: BasicNode[],
     relationships: BasicRelationship[],
@@ -255,13 +262,24 @@ const G: FC<G3Props> = (props) => {
   };
 
   const queryHandler = () => {
+    console.log('hasSymptom: ', hasSymptom);
+    console.log('needCheck: ', needCheck);
+    console.log('hasTreat: ', hasTreat);
+
     dispatch({
       type: 'query/fetchQuery',
       payload: {
         label: searchForm.getFieldValue('label'),
         keyword: searchForm.getFieldValue('keyword'),
+        relationship: `${hasSymptom ? 'HasSymptom,' : ''}${
+          needCheck ? 'NeedCheck,' : ''
+        }${hasTreat ? 'HasTreat,' : ''}`,
       },
     });
+  };
+
+  const relationChangeHandler = (func: Function, state: boolean) => {
+    func(!state);
   };
 
   return (
@@ -302,7 +320,9 @@ const G: FC<G3Props> = (props) => {
                 >
                   <Input allowClear />
                 </Form.Item>
-                <Button onClick={queryHandler}>查找</Button>
+                <Button type="primary" onClick={queryHandler}>
+                  查找
+                </Button>
               </Space>
             </Row>
             <Row>
@@ -311,24 +331,39 @@ const G: FC<G3Props> = (props) => {
                   关联<span style={{ marginLeft: '2px' }}>:</span>
                 </label>
                 <Button
-                  className={psy ? 'psyChecked' : 'psyUnchecked'}
+                  className={
+                    hasSymptom ? 'hasSymptomChecked' : 'hasSymptomUnchecked'
+                  }
                   size="small"
                   shape="round"
                   onClick={() => {
-                    setPsy(!psy);
-                  }}
-                >
-                  精神疾病
-                </Button>
-                <Button
-                  className={symptom ? 'symptomChecked' : 'symptomUnchecked'}
-                  size="small"
-                  shape="round"
-                  onClick={() => {
-                    setSymptom(!symptom);
+                    relationChangeHandler(setHasSymptom, hasSymptom);
                   }}
                 >
                   症状
+                </Button>
+                <Button
+                  className={
+                    needCheck ? 'needCheckChecked' : 'needCheckUnchecked'
+                  }
+                  size="small"
+                  shape="round"
+                  onClick={() => {
+                    // setNeedCheck(!needCheck);
+                    relationChangeHandler(setNeedCheck, needCheck);
+                  }}
+                >
+                  检查项目
+                </Button>
+                <Button
+                  className={hasTreat ? 'hasTreatChecked' : 'hasTreatUnchecked'}
+                  size="small"
+                  shape="round"
+                  onClick={() => {
+                    relationChangeHandler(setHasTreat, hasTreat);
+                  }}
+                >
+                  治疗手段
                 </Button>
               </Space>
             </Row>

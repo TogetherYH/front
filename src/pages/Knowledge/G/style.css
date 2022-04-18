@@ -44,76 +44,41 @@ button .faded {
   border-color: #4dff97;
 } */
 
-.psyChecked {
-  color: #fff !important;
-  border-color: #c41d7f !important;
-  background: #c41d7f !important;
-}
-
-.psyChecked :hover {
-  color: #fff !important;
-  border-color: #c41d7f !important;
-  background: #c41d7f !important;
-}
-
-.psyChecked :active {
+.hasSymptomChecked, .hasSymptomChecked :hover, .hasSymptomChecked :active{
   color: #fff !important;
   border-color: #c41d7f !important;
   background: #c41d7f !important;
 }
 
 
-.psyUnchecked {
-  color: #c41d7f !important;
-  background: #fff0f6 !important;
-  border-color: #ffadd2 !important;
-}
-
-.psyUnchecked :hover {
-  color: #c41d7f !important;
-  background: #fff0f6 !important;
-  border-color: #ffadd2 !important;
-}
-
-.psyUnchecked :active {
+.hasSymptomUnchecked, .hasSymptomUnchecked :hover, .hasSymptomUnchecked :active{
   color: #c41d7f !important;
   background: #fff0f6 !important;
   border-color: #ffadd2 !important;
 }
 
 
-.symptomChecked {
+.needCheckChecked, .needCheckChecked :hover, .needCheckChecked :active{
   color: #fff !important;
   border-color: #d4380d !important;
   background: #d4380d !important;
 }
 
-.symptomChecked :hover {
+.needCheckUnchecked, .needCheckUnchecked :hover, .needCheckUnchecked :active{
+  color: #d4380d !important;
+  background: #fff2e8 !important;
+  border-color: #ffbb96 !important;
+}
+
+
+.hasTreatChecked, .hasTreatChecked :hover, .hasTreatChecked :active {
   color: #fff !important;
-  border-color: #d4380d !important;
-  background: #d4380d !important;
+  background: #d46b08 !important;
+  border-color: #d46b08 !important;
 }
 
-.symptomChecked :active {
-  color: #fff !important;
-  border-color: #d4380d !important;
-  background: #d4380d !important;
-}
-
-.symptomUnchecked {
-  color: #d4380d !important;
-  background: #fff2e8 !important;
-  border-color: #ffbb96 !important;
-}
-
-.symptomUnchecked :hover {
-  color: #d4380d !important;
-  background: #fff2e8 !important;
-  border-color: #ffbb96 !important;
-}
-
-.symptomUnchecked :active {
-  color: #d4380d !important;
-  background: #fff2e8 !important;
-  border-color: #ffbb96 !important;
-}
+.hasTreatUnchecked, .hasTreatUnchecked :hover, .hasTreatUnchecked :active {
+  color: #d46b08 !important;
+  background: #fff7e6 !important;
+  border-color: #ffd591 !important;
+} 
