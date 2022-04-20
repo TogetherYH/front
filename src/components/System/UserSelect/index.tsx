@@ -116,6 +116,7 @@ const UserSelect: FC<UserSelectProps> = (props) => {
         visible={isModalVisible}
         onOk={onOk}
         onCancel={handleCancel}
+        // bodyStyle={{ overflowY: 'auto' }}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Space direction="horizontal">

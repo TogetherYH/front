@@ -58,6 +58,7 @@ const ScaleSelect: FC<ScaleSelectProps> = (props) => {
         visible={isModalVisible}
         onOk={onOk}
         onCancel={handleCancel}
+        bodyStyle={{ overflowY: 'auto' }}
       >
         <Tree
           checkable
