@@ -2,14 +2,20 @@ import request from '@/utils/request';
 
 /** 测评结果查询 */
 export async function list({
+  scaleName,
+  warningLevel,
   pageNum,
   pageSize,
 }: {
+  scaleName: string;
+  warningLevel: string[];
   pageNum: number;
   pageSize: number;
 }) {
   return request.get(
-    `/api/assess/result/list?pageNum=${pageNum}&pageSize=${pageSize}`,
+    `/api/assess/result/list?pageNum=${pageNum}&pageSize=${pageSize}&scaleName=${
+      scaleName ? scaleName : ''
+    }&warningLevel=${warningLevel ? warningLevel : ''}`,
     {},
   );
 }

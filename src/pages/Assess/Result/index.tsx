@@ -10,11 +10,13 @@ import {
   Form,
   Pagination,
   Spin,
+  Checkbox,
 } from 'antd';
 import { resultListState, Loading, connect, Dispatch } from 'umi';
 import { ResultType } from './data';
 import { report, zip } from './service';
 import ResultView from './components/ResultView';
+import './index.css';
 
 interface ResultProps {
   results: resultListState;
@@ -57,6 +59,12 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       title: '标准分',
       dataIndex: 'standardScore',
       key: 'standardScore',
+      width: 70,
+    },
+    {
+      title: '预警级别',
+      dataIndex: 'warningLevel',
+      key: 'warningLevel',
       width: 70,
     },
     {
@@ -135,7 +143,8 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     dispatch({
       type: 'results/fetchList',
       payload: {
-        name: searchForm.getFieldValue('name'),
+        scaleName: searchForm.getFieldValue('scaleName'),
+        warningLevel: searchForm.getFieldValue('warningLevel'),
         pageNum: 1,
         pageSize: results?.pageSize,
       },
@@ -180,6 +189,18 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     zip({ fileName: '测评结果.zip', callBack: setDownloading });
   };
 
+  const rowClassName = (record: ResultType, index: number, indent: number) => {
+    if (record.warningLevel === '严重') {
+      return 'red-row';
+    } else if (record.warningLevel === '偏重') {
+      return 'orange-row';
+    } else if (record.warningLevel === '中度') {
+      return 'yellow-row';
+    } else if (record.warningLevel === '轻度') {
+      return 'green-row';
+    }
+  };
+
   return (
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -187,8 +208,54 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
           <Row gutter={24}>
             <Col span={18}>
               <Form form={searchForm} layout="inline">
-                <Form.Item label="" name="name" style={{ marginBottom: '0' }}>
+                <Form.Item
+                  label="量表"
+                  name="scaleName"
+                  style={{ marginBottom: '0' }}
+                >
                   <Input allowClear />
+                </Form.Item>
+                <Form.Item
+                  label="预警"
+                  name="warningLevel"
+                  style={{ marginBottom: '0' }}
+                >
+                  <Checkbox.Group style={{ width: '100%' }}>
+                    {/* <Row>
+                      <Col span={5}> */}
+                    <Checkbox value="严重">
+                      <span style={{ color: 'red' }}>严重</span>
+                    </Checkbox>
+                    {/* </Col>
+                      <Col span={5}> */}
+                    <Checkbox value="偏重">
+                      <span style={{ color: 'orange' }}>偏重</span>
+                    </Checkbox>
+                    {/* </Col>
+                      <Col span={5}> */}
+                    <Checkbox value="中度">
+                      <span
+                        style={{
+                          color: 'yellow',
+                          textShadow: '0px 0px 2px #000',
+                        }}
+                      >
+                        中度
+                      </span>
+                    </Checkbox>
+                    {/* </Col>
+                      <Col span={5}> */}
+                    <Checkbox value="轻度">
+                      <span style={{ color: 'green' }}>轻度</span>
+                    </Checkbox>
+                    {/* </Col>
+                      <Col span={5}> */}
+                    <Checkbox value="正常">
+                      <span style={{ color: 'black' }}>正常</span>
+                    </Checkbox>
+                    {/* </Col>
+                    </Row> */}
+                  </Checkbox.Group>
                 </Form.Item>
               </Form>
             </Col>
@@ -214,6 +281,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
               loading={resultListLoading}
               pagination={false}
               size="middle"
+              rowClassName={rowClassName}
               // request={requestHandler}
             />
             <Pagination

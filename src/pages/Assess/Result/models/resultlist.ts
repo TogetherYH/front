@@ -35,8 +35,13 @@ const ResultListModel: ResultListModelType = {
     },
   },
   effects: {
-    *fetchList({ payload: { pageNum, pageSize } }, { put, call }) {
+    *fetchList(
+      { payload: { scaleName, pageNum, pageSize, warningLevel } },
+      { put, call },
+    ) {
       const data = yield call(list, {
+        scaleName,
+        warningLevel,
         pageNum,
         pageSize,
       });
