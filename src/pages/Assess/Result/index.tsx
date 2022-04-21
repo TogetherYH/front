@@ -11,7 +11,9 @@ import {
   Pagination,
   Spin,
   Checkbox,
+  Select,
 } from 'antd';
+const { Option } = Select;
 import { resultListState, Loading, connect, Dispatch } from 'umi';
 import { ResultType } from './data';
 import { report, zip } from './service';
@@ -48,6 +50,15 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       dataIndex: 'realName',
       key: 'realName',
       width: 100,
+    },
+    {
+      title: '是否医护人员',
+      dataIndex: 'medicalStaff',
+      key: 'medicalStaff',
+      width: 100,
+      render: (text: string) => {
+        return text === '1' ? '是' : text === '0' ? '否' : '';
+      },
     },
     {
       title: '原始分',
@@ -133,6 +144,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
+        medicalStaff: searchForm.getFieldValue('medicalStaff'),
         pageNum,
         pageSize,
       },
@@ -146,6 +158,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
+        medicalStaff: searchForm.getFieldValue('medicalStaff'),
         pageNum: 1,
         pageSize: results?.pageSize,
       },
@@ -159,6 +172,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
+        medicalStaff: searchForm.getFieldValue('medicalStaff'),
         pageNum: results?.pageNum,
         pageSize: results?.pageSize,
       },
@@ -192,6 +206,7 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
       fileName: '测评结果.zip',
       scaleName: searchForm.getFieldValue('scaleName'),
       warningLevel: searchForm.getFieldValue('warningLevel'),
+      medicalStaff: searchForm.getFieldValue('medicalStaff'),
       callBack: setDownloading,
     });
   };
@@ -221,6 +236,16 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
                   style={{ marginBottom: '0' }}
                 >
                   <Input allowClear />
+                </Form.Item>
+                <Form.Item label="是否医护人员" name="medicalStaff">
+                  <Select style={{ width: 120 }} allowClear>
+                    <Option key="1" value="1">
+                      医护人员
+                    </Option>
+                    <Option key="0" value="0">
+                      非医护人员
+                    </Option>
+                  </Select>
                 </Form.Item>
                 <Form.Item
                   label="预警"
