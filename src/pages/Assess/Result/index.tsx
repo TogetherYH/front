@@ -131,7 +131,8 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     dispatch({
       type: 'results/fetchList',
       payload: {
-        name: searchForm.getFieldValue('name'),
+        scaleName: searchForm.getFieldValue('scaleName'),
+        warningLevel: searchForm.getFieldValue('warningLevel'),
         pageNum,
         pageSize,
       },
@@ -156,7 +157,8 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     dispatch({
       type: 'results/fetchList',
       payload: {
-        name: searchForm.getFieldValue('name'),
+        scaleName: searchForm.getFieldValue('scaleName'),
+        warningLevel: searchForm.getFieldValue('warningLevel'),
         pageNum: results?.pageNum,
         pageSize: results?.pageSize,
       },
@@ -186,7 +188,12 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
 
   const zipHandler = () => {
     setDownloading(true);
-    zip({ fileName: '测评结果.zip', callBack: setDownloading });
+    zip({
+      fileName: '测评结果.zip',
+      scaleName: searchForm.getFieldValue('scaleName'),
+      warningLevel: searchForm.getFieldValue('warningLevel'),
+      callBack: setDownloading,
+    });
   };
 
   const rowClassName = (record: ResultType, index: number, indent: number) => {

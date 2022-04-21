@@ -43,13 +43,19 @@ export async function report({
 
 export async function zip({
   fileName,
+  scaleName,
+  warningLevel,
   callBack,
 }: {
   fileName: string;
+  scaleName: string;
+  warningLevel: string[];
   callBack: (status: boolean) => void;
 }) {
   return request.download(
-    `/api/assess/result/zip?${Math.random()}`,
+    `/api/assess/result/zip?scaleName=${
+      scaleName ? scaleName : ''
+    }&warningLevel=${warningLevel ? warningLevel : ''}&${Math.random()}`,
     fileName,
     {},
     callBack,
