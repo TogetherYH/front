@@ -91,6 +91,11 @@ export default [
         path: '/assess/publish',
         component: '@/pages/Assess/Publish',
       },
+      // 测评记录查询
+      {
+        path: '/assess/record',
+        component: '@/pages/Assess/Record',
+      },
     ],
   },
   // 统计分析
