@@ -278,7 +278,14 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
                     {/* </Col>
                       <Col span={5}> */}
                     <Checkbox value="轻度">
-                      <span style={{ color: 'green' }}>轻度</span>
+                      <span
+                        style={{
+                          color: 'lime',
+                          textShadow: '0px 0px 2px #000',
+                        }}
+                      >
+                        轻度
+                      </span>
                     </Checkbox>
                     {/* </Col>
                       <Col span={5}> */}
