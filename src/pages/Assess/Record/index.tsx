@@ -28,7 +28,7 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
 
   const columns = [
     {
-      title: '量表',
+      title: '计算错误量表',
       dataIndex: 'scaleName',
       key: 'scaleName',
       width: 220,
@@ -64,8 +64,7 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
         <Space size="middle">
           <a
             onClick={() => {
-              calculator(record);
-              deleteRecord(record);
+              calculator(record); // 计算
             }}
           >
             计算
@@ -81,7 +80,6 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
       type: 'records/fetchList',
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
-        status: searchForm.getFieldValue('status'),
         pageNum,
         pageSize,
       },
@@ -94,7 +92,6 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
       type: 'records/fetchList',
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
-        status: searchForm.getFieldValue('status'),
         pageNum: 1,
         pageSize: records?.pageSize,
       },
@@ -107,27 +104,17 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
       type: 'records/fetchList',
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
-        status: searchForm.getFieldValue('status'),
         pageNum: records?.pageNum,
         pageSize: records?.pageSize,
       },
     });
   };
 
+  //  计算
   const calculator = (record: RecordType) => {
     setRecordId(record.id);
     dispatch({
       type: 'records/fetchCalculator',
-      payload: {
-        id: record.id,
-      },
-    });
-  };
-
-  const deleteRecord = (record: RecordType) => {
-    setRecordId(record.id);
-    dispatch({
-      type: 'records/fetchdeleteRecord',
       payload: {
         id: record.id,
       },
@@ -147,22 +134,6 @@ const Record: FC<RecordProps> = ({ records, dispatch, recordListLoading }) => {
                   style={{ marginBottom: '0' }}
                 >
                   <Input allowClear />
-                </Form.Item>
-                <Form.Item label="状态" name="status">
-                  <Select style={{ width: 120 }} allowClear>
-                    <Option key="ERROR" value="ERROR">
-                      ERROR
-                    </Option>
-                    <Option key="FINISH_CALC" value="FINISH_CALC">
-                      FINISH_CALC
-                    </Option>
-                    <Option key="SUBMIT" value="SUBMIT">
-                      SUBMIT
-                    </Option>
-                    <Option key="CREATE" value="CREATE">
-                      CREATE
-                    </Option>
-                  </Select>
                 </Form.Item>
               </Form>
             </Col>

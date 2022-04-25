@@ -1,5 +1,5 @@
 import { Reducer, Effect, Subscription } from 'umi';
-import { list, update, del } from '../service';
+import { list, update } from '../service';
 import { RecordType } from '../data';
 
 export interface recordListState {
@@ -18,7 +18,7 @@ export interface RecordListModelType {
   effects: {
     fetchList: Effect;
     fetchCalculator: Effect;
-    fetchdeleteRecord: Effect;
+    // fetchdeleteRecord: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -36,13 +36,9 @@ const RecordListModel: RecordListModelType = {
     },
   },
   effects: {
-    *fetchList(
-      { payload: { scaleName, status, pageNum, pageSize } },
-      { put, call },
-    ) {
+    *fetchList({ payload: { scaleName, pageNum, pageSize } }, { put, call }) {
       const data = yield call(list, {
         scaleName,
-        status,
         pageNum,
         pageSize,
       });
@@ -54,26 +50,9 @@ const RecordListModel: RecordListModelType = {
       }
     },
     *fetchCalculator({ payload: { id } }, { put, call, select }) {
-      const data = yield call(update, {
-        id,
-      });
+      const data = yield call(update, { id });
       if (data) {
         // message.success('Edit successfully');
-        const { pageNum, pageSize } = yield select((state: any) => {
-          return state.records;
-        });
-        yield put({
-          type: 'fetchList',
-          payload: {
-            pageNum,
-            pageSize,
-          },
-        });
-      }
-    },
-    *fetchdeleteRecord({ payload: { id } }, { put, call, select }) {
-      const data = yield call(del, { id });
-      if (data) {
         const { pageNum, pageSize } = yield select((state: any) => {
           return state.records;
         });
