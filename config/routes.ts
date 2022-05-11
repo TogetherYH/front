@@ -46,6 +46,10 @@ export default [
         path: '/system/job',
         component: '@/pages/System/Job',
       },
+      {
+        path: '/system/log',
+        component: '@/pages/System/Log',
+      },
     ],
   },
   // 量表管理
