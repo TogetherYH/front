@@ -281,6 +281,7 @@ const Test: FC<TestProps> = (props) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          overflowY: 'auto',
         }}
       >
         {/* 开始答题前，显示量表名称，提示信息和开始按钮 */}
