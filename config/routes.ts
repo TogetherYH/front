@@ -119,10 +119,15 @@ export default [
     path: '/archive',
     icon: 'barChart',
     routes: [
-      // 个人档案
+      // 编辑档案
       {
-        path: '/archive/personal',
-        component: '@/pages/Archive',
+        path: '/archive/edit',
+        component: '@/pages/Archive/Edit',
+      },
+      // 档案管理
+      {
+        path: '/archive/manage',
+        component: '@/pages/Archive/Manage',
       },
     ],
   },

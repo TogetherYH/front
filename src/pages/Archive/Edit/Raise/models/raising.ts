@@ -76,7 +76,7 @@ const RaisingHistoryModel: RaisingHistoryModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (location.pathname === '/archive/personal') {
+        if (location.pathname === '/archive/edit') {
           dispatch({
             type: 'fetchList',
             payload: {},
