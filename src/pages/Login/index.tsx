@@ -33,6 +33,17 @@ const Login: React.FC = () => {
     }
   };
 
+  const fetchDictData = async () => {
+    const dictData = await initialState?.fetchDictData?.();
+    console.log('@@userInfo:', dictData);
+    if (dictData) {
+      await setInitialState((s) => ({
+        ...s,
+        dictData: dictData,
+      }));
+    }
+  };
+
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       removeToken();
@@ -49,6 +60,7 @@ const Login: React.FC = () => {
         setToken(msg.data.token);
         // 获取用户信息
         await fetchUserInfo();
+        await fetchDictData();
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;
         const { query } = history.location;

@@ -4,6 +4,7 @@ const { Panel } = Collapse;
 import { Bullet, Column, Line } from '@ant-design/plots/es';
 // import Line from '@ant-design/charts/es/plots/line';
 import { Dispatch, archiveState, connect, Loading } from 'umi';
+import { valueToLabel } from '@/utils/dict';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -74,10 +75,13 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             <Skeleton loading={loading}>
               <Descriptions column={1}>
                 <Descriptions.Item label="户口类型">
-                  {archive?.userInfo?.householdRegister}
+                  {valueToLabel(
+                    'user_household_register',
+                    archive?.userInfo?.householdRegister,
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="婚姻状况">
-                  {archive?.userInfo?.marriage}
+                  {valueToLabel('user_marriage', archive?.userInfo?.marriage)}
                 </Descriptions.Item>
               </Descriptions>
             </Skeleton>

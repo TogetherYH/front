@@ -13,3 +13,8 @@ export async function login(param: API.LoginParams): Promise<API.LoginResult> {
 export async function menuData() {
   return request.get('/api/menu', {});
 }
+
+/** 获取字典项 GET /api/dictData */
+export async function dictData() {
+  return request.get('/api/dictData', {});
+}
