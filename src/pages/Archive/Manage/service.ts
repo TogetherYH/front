@@ -23,3 +23,15 @@ export async function list({
 export async function view({ archiveId }: { archiveId: string }) {
   return request.get(`/api/archive/view/${archiveId}`);
 }
+
+export async function report({
+  id,
+  fileName,
+  callBack,
+}: {
+  id: string;
+  fileName: string;
+  callBack: (status: boolean) => void;
+}) {
+  return request.download(`/api/archive/export/${id}`, fileName, {}, callBack);
+}

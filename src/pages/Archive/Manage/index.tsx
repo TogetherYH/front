@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { connect, Dispatch, Loading, archiveListState } from 'umi';
 import { ArchiveType } from './data';
+import { report } from './service';
 import ArchiveView from './components/ArchiveView';
 
 interface ArchiveProps {
@@ -123,7 +124,14 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
     setViewModalVisible(false);
   };
 
-  const exportHandler = (record: ArchiveType) => {};
+  const exportHandler = (record: ArchiveType) => {
+    setDownloading(true);
+    report({
+      id: record.id,
+      fileName: `${record.id}.docx`,
+      callBack: setDownloading,
+    });
+  };
 
   return (
     <div>
