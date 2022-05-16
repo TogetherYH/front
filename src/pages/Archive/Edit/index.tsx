@@ -12,7 +12,7 @@ const Archive: FC = () => {
       <Card>
         <Tabs defaultActiveKey="userInfo" onChange={callback}>
           <TabPane tab="个人信息" key="userInfo">
-            <UserInfo />
+            {/* <UserInfo /> */}
           </TabPane>
           <TabPane tab="成长史" key="grownInfo">
             成长史

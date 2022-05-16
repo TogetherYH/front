@@ -18,9 +18,9 @@ export interface UserInfoModelType {
     fetchUpdate: Effect;
     fetchAdd: Effect;
   };
-  subscriptions: {
-    setup: Subscription;
-  };
+  // subscriptions: {
+  //   setup: Subscription;
+  // };
 }
 
 const UserInofModel: UserInfoModelType = {
@@ -37,7 +37,6 @@ const UserInofModel: UserInfoModelType = {
         userId,
       });
       if (data) {
-        console.log('dd', data);
         yield put({
           type: 'getOne',
           payload: {
@@ -51,7 +50,9 @@ const UserInofModel: UserInfoModelType = {
       if (data) {
         yield put({
           type: 'fetchOne',
-          payload: {},
+          payload: {
+            userId: id,
+          },
         });
       }
     },
@@ -66,18 +67,18 @@ const UserInofModel: UserInfoModelType = {
       }
     },
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen((location, action) => {
-        if (location.pathname === '/archive/edit') {
-          dispatch({
-            type: 'fetchOne',
-            payload: {},
-          });
-        }
-      });
-    },
-  },
+  // subscriptions: {
+  //   setup({ dispatch, history }) {
+  //     return history.listen((location, action) => {
+  //       if (location.pathname === '/archive/edit') {
+  //         dispatch({
+  //           type: 'fetchOne',
+  //           payload: {},
+  //         });
+  //       }
+  //     });
+  //   },
+  // },
 };
 
 export default UserInofModel;

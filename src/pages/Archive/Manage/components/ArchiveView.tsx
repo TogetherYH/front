@@ -5,6 +5,7 @@ import { Bullet, Column, Line } from '@ant-design/plots/es';
 // import Line from '@ant-design/charts/es/plots/line';
 import { Dispatch, archiveState, connect, Loading } from 'umi';
 import { valueToLabel } from '@/utils/dict';
+import UserInfo from '../../Edit/UserInfo';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -20,16 +21,16 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
     props;
 
   useEffect(() => {
-    if (visible && archiveId) {
-      if (dispatch) {
-        dispatch({
-          type: 'archive/fetchView',
-          payload: {
-            archiveId,
-          },
-        });
-      }
-    }
+    // if (visible && archiveId) {
+    //   if (dispatch) {
+    //     dispatch({
+    //       type: 'archive/fetchView',
+    //       payload: {
+    //         archiveId,
+    //       },
+    //     });
+    //   }
+    // }
     // if (!visible) {
     //   if (dispatch) {
     //     dispatch({
@@ -61,7 +62,7 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
           bordered={false}
           defaultActiveKey={[
             'userInfo',
-            // 'userInfo',
+            'raiseInfo',
             // 'assessTime',
             // 'assessResult',
             // 'assessConclusion',
@@ -73,18 +74,15 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             className="site-collapse-custom-panel"
           >
             <Skeleton loading={loading}>
-              <Descriptions column={1}>
-                <Descriptions.Item label="户口类型">
-                  {valueToLabel(
-                    'user_household_register',
-                    archive?.userInfo?.householdRegister,
-                  )}
-                </Descriptions.Item>
-                <Descriptions.Item label="婚姻状况">
-                  {valueToLabel('user_marriage', archive?.userInfo?.marriage)}
-                </Descriptions.Item>
-              </Descriptions>
+              <UserInfo visible={visible} userId={archiveId} />
             </Skeleton>
+          </Panel>
+          <Panel
+            header="成长经历"
+            key="raiseInfo"
+            className="site-collapse-custom-panel"
+          >
+            <Skeleton loading={loading}></Skeleton>
           </Panel>
         </Collapse>
       </Modal>
