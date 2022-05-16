@@ -6,6 +6,7 @@ import { Bullet, Column, Line } from '@ant-design/plots/es';
 import { Dispatch, archiveState, connect, Loading } from 'umi';
 import { valueToLabel } from '@/utils/dict';
 import UserInfo from '../../Edit/UserInfo';
+import GrownInfo from '../../Edit/GrownInfo';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -62,7 +63,7 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
           bordered={false}
           defaultActiveKey={[
             'userInfo',
-            'raiseInfo',
+            'grownInfo',
             // 'assessTime',
             // 'assessResult',
             // 'assessConclusion',
@@ -73,16 +74,14 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             key="userInfo"
             className="site-collapse-custom-panel"
           >
-            <Skeleton loading={loading}>
-              <UserInfo visible={visible} userId={archiveId} />
-            </Skeleton>
+            <UserInfo visible={visible} userId={archiveId} />
           </Panel>
           <Panel
             header="成长经历"
-            key="raiseInfo"
+            key="grownInfo"
             className="site-collapse-custom-panel"
           >
-            <Skeleton loading={loading}></Skeleton>
+            <GrownInfo visible={visible} userId={archiveId} />
           </Panel>
         </Collapse>
       </Modal>

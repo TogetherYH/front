@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Space, Row, Col, Button, Form, Input, Select } from 'antd';
 import { connect, userInfoState, Loading, Dispatch } from 'umi';
 import DictSelect from '@/components/DictSelect';
-const { Option } = Select;
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 interface UserInfoProps {
   visible: boolean;
@@ -42,7 +42,7 @@ const UserInfo: FC<UserInfoProps> = (props) => {
 
   const formProps = {
     form: form,
-    size: 'small',
+    size: 'small' as SizeType,
     labelCol: {
       xs: { span: 24 },
       sm: { span: 6 },
@@ -63,7 +63,9 @@ const UserInfo: FC<UserInfoProps> = (props) => {
   const handlerCancel = () => {
     dispatch({
       type: 'userInfo/fetchOne',
-      payload: {},
+      payload: {
+        userId,
+      },
       callback: (res) => {
         setEditing(false);
       },

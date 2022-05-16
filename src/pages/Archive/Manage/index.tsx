@@ -88,11 +88,29 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
       ),
     },
   ];
-  const searchHandler = () => {};
+  const searchHandler = () => {
+    dispatch({
+      type: 'users/fetchList',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum: 1,
+        pageSize: archives?.pageSize,
+      },
+    });
+  };
 
-  const addHandler = () => {};
-
-  const paginationHandler = () => {};
+  const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
+    dispatch({
+      type: 'archives/fetchList',
+      payload: {
+        username: searchForm.getFieldValue('username'),
+        realName: searchForm.getFieldValue('realName'),
+        pageNum,
+        pageSize,
+      },
+    });
+  };
 
   // 查看档案
   const viewHandler = (record: ArchiveType) => {
@@ -135,7 +153,7 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
                 <Button type="primary" onClick={searchHandler}>
                   搜索
                 </Button>
-                <Button onClick={addHandler}>添加</Button>
+                {/* <Button onClick={addHandler}>添加</Button> */}
               </Space>
             </Col>
           </Row>
