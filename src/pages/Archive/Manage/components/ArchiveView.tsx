@@ -7,6 +7,7 @@ import { Dispatch, archiveState, connect, Loading } from 'umi';
 import { valueToLabel } from '@/utils/dict';
 import UserInfo from '../../Edit/UserInfo';
 import GrownInfo from '../../Edit/GrownInfo';
+import MilitaryLife from '../../Edit/MilitaryLife';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -82,6 +83,13 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             className="site-collapse-custom-panel"
           >
             <GrownInfo visible={visible} userId={archiveId} />
+          </Panel>
+          <Panel
+            header="军旅生活"
+            key="militaryLife"
+            className="site-collapse-custom-panel"
+          >
+            <MilitaryLife visible={visible} userId={archiveId} />
           </Panel>
         </Collapse>
       </Modal>
