@@ -91,7 +91,7 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
   ];
   const searchHandler = () => {
     dispatch({
-      type: 'users/fetchList',
+      type: 'archives/fetchList',
       payload: {
         username: searchForm.getFieldValue('username'),
         realName: searchForm.getFieldValue('realName'),
@@ -128,7 +128,7 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
     setDownloading(true);
     report({
       id: record.id,
-      fileName: `${record.id}.docx`,
+      fileName: `${record.username}-档案.docx`,
       callBack: setDownloading,
     });
   };
