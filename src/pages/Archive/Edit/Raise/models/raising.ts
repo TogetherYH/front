@@ -50,7 +50,9 @@ const RaisingHistoryModel: RaisingHistoryModelType = {
       if (data) {
         yield put({
           type: 'fetchList',
-          payload: {},
+          payload: {
+            userId: values.userId,
+          },
         });
       }
     },
@@ -59,16 +61,20 @@ const RaisingHistoryModel: RaisingHistoryModelType = {
       if (data) {
         yield put({
           type: 'fetchList',
-          payload: {},
+          payload: {
+            userId: values.userId,
+          },
         });
       }
     },
-    *fetchDel({ payload: { id } }, { put, call, select }) {
+    *fetchDel({ payload: { id, userId } }, { put, call, select }) {
       const data = yield call(del, { id });
       if (data) {
         yield put({
           type: 'fetchList',
-          payload: {},
+          payload: {
+            userId,
+          },
         });
       }
     },

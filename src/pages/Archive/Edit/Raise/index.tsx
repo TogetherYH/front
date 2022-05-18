@@ -5,26 +5,31 @@ import { RaisingHistoryType } from './data';
 import RaisingModal from './components/RaisingModal';
 
 interface RaisingHistoryProps {
+  visible: boolean;
+  userId?: string;
   raising: raisingHistoryState;
   raisingListLoading: boolean;
   dispatch: Dispatch;
 }
 
 const RaisingHistory: FC<RaisingHistoryProps> = (props) => {
-  const { raising, raisingListLoading, dispatch } = props;
+  const { visible, userId, raising, raisingListLoading, dispatch } = props;
   const [raisingModalVisible, setRaisingModalVisible] = useState(false);
   const [record, setRecord] = useState<RaisingHistoryType | undefined>(
     undefined,
   );
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  // useEffect(() => {
-  //   console.log('uu1', raising);
-  //   // form.setFieldsValue({
-  //   //   ...userInfo?.userInfo
-  //   // });
-  //   // setEditing(false);
-  // }, [raising])
+  useEffect(() => {
+    if (visible && userId && dispatch) {
+      dispatch({
+        type: 'raising/fetchList',
+        payload: {
+          userId,
+        },
+      });
+    }
+  }, [visible, userId]);
 
   const columns = [
     {
@@ -101,6 +106,7 @@ const RaisingHistory: FC<RaisingHistoryProps> = (props) => {
           values: {
             ...values,
             status: values.status ? '1' : '0',
+            userId,
           },
         },
       });
@@ -111,6 +117,7 @@ const RaisingHistory: FC<RaisingHistoryProps> = (props) => {
           values: {
             ...values,
             status: values.status ? '1' : '0',
+            userId,
           },
         },
       });
@@ -132,7 +139,7 @@ const RaisingHistory: FC<RaisingHistoryProps> = (props) => {
     const id = record.id;
     dispatch({
       type: 'raising/fetchDel',
-      payload: { id },
+      payload: { id, userId },
     });
   };
 
