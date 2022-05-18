@@ -8,6 +8,7 @@ import { valueToLabel } from '@/utils/dict';
 import UserInfo from '../../Edit/UserInfo';
 import GrownInfo from '../../Edit/GrownInfo';
 import MilitaryLife from '../../Edit/MilitaryLife';
+import ParentInfo from '../../Edit/ParentInfo';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -64,7 +65,7 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
           bordered={false}
           defaultActiveKey={[
             'userInfo',
-            'grownInfo',
+            // 'grownInfo',
             // 'assessTime',
             // 'assessResult',
             // 'assessConclusion',
@@ -83,6 +84,13 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             className="site-collapse-custom-panel"
           >
             <GrownInfo visible={visible} userId={archiveId} />
+          </Panel>
+          <Panel
+            header="父母信息"
+            key="parentInfo"
+            className="site-collapse-custom-panel"
+          >
+            <ParentInfo visible={visible} userId={archiveId} />
           </Panel>
           <Panel
             header="军旅生活"
