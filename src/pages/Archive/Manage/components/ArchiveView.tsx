@@ -10,6 +10,7 @@ import GrownInfo from '../../Edit/GrownInfo';
 import MilitaryLife from '../../Edit/MilitaryLife';
 import ParentInfo from '../../Edit/ParentInfo';
 import RaisingHistory from '../../Edit/Raise';
+import Child from '../../Edit/Child';
 
 interface ArchiveViewProps {
   visible: boolean;
@@ -99,6 +100,13 @@ const ArchiveView: FC<ArchiveViewProps> = (props) => {
             className="site-collapse-custom-panel"
           >
             <ParentInfo visible={visible} userId={archiveId} />
+          </Panel>
+          <Panel
+            header="子女信息"
+            key="childrenInfo"
+            className="site-collapse-custom-panel"
+          >
+            <Child visible={visible} userId={archiveId} />
           </Panel>
           <Panel
             header="军旅生活"

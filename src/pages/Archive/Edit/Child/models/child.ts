@@ -1,16 +1,16 @@
 import { Reducer, Effect, Subscription } from 'umi';
 import { list, update, add, del } from '../service';
-import { RaisingHistoryType } from '../data';
+import { ChildType } from '../data';
 
-export interface raisingHistoryState {
-  raisingHistory?: RaisingHistoryType[];
+export interface childrenState {
+  children?: ChildType[];
 }
 
-export interface RaisingHistoryModelType {
-  namespace: 'raising';
-  state: raisingHistoryState;
+export interface ChildrenModelType {
+  namespace: 'children';
+  state: childrenState;
   reducers: {
-    getList: Reducer<raisingHistoryState>;
+    getList: Reducer<childrenState>;
   };
   effects: {
     fetchList: Effect;
@@ -23,8 +23,8 @@ export interface RaisingHistoryModelType {
   // };
 }
 
-const RaisingHistoryModel: RaisingHistoryModelType = {
-  namespace: 'raising',
+const ChildrenModel: ChildrenModelType = {
+  namespace: 'children',
   state: {},
   reducers: {
     getList(state, action) {
@@ -40,7 +40,7 @@ const RaisingHistoryModel: RaisingHistoryModelType = {
         yield put({
           type: 'getList',
           payload: {
-            raisingHistory: data.data,
+            children: data.data,
           },
         });
       }
@@ -93,4 +93,4 @@ const RaisingHistoryModel: RaisingHistoryModelType = {
   // },
 };
 
-export default RaisingHistoryModel;
+export default ChildrenModel;
