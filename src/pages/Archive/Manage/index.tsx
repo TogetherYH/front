@@ -3,7 +3,7 @@ import {
   Table,
   Space,
   Button,
-  Popconfirm,
+  Spin,
   Card,
   Pagination,
   Input,
@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import { connect, Dispatch, Loading, archiveListState } from 'umi';
 import { ArchiveType } from './data';
-import { report } from './service';
+import { report, zip } from './service';
 import ArchiveView from './components/ArchiveView';
 
 interface ArchiveProps {
@@ -133,6 +133,16 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
     });
   };
 
+  const zipHandler = () => {
+    setDownloading(true);
+    zip({
+      fileName: '档案.zip',
+      username: searchForm.getFieldValue('username'),
+      realName: searchForm.getFieldValue('realName'),
+      callBack: setDownloading,
+    });
+  };
+
   return (
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -161,33 +171,38 @@ const ArchiveManage: FC<ArchiveProps> = (props) => {
                 <Button type="primary" onClick={searchHandler}>
                   搜索
                 </Button>
+                <Button type="primary" onClick={zipHandler}>
+                  批量下载
+                </Button>
                 {/* <Button onClick={addHandler}>添加</Button> */}
               </Space>
             </Col>
           </Row>
         </Card>
         <Card>
-          <Table
-            columns={columns}
-            dataSource={archives?.list}
-            rowKey="id"
-            loading={archiveListLoading}
-            pagination={false}
-            size="middle"
-            scroll={{ y: 600 }}
-          />
-          <Pagination
-            style={{ marginTop: '10px', textAlign: 'right' }}
-            total={archives?.total}
-            size="small"
-            onChange={paginationHandler}
-            current={archives?.pageNum}
-            defaultPageSize={20}
-            pageSizeOptions={['10', '20', '50', '100']}
-            showSizeChanger
-            showQuickJumper
-            showTotal={(total) => `共 ${total} 条记录`}
-          />
+          <Spin spinning={downloading}>
+            <Table
+              columns={columns}
+              dataSource={archives?.list}
+              rowKey="id"
+              loading={archiveListLoading}
+              pagination={false}
+              size="middle"
+              scroll={{ y: 600 }}
+            />
+            <Pagination
+              style={{ marginTop: '10px', textAlign: 'right' }}
+              total={archives?.total}
+              size="small"
+              onChange={paginationHandler}
+              current={archives?.pageNum}
+              defaultPageSize={20}
+              pageSizeOptions={['10', '20', '50', '100']}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total) => `共 ${total} 条记录`}
+            />
+          </Spin>
         </Card>
       </Space>
       <ArchiveView

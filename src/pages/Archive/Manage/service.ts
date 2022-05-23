@@ -35,3 +35,24 @@ export async function report({
 }) {
   return request.download(`/api/archive/export/${id}`, fileName, {}, callBack);
 }
+
+export async function zip({
+  username,
+  realName,
+  fileName,
+  callBack,
+}: {
+  username: string;
+  realName: string;
+  fileName: string;
+  callBack: (status: boolean) => void;
+}) {
+  return request.download(
+    `/api/archive/zip?username=${username ? username : ''}&realName=${
+      realName ? realName : ''
+    }&${Math.random()}`,
+    fileName,
+    {},
+    callBack,
+  );
+}
