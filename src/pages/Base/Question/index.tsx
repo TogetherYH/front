@@ -231,6 +231,7 @@ const Question: FC<QuestionProps> = ({
               <Input.Search style={{ marginBottom: 8 }} placeholder="Search" />
               <Tree
                 // showLine
+                style={{ height: 696, overflow: 'auto' }}
                 onSelect={handleSelect}
                 blockNode
                 treeData={scaleTree?.tree}

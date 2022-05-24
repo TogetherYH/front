@@ -208,6 +208,7 @@ const Scale: FC<ScaleProps> = ({
               <Tree
                 // showLine
                 // onSelect={handleSelect}
+                style={{ height: 696, overflow: 'auto' }}
                 treeData={scaleTree?.tree}
                 fieldNames={{ title: 'name', key: 'id', children: 'children' }}
                 // switcherIcon
