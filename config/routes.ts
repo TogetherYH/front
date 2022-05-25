@@ -112,6 +112,11 @@ export default [
         path: '/statistics/originalExp',
         component: '@/pages/Statistics/OriginalExp',
       },
+      // 团体报告
+      {
+        path: '/statistics/groupReport',
+        component: '@/pages/Statistics/GroupReport',
+      },
     ],
   },
   // 档案

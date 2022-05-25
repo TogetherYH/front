@@ -48,6 +48,7 @@ const DeptTreeModel: DeptModelType = {
         if (
           location.pathname === '/system/dept' ||
           location.pathname === '/system/user' ||
+          location.pathname === '/statistics/groupReport' ||
           location.pathname === '/statistics/originalExp'
         ) {
           dispatch({

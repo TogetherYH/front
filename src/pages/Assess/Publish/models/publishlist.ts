@@ -117,7 +117,10 @@ const PublishListModel: PublishListModelType = {
             payload: { pageNum: 1, pageSize: 20 },
           });
         }
-        if (location.pathname === '/statistics/originalExp') {
+        if (
+          location.pathname === '/statistics/originalExp' ||
+          location.pathname === '/statistics/groupReport'
+        ) {
           dispatch({
             type: 'fetchAll',
           });
