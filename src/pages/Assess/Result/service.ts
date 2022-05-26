@@ -69,3 +69,7 @@ export async function zip({
     callBack,
   );
 }
+
+export async function progress() {
+  return request.get(`/api/assess/result/progress`, {});
+}

@@ -12,3 +12,9 @@ export interface ResultType {
   warningLevel: string;
   startTime: string;
 }
+
+export interface ZipProgress {
+  current: number;
+  total: number;
+  step: string;
+}

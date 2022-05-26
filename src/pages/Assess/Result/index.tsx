@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import {
   Space,
   Card,
@@ -12,9 +12,17 @@ import {
   Spin,
   Checkbox,
   Select,
+  Modal,
+  Progress,
 } from 'antd';
 const { Option } = Select;
-import { resultListState, Loading, connect, Dispatch } from 'umi';
+import {
+  resultListState,
+  zipProgressState,
+  Loading,
+  connect,
+  Dispatch,
+} from 'umi';
 import { ResultType } from './data';
 import { report, zip } from './service';
 import ResultView from './components/ResultView';
@@ -22,15 +30,24 @@ import './index.css';
 
 interface ResultProps {
   results: resultListState;
+  zipProgress: zipProgressState;
   resultListLoading: boolean;
   dispatch: Dispatch;
 }
 
-const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
+const Result: FC<ResultProps> = ({
+  results,
+  zipProgress,
+  dispatch,
+  resultListLoading,
+}) => {
   const [searchForm] = Form.useForm();
   const [resultId, setResultId] = useState<string>();
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [zipping, setZipping] = useState(false);
+  // const [timerId, setTimerId] = useState<number | null>(123);
+  const timerId = useRef<any>(null);
 
   const columns = [
     {
@@ -103,35 +120,6 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
           >
             下载
           </a>
-          {/* <Dropdown
-            overlay={() => {
-              return (
-                <Menu>
-                  <Menu.Item
-                    key="1"
-                    icon={<UnorderedListOutlined />}
-                    style={{ width: 100 }}
-                    onClick={() => {
-                      roleMenuHandler(record);
-                    }}
-                  >
-                    菜单权限
-                  </Menu.Item>
-                  <Menu.Item key="2" icon={<UserOutlined />}>
-                    角色用户
-                  </Menu.Item>
-                </Menu>
-              );
-            }}
-            trigger={['click']}
-          >
-            <a
-              className="ant-dropdown-link"
-              onClick={(e) => e.preventDefault()}
-            >
-              更多 <DownOutlined />
-            </a>
-          </Dropdown> */}
         </Space>
       ),
     },
@@ -200,14 +188,38 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
     });
   };
 
+  const zipFinish = (f: boolean) => {
+    if (timerId) {
+      window.clearInterval(timerId.current);
+    }
+
+    setZipping(f);
+  };
+
   const zipHandler = () => {
-    setDownloading(true);
+    setZipping(true);
+    dispatch({
+      type: 'zipProgress/resetProgress',
+      payload: {
+        zipProgress: {
+          current: 0,
+          total: 100,
+          stet: '',
+        },
+      },
+    });
+    timerId.current = window.setInterval(() => {
+      dispatch({
+        type: 'zipProgress/fetchProgress',
+        payload: {},
+      });
+    }, 1000);
     zip({
       fileName: '测评结果.zip',
       scaleName: searchForm.getFieldValue('scaleName'),
       warningLevel: searchForm.getFieldValue('warningLevel'),
       medicalStaff: searchForm.getFieldValue('medicalStaff'),
-      callBack: setDownloading,
+      callBack: zipFinish,
     });
   };
 
@@ -338,6 +350,16 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
           </Spin>
         </Card>
       </Space>
+      <Modal visible={zipping} footer={null} closable={false} centered>
+        <Progress
+          percent={(zipProgress?.current * 100) / zipProgress?.total}
+          format={() => {
+            let a = (zipProgress?.current / zipProgress?.total) * 100;
+            return `${a.toFixed()}%`;
+          }}
+        ></Progress>
+        {zipProgress.step}
+      </Modal>
       <ResultView
         visible={viewModalVisible}
         resultId={resultId}
@@ -350,13 +372,16 @@ const Result: FC<ResultProps> = ({ results, dispatch, resultListLoading }) => {
 const mapStateToProps = ({
   results,
   loading,
+  zipProgress,
 }: {
   results: resultListState;
   loading: Loading;
+  zipProgress: zipProgressState;
 }) => {
   return {
     results,
     resultListLoading: loading.models.results,
+    zipProgress,
   };
 };
 
