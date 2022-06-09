@@ -79,7 +79,7 @@ const ResultView: FC<ResultViewProps> = (props) => {
                 <Descriptions.Item label="量表名称">
                   {result.scaleName}
                 </Descriptions.Item>
-                <Descriptions.Item label="量表编号">
+                <Descriptions.Item label="量表代码">
                   {result.scaleCode}
                 </Descriptions.Item>
               </Descriptions>
