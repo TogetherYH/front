@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Modal, Form, TreeSelect, Upload, Button, notification } from 'antd';
-import { RcFile, UploadChangeParam } from 'antd/lib/upload';
+import { RcFile, UploadChangeParam, UploadProps } from 'antd/lib/upload';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { deptTreeState } from 'umi';
 import { TOKEN_KEY, getToken } from '@/utils/token';
@@ -29,6 +29,10 @@ const UserUploadModal: FC<UserUploadModalProps> = (props) => {
     template();
   };
 
+  const getExtraData: UploadProps['data'] = (file) => ({
+    deptId: form.getFieldValue('deptId'),
+  });
+
   // 上传组件参数
   const uploadProps = {
     name: 'file',
@@ -36,9 +40,7 @@ const UserUploadModal: FC<UserUploadModalProps> = (props) => {
     headers: {
       [TOKEN_KEY]: getToken() || '',
     },
-    data: {
-      deptId: form.getFieldValue('deptId'),
-    },
+    data: getExtraData,
     fileList,
     accept: '.xls,.xlsx',
     beforeUpload: (file: RcFile) => {
