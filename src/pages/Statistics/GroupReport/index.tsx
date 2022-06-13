@@ -1,18 +1,15 @@
-import { FC, useState } from 'react';
+import { FC, useState, useRef } from 'react';
 import {
   TreeSelect,
   Space,
   Form,
-  Input,
   Button,
   Card,
   Select,
-  Table,
+  Progress,
   Row,
   Col,
   DatePicker,
-  // Icon,
-  Spin,
 } from 'antd';
 const { RangePicker } = DatePicker;
 import {
@@ -22,7 +19,7 @@ import {
   scaleTreeState,
   publishListState,
   deptTreeState,
-  originalState,
+  groupProgressState,
 } from 'umi';
 import moment from 'moment';
 import { exp } from './service';
@@ -33,7 +30,7 @@ interface GroupReportProps {
   publishs: publishListState;
   publishSelect: any[];
   deptTree: deptTreeState;
-  original: originalState;
+  groupProgress: groupProgressState;
   listLoading: boolean;
   dispatch: Dispatch;
 }
@@ -44,43 +41,35 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
     publishs,
     deptTree,
     publishSelect,
-    original,
+    groupProgress,
     dispatch,
     listLoading,
   } = prop;
 
   const [searchForm] = Form.useForm();
   const [exporting, setExporting] = useState(false);
+  const timerId = useRef<any>(null);
 
-  const searchHandler = () => {
-    searchForm.submit();
+  const onFinish = (values: any) => {};
+
+  const expFinish = (f: boolean) => {
+    if (timerId) {
+      window.clearInterval(timerId.current);
+    }
+
+    setExporting(f);
   };
-
-  const onFinish = (values: any) => {
-    // console.log('form on finish');
-    // console.log(values);
-    // dispatch({
-    //   type: 'original/fetchSearch',
-    //   payload: {
-    //     ...values,
-    //     startDate: values.startDate
-    //       ? moment(values.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
-    //       : '',
-    //     endDate: values.startDate
-    //       ? moment(values.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
-    //       : '',
-    //   },
-    // });
-  };
-
-  // const setExporting = () => {
-
-  // };
 
   const expHandler = () => {
     setExporting(true);
     const formValues = searchForm.getFieldsValue();
     // console.log('a', a);
+    timerId.current = window.setInterval(() => {
+      dispatch({
+        type: 'groupProgress/fetchProgress',
+        payload: {},
+      });
+    }, 1000);
     exp({
       param: {
         ...formValues,
@@ -92,7 +81,7 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
           : '',
       },
       fileName: `团体报告.docx`,
-      callBack: setExporting,
+      callBack: expFinish,
     });
   };
 
@@ -126,6 +115,8 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                       </Select>
                     </Form.Item>
                   </Col>
+                </Row>
+                <Row gutter={12}>
                   <Col span={9}>
                     <Form.Item label="日期范围" name="startDate">
                       <RangePicker style={{ width: '100%' }} />
@@ -144,7 +135,8 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                       />
                     </Form.Item>
                   </Col>
-
+                </Row>
+                <Row gutter={12}>
                   <Col span={9}>
                     <Form.Item label="发布主题" name="publishId">
                       <Select
@@ -160,36 +152,43 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                     </Form.Item>
                   </Col>
                 </Row>
+                <Row gutter={12}>
+                  <Col span={9}>
+                    <Form.Item label=" " colon={false}>
+                      <Space>
+                        <Button type="primary" onClick={expHandler}>
+                          导出
+                        </Button>
+                      </Space>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={12}>
+                  <Col></Col>
+                </Row>
+                <Row
+                  gutter={12}
+                  style={{
+                    display: exporting ? 'block' : 'none',
+                    width: '50%',
+                  }}
+                >
+                  <Progress
+                    percent={
+                      (groupProgress?.current * 100) / groupProgress?.total
+                    }
+                    format={() => {
+                      let a =
+                        (groupProgress?.current / groupProgress?.total) * 100;
+                      return `${a.toFixed()}%`;
+                    }}
+                  ></Progress>
+                  {groupProgress.step}
+                </Row>
               </Form>
-            </Col>
-            <Col span={6}>
-              <Space>
-                <Button type="primary" onClick={searchHandler}>
-                  搜索
-                </Button>
-                <Button onClick={expHandler}>导出</Button>
-              </Space>
             </Col>
           </Row>
         </Card>
-        {/* <Card>
-          <Spin spinning={exporting}>
-            <Table
-              dataSource={original.list}
-              columns={original.columns}
-              size="small"
-              loading={listLoading}
-              scroll={{
-                x: original?.columns?.length
-                  ? original?.columns?.length * 80
-                  : 2000,
-                y: 800,
-              }}
-              rowKey="resultId"
-              pagination={false}
-            ></Table>
-          </Spin>
-        </Card> */}
       </Space>
     </div>
   );
@@ -199,14 +198,14 @@ const mapStateToProps = ({
   // scaleTree,
   publishs,
   deptTree,
-  original,
   loading,
+  groupProgress,
 }: {
   // scaleTree: scaleTreeState;
   publishs: publishListState;
   deptTree: deptTreeState;
-  original: originalState;
   loading: Loading;
+  groupProgress: groupProgressState;
 }) => {
   var publishSelect: any[] = [];
 
@@ -219,8 +218,8 @@ const mapStateToProps = ({
     // scaleTree,
     publishSelect,
     deptTree,
-    original,
-    listLoading: loading.models.original,
+    listLoading: loading.models.groupProgress,
+    groupProgress,
   };
 };
 

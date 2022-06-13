@@ -31,3 +31,7 @@ export async function exp({
     callBack,
   );
 }
+
+export async function progress() {
+  return request.get(`/api/statistics/group/progress`, {});
+}
