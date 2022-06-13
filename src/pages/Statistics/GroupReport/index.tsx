@@ -64,6 +64,16 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
     setExporting(true);
     const formValues = searchForm.getFieldsValue();
     // console.log('a', a);
+    dispatch({
+      type: 'groupProgress/resetProgress',
+      payload: {
+        zipProgress: {
+          current: 0,
+          total: 100,
+          stet: '',
+        },
+      },
+    });
     timerId.current = window.setInterval(() => {
       dispatch({
         type: 'groupProgress/fetchProgress',
@@ -156,7 +166,11 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                   <Col span={9}>
                     <Form.Item label=" " colon={false}>
                       <Space>
-                        <Button type="primary" onClick={expHandler}>
+                        <Button
+                          type="primary"
+                          onClick={expHandler}
+                          disabled={exporting ? true : false}
+                        >
                           导出
                         </Button>
                       </Space>
