@@ -79,21 +79,21 @@ const Log: FC<LogProps> = ({ logs, dispatch, logListLoading }) => {
       key: 'status',
       width: 80,
     },
-    {
-      title: '操作',
-      key: 'action',
-      render: (text: string, record: LogType) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              // editHandler(record);
-            }}
-          >
-            修改
-          </a>
-        </Space>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   key: 'action',
+    //   render: (text: string, record: LogType) => (
+    //     <Space size="middle">
+    //       <a
+    //         onClick={() => {
+    //           // editHandler(record);
+    //         }}
+    //       >
+    //         修改
+    //       </a>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   // 分页
