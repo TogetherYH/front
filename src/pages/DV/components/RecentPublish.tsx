@@ -1,10 +1,10 @@
 import { FC, useState, useEffect } from 'react';
 import { Table } from 'antd';
-import styles from '../index.less';
+import '../index.less';
 
-interface RecentProps {}
+interface RecentPublishProps {}
 
-const Recent: FC<RecentProps> = ({}) => {
+const RecentPublish: FC<RecentPublishProps> = ({}) => {
   const columns = [
     {
       title: 'Name',
@@ -64,29 +64,21 @@ const Recent: FC<RecentProps> = ({}) => {
       score: 90,
       time: '2022-01-12 12:34:47',
     },
-    // {
-    //   key: '6',
-    //   name: '张三',
-    //   scaleName: '90项症状清单',
-    //   score: 90,
-    //   time: '2022-01-12 12:34:47'
-    // },
   ];
 
   return (
-    <div
-      className={styles.card + ' ' + styles.cardHeight}
-      style={{ width: '400' }}
-    >
+    <div>
       <Table
-        rowClassName={styles.tableBgc}
+        className="card cardHeight"
+        size="small"
         columns={columns}
         dataSource={data}
-        showHeader={false}
+        // showHeader={false}
         pagination={false}
+        style={{ padding: '18px' }}
       />
     </div>
   );
 };
 
-export default Recent;
+export default RecentPublish;
