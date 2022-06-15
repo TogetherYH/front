@@ -31,7 +31,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               title={
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                     color: 'lightgray',
                     fontWeight: 'bold',
                   }}
@@ -43,7 +43,7 @@ const Statics: FC<StaticsProps> = ({}) => {
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
               value={'462,119'}
-              valueStyle={{ color: '#23B7E5', fontSize: '24px' }}
+              valueStyle={{ color: '#23B7E5', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
           </Row>
@@ -52,7 +52,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               title={
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                     color: 'lightgray',
                     fontWeight: 'bold',
                   }}
@@ -66,7 +66,7 @@ const Statics: FC<StaticsProps> = ({}) => {
                 </span>
               }
               value="1,176,381"
-              valueStyle={{ color: '#23B7E5', fontSize: '24px' }}
+              valueStyle={{ color: '#23B7E5', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
           </Row>
@@ -85,7 +85,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               title={
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                     color: 'lightgray',
                     fontWeight: 'bold',
                   }}
@@ -97,7 +97,7 @@ const Statics: FC<StaticsProps> = ({}) => {
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
               value="11,318"
-              valueStyle={{ color: '#FAAA21', fontSize: '24px' }}
+              valueStyle={{ color: '#FAAA21', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
           </Row>
@@ -106,7 +106,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               title={
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                     color: 'lightgray',
                     fontWeight: 'bold',
                   }}
@@ -118,7 +118,7 @@ const Statics: FC<StaticsProps> = ({}) => {
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
               value="2,361"
-              valueStyle={{ color: '#FAAA21', fontSize: '24px' }}
+              valueStyle={{ color: '#FAAA21', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
           </Row>

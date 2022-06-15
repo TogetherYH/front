@@ -8,6 +8,8 @@ import ScorePie from './components/ScorePie';
 import styles from './index.less';
 import ScaleWarning from './components/ScaleWarning';
 import PhyWarning from './components/PhyWarning';
+import AgeWarning from './components/AgeWarning';
+import DeptWarning from './components/DeptWarning';
 
 interface dvProps {}
 
@@ -108,19 +110,19 @@ const DV: FC<dvProps> = ({}) => {
         </Col>
         <Col className="gutter-row" span={6}>
           <div style={style}>
-            <YearColumn />
+            <AgeWarning />
           </div>
         </Col>
         <Col className="gutter-row" span={6}>
           <div style={style}>
-            <ScaleWarning />
+            <DeptWarning />
           </div>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col className="gutter-row" span={12}>
           <div style={style}>
-            <Statics />
+            <ScorePie />
           </div>
         </Col>
         <Col className="gutter-row" span={12}>

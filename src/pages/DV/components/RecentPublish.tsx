@@ -7,24 +7,29 @@ interface RecentPublishProps {}
 const RecentPublish: FC<RecentPublishProps> = ({}) => {
   const columns = [
     {
-      title: 'Name',
+      title: '测评任务',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Age',
+      title: '测评单位',
       dataIndex: 'scaleName',
       key: 'scaleName',
     },
     {
-      title: 'Address',
+      title: '测评开始时间',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: '测评人数',
       dataIndex: 'score',
       key: 'score',
     },
     {
-      title: 'Address',
-      dataIndex: 'time',
-      key: 'time',
+      title: '预警人数',
+      dataIndex: 'score',
+      key: 'score',
     },
   ];
 
