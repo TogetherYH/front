@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { Card, Row, Col } from 'antd';
 import { BarChartOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import RecentPublish from './components/RecentPublish';
 import Statics from './components/Statics';
 import TopScales from './components/TopScales';
@@ -24,29 +25,24 @@ const DV: FC<dvProps> = ({}) => {
   };
 
   const [date, setDate] = useState('');
+
+  const ZHOU = [
+    '星期日',
+    '星期一',
+    '星期二',
+    '星期三',
+    '星期四',
+    '星期五',
+    '星期六',
+  ];
+
   const getNewDate = () => {
-    const time = new Date();
-    const year = time.getFullYear();
-    const month = time.getMonth() + 1;
-    const day = time.getDate();
-    const hour = time.getHours();
-    const mi = time.getMinutes();
-    const minutes = mi <= 9 ? '0' + mi : mi;
-    const sec = time.getSeconds();
-    const seconds = sec <= 9 ? '0' + sec : sec;
-    const t =
-      year +
-      '年' +
-      month +
-      '月' +
-      day +
-      '日 ' +
-      hour +
-      ':' +
-      minutes +
-      ':' +
-      seconds;
-    setDate(t);
+    const date = dayjs();
+
+    const sound = date.format('HH:mm:ss');
+    const day = date.format('YYYY-MM-DD');
+    const time = date.day();
+    setDate(day + ' ' + sound + ' ' + ZHOU[time]);
   };
   setInterval(getNewDate, 1000);
 
@@ -197,6 +193,21 @@ const DV: FC<dvProps> = ({}) => {
             <YearColumn />
           </div>
         </Col>
+      </Row>
+      <Row
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingBottom: '14px',
+          alignItems: 'flex-end',
+        }}
+      >
+        <div style={style}>
+          <span style={{ color: 'lightgray', fontSize: '14px' }}>
+            Copyright © 2022 山东思正信息科技有限公司. All rights reserved.
+          </span>
+        </div>
       </Row>
     </div>
   );
