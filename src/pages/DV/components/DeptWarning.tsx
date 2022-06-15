@@ -42,20 +42,13 @@ const DeptWarning: FC<DeptWarningProps> = ({}) => {
     },
   ];
   const config = {
+    animation: false,
     data,
     xField: 'sales',
     yField: 'type',
 
     color: ({ type }: { type: any }) => {
       return '#F88C24';
-    },
-    meta: {
-      type: {
-        alias: '类别',
-      },
-      sales: {
-        alias: '销售额',
-      },
     },
     minBarWidth: 10,
     maxBarWidth: 10,
