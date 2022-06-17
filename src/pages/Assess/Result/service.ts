@@ -4,21 +4,21 @@ import request from '@/utils/request';
 export async function list({
   scaleName,
   warningLevel,
-  medicalStaff,
+  username,
   pageNum,
   pageSize,
 }: {
   scaleName: string;
   warningLevel: string[];
-  medicalStaff: string;
+  username: string;
   pageNum: number;
   pageSize: number;
 }) {
   return request.get(
     `/api/assess/result/list?pageNum=${pageNum}&pageSize=${pageSize}&scaleName=${
       scaleName ? scaleName : ''
-    }&warningLevel=${warningLevel ? warningLevel : ''}&medicalStaff=${
-      medicalStaff ? medicalStaff : ''
+    }&warningLevel=${warningLevel ? warningLevel : ''}&username=${
+      username ? username : ''
     }`,
     {},
   );
@@ -49,20 +49,20 @@ export async function zip({
   fileName,
   scaleName,
   warningLevel,
-  medicalStaff,
+  username,
   callBack,
 }: {
   fileName: string;
   scaleName: string;
   warningLevel: string[];
-  medicalStaff: string;
+  username: string;
   callBack: (status: boolean) => void;
 }) {
   return request.download(
     `/api/assess/result/zip?scaleName=${
       scaleName ? scaleName : ''
-    }&warningLevel=${warningLevel ? warningLevel : ''}&medicalStaff=${
-      medicalStaff ? medicalStaff : ''
+    }&warningLevel=${warningLevel ? warningLevel : ''}&username=${
+      username ? username : ''
     }&${Math.random()}`,
     fileName,
     {},

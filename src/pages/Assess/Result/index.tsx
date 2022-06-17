@@ -69,15 +69,6 @@ const Result: FC<ResultProps> = ({
       width: 100,
     },
     {
-      title: '是否医护人员',
-      dataIndex: 'medicalStaff',
-      key: 'medicalStaff',
-      width: 100,
-      render: (text: string) => {
-        return text === '1' ? '是' : text === '0' ? '否' : '';
-      },
-    },
-    {
       title: '原始分',
       dataIndex: 'rawScore',
       key: 'rawScore',
@@ -132,7 +123,7 @@ const Result: FC<ResultProps> = ({
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
-        medicalStaff: searchForm.getFieldValue('medicalStaff'),
+        username: searchForm.getFieldValue('username'),
         pageNum,
         pageSize,
       },
@@ -146,7 +137,7 @@ const Result: FC<ResultProps> = ({
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
-        medicalStaff: searchForm.getFieldValue('medicalStaff'),
+        username: searchForm.getFieldValue('username'),
         pageNum: 1,
         pageSize: results?.pageSize,
       },
@@ -160,7 +151,7 @@ const Result: FC<ResultProps> = ({
       payload: {
         scaleName: searchForm.getFieldValue('scaleName'),
         warningLevel: searchForm.getFieldValue('warningLevel'),
-        medicalStaff: searchForm.getFieldValue('medicalStaff'),
+        username: searchForm.getFieldValue('username'),
         pageNum: results?.pageNum,
         pageSize: results?.pageSize,
       },
@@ -218,7 +209,7 @@ const Result: FC<ResultProps> = ({
       fileName: '测评结果.zip',
       scaleName: searchForm.getFieldValue('scaleName'),
       warningLevel: searchForm.getFieldValue('warningLevel'),
-      medicalStaff: searchForm.getFieldValue('medicalStaff'),
+      username: searchForm.getFieldValue('username'),
       callBack: zipFinish,
     });
   };
@@ -249,15 +240,8 @@ const Result: FC<ResultProps> = ({
                 >
                   <Input allowClear />
                 </Form.Item>
-                <Form.Item label="是否医护人员" name="medicalStaff">
-                  <Select style={{ width: 120 }} allowClear>
-                    <Option key="1" value="1">
-                      医护人员
-                    </Option>
-                    <Option key="0" value="0">
-                      非医护人员
-                    </Option>
-                  </Select>
+                <Form.Item label="账号/姓名" name="username">
+                  <Input allowClear />
                 </Form.Item>
                 <Form.Item
                   label="预警"
