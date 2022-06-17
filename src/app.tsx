@@ -11,7 +11,7 @@ import {
 } from '@/services/login';
 import RightContent from '@/components/RightContent';
 // import Footer from './components/Footer';
-import { getToken } from '@/utils/token';
+import { getToken, removeToken } from '@/utils/token';
 
 const loginPath = '/login';
 const isDev = process.env.NODE_ENV === 'development';
@@ -33,6 +33,10 @@ export async function getInitialState(): Promise<{
     try {
       const msg = await queryCurrentUser();
       console.log('fetchUserInfo msg', msg);
+      if (msg.data.status === 403) {
+        removeToken();
+        history.push(loginPath);
+      }
       return msg.data;
     } catch (error) {
       console.log('fetchUserInfo error', error);
