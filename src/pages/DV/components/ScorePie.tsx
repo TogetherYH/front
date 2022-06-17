@@ -97,21 +97,23 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
       value: 90,
     },
     {
-      type: '轻度焦虑',
+      type: '轻度',
       value: 5,
     },
     {
-      type: '中度焦虑',
+      type: '中度',
       value: 3,
     },
     {
-      type: '重度度焦虑',
+      type: '重度',
       value: 2,
     },
   ];
   const config3 = {
     // appendPadding: 10,
-    legend: false,
+    legend: {
+      position: 'right',
+    },
     // autoFit: true,
     data: data3,
     angleField: 'value',
@@ -144,14 +146,17 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
       }}
     >
       <Row style={{ width: '100%' }}>
-        <Col span={8} style={{ height: '100%' }}>
+        <Col span={7} style={{ height: '100%' }}>
           <Pie {...config1} />
         </Col>
-        <Col span={8} style={{ height: '100%' }}>
+        <Col span={7} style={{ height: '100%' }}>
           <Pie {...config2} />
         </Col>
-        <Col span={8} style={{ height: '100%' }}>
+        <Col span={9} style={{ height: '100%' }}>
           <Pie {...config3} />
+        </Col>
+        <Col span={1} style={{ height: '100%' }}>
+          <div></div>
         </Col>
       </Row>
     </div>

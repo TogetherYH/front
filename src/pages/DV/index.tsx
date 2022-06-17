@@ -12,6 +12,7 @@ import ScaleWarning from './components/ScaleWarning';
 import PhyWarning from './components/PhyWarning';
 import AgeWarning from './components/AgeWarning';
 import DeptWarning from './components/DeptWarning';
+import RecentWarning from './components/RecentWarning';
 
 interface dvProps {}
 
@@ -68,7 +69,7 @@ const DV: FC<dvProps> = ({}) => {
               textShadow: '1px 1px 1px lightgray',
             }}
           >
-            全军心理卫生指导中心·济南
+            全军心理卫生指导中心 · 济南
           </span>
         </div>
         <div>
@@ -190,7 +191,7 @@ const DV: FC<dvProps> = ({}) => {
         </Col>
         <Col className="gutter-row" span={12}>
           <div style={style}>
-            <YearColumn />
+            <RecentWarning />
           </div>
         </Col>
       </Row>
