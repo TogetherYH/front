@@ -35,8 +35,11 @@ const ResultListModel: ResultListModelType = {
     },
   },
   effects: {
-    *fetchList({ payload }, { put, call }) {
-      const data = yield call(list, {});
+    *fetchList({ payload: { pageNum, pageSize } }, { put, call }) {
+      const data = yield call(list, {
+        pageNum,
+        pageSize,
+      });
       if (data) {
         yield put({
           type: 'getList',
@@ -51,7 +54,7 @@ const ResultListModel: ResultListModelType = {
         if (location.pathname === '/assess/result') {
           dispatch({
             type: 'fetchList',
-            payload: {},
+            payload: { pageNum: 1, pageSize: 20 },
           });
         }
       });

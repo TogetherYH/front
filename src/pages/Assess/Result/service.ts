@@ -1,8 +1,17 @@
 import request from '@/utils/request';
 
 /** 测评结果查询 */
-export async function list({}) {
-  return request.get(`/api/assess/result/list`, {});
+export async function list({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
+  return request.get(
+    `/api/assess/result/list?pageNum=${pageNum}&pageSize=${pageSize}`,
+    {},
+  );
 }
 
 export async function view({ resultId }: { resultId: string }) {
