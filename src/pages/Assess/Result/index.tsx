@@ -174,7 +174,7 @@ const Result: FC<ResultProps> = ({
     setDownloading(true);
     report({
       id: record.id,
-      fileName: `${record.id}.docx`,
+      fileName: `${record.username}_${record.realName}_${record.scaleName}_${record.startTime}.docx`,
       callBack: setDownloading,
     });
   };
