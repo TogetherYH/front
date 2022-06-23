@@ -33,7 +33,6 @@ const Custom: FC<CustomProps> = ({ custom, dispatch }) => {
   const [factorList, setFactorList] = useState<any[]>();
   const [factorQuestionList, setFactorQuestionList] = useState<any[]>();
   const [conclusionList, setConclusionList] = useState<any[]>();
-  const [];
 
   const scaleColumns = [
     {
@@ -287,7 +286,7 @@ const Custom: FC<CustomProps> = ({ custom, dispatch }) => {
                 onClick={imp}
                 disabled={fileList?.length > 0 ? false : true}
               >
-                保存
+                导入
               </Button>
             </Form.Item>
           </Form>
@@ -336,8 +335,10 @@ const Custom: FC<CustomProps> = ({ custom, dispatch }) => {
             <Table
               columns={factorQuestionColumns}
               dataSource={factorQuestionList}
-              rowKey="name"
               pagination={false}
+              rowKey={(record) =>
+                '' + record.factorOrder + '-' + record.questionOrder
+              }
               size="small"
             ></Table>
             <Title level={5}>结论</Title>
