@@ -73,6 +73,10 @@ export default [
         path: '/base/answer',
         component: '@/pages/Base/Answer',
       },
+      {
+        path: '/base/custom',
+        component: '@/pages/Base/Custom',
+      },
     ],
   },
   // 测评
