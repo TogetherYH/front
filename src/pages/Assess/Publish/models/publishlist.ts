@@ -118,6 +118,7 @@ const PublishListModel: PublishListModelType = {
           });
         }
         if (
+          location.pathname === '/assess/result' ||
           location.pathname === '/statistics/originalExp' ||
           location.pathname === '/statistics/groupReport'
         ) {

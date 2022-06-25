@@ -14,7 +14,10 @@ import {
   Select,
   Modal,
   Progress,
+  TreeSelect,
+  DatePicker,
 } from 'antd';
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 import {
   resultListState,
@@ -22,7 +25,10 @@ import {
   Loading,
   connect,
   Dispatch,
+  deptTreeState,
+  publishListState,
 } from 'umi';
+import moment from 'moment';
 import { ResultType } from './data';
 import { report, zip } from './service';
 import ResultView from './components/ResultView';
@@ -30,6 +36,8 @@ import './index.css';
 
 interface ResultProps {
   results: resultListState;
+  deptTree: deptTreeState;
+  publishSelect: any[];
   zipProgress: zipProgressState;
   resultListLoading: boolean;
   dispatch: Dispatch;
@@ -37,6 +45,8 @@ interface ResultProps {
 
 const Result: FC<ResultProps> = ({
   results,
+  deptTree,
+  publishSelect,
   zipProgress,
   dispatch,
   resultListLoading,
@@ -118,12 +128,17 @@ const Result: FC<ResultProps> = ({
 
   // 分页
   const paginationHandler = (pageNum: number, pageSize: number | undefined) => {
+    const formValues = searchForm.getFieldsValue();
     dispatch({
       type: 'results/fetchList',
       payload: {
-        scaleName: searchForm.getFieldValue('scaleName'),
-        warningLevel: searchForm.getFieldValue('warningLevel'),
-        username: searchForm.getFieldValue('username'),
+        ...formValues,
+        startDate: formValues.startDate
+          ? moment(formValues.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
+        endDate: formValues.startDate
+          ? moment(formValues.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
         pageNum,
         pageSize,
       },
@@ -132,26 +147,36 @@ const Result: FC<ResultProps> = ({
 
   // 搜索
   const searchHandler = () => {
+    const formValues = searchForm.getFieldsValue();
     dispatch({
       type: 'results/fetchList',
       payload: {
-        scaleName: searchForm.getFieldValue('scaleName'),
-        warningLevel: searchForm.getFieldValue('warningLevel'),
-        username: searchForm.getFieldValue('username'),
+        ...formValues,
+        startDate: formValues.startDate
+          ? moment(formValues.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
+        endDate: formValues.startDate
+          ? moment(formValues.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
         pageNum: 1,
-        pageSize: results?.pageSize,
+        pageSize: results?.pageSize ? results.pageSize : 20,
       },
     });
   };
 
   // 刷新
   const refreshHandler = () => {
+    const formValues = searchForm.getFieldsValue();
     dispatch({
       type: 'results/fetchList',
       payload: {
-        scaleName: searchForm.getFieldValue('scaleName'),
-        warningLevel: searchForm.getFieldValue('warningLevel'),
-        username: searchForm.getFieldValue('username'),
+        ...formValues,
+        startDate: formValues.startDate
+          ? moment(formValues.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
+        endDate: formValues.startDate
+          ? moment(formValues.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
+          : '',
         pageNum: results?.pageNum,
         pageSize: results?.pageSize,
       },
@@ -205,11 +230,16 @@ const Result: FC<ResultProps> = ({
         payload: {},
       });
     }, 1000);
+    const formValues = searchForm.getFieldsValue();
     zip({
       fileName: '测评结果.zip',
-      scaleName: searchForm.getFieldValue('scaleName'),
-      warningLevel: searchForm.getFieldValue('warningLevel'),
-      username: searchForm.getFieldValue('username'),
+      ...formValues,
+      startDate: formValues.startDate
+        ? moment(formValues.startDate[0])?.utcOffset(8).format('YYYY-MM-DD')
+        : '',
+      endDate: formValues.startDate
+        ? moment(formValues.startDate[1])?.utcOffset(8).format('YYYY-MM-DD')
+        : '',
       callBack: zipFinish,
     });
   };
@@ -230,68 +260,99 @@ const Result: FC<ResultProps> = ({
     <div>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Card>
-          <Row gutter={24}>
+          <Row gutter={24} align="middle">
             <Col span={18}>
-              <Form form={searchForm} layout="inline">
-                <Form.Item
-                  label="量表"
-                  name="scaleName"
-                  style={{ marginBottom: '0' }}
-                >
-                  <Input allowClear />
-                </Form.Item>
-                <Form.Item label="账号/姓名" name="username">
-                  <Input allowClear />
-                </Form.Item>
-                <Form.Item
-                  label="预警"
-                  name="warningLevel"
-                  style={{ marginBottom: '0' }}
-                >
-                  <Checkbox.Group style={{ width: '100%' }}>
-                    {/* <Row>
-                      <Col span={5}> */}
-                    <Checkbox value="严重">
-                      <span style={{ color: 'red' }}>严重</span>
-                    </Checkbox>
-                    {/* </Col>
-                      <Col span={5}> */}
-                    <Checkbox value="偏重">
-                      <span style={{ color: 'orange' }}>偏重</span>
-                    </Checkbox>
-                    {/* </Col>
-                      <Col span={5}> */}
-                    <Checkbox value="中度">
-                      <span
-                        style={{
-                          color: 'yellow',
-                          textShadow: '0px 0px 2px #000',
-                        }}
-                      >
-                        中度
-                      </span>
-                    </Checkbox>
-                    {/* </Col>
-                      <Col span={5}> */}
-                    <Checkbox value="轻度">
-                      <span
-                        style={{
-                          color: 'lime',
-                          textShadow: '0px 0px 2px #000',
-                        }}
-                      >
-                        轻度
-                      </span>
-                    </Checkbox>
-                    {/* </Col>
-                      <Col span={5}> */}
-                    <Checkbox value="正常">
-                      <span style={{ color: 'black' }}>正常</span>
-                    </Checkbox>
-                    {/* </Col>
-                    </Row> */}
-                  </Checkbox.Group>
-                </Form.Item>
+              <Form
+                form={searchForm}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 19 }}
+              >
+                <Row gutter={12}>
+                  <Col span={10}>
+                    <Form.Item
+                      label="量表"
+                      name="scaleName"
+                      style={{ marginBottom: '0' }}
+                    >
+                      <Input allowClear />
+                    </Form.Item>
+                  </Col>
+                  <Col span={11}>
+                    <Form.Item label="账号/姓名" name="username">
+                      <Input allowClear />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={12}>
+                  <Col span={10}>
+                    <Form.Item label="单位" name="deptId">
+                      <TreeSelect
+                        multiple={true}
+                        treeData={deptTree?.tree}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        allowClear
+                      />
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={11}>
+                    <Form.Item label="发布主题" name="publishId">
+                      <Select
+                        allowClear
+                        // style={{ width: '100%' }}
+                        // placeholder="Please select"
+                        fieldNames={{ label: 'subject', value: 'id' }}
+                        options={publishSelect}
+                        optionLabelProp={'subject'}
+                        onSelect={() => {}}
+                        // value={user?.roleIds}
+                      ></Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={12}>
+                  <Col span={10}>
+                    <Form.Item label="日期范围" name="startDate">
+                      <RangePicker style={{ width: '100%' }} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={11}>
+                    <Form.Item label="预警" name="warningLevel">
+                      <Checkbox.Group style={{ width: '100%' }}>
+                        <Checkbox value="严重">
+                          <span style={{ color: 'red' }}>严重</span>
+                        </Checkbox>
+                        <Checkbox value="偏重">
+                          <span style={{ color: 'orange' }}>偏重</span>
+                        </Checkbox>
+                        <Checkbox value="中度">
+                          <span
+                            style={{
+                              color: 'yellow',
+                              textShadow: '0px 0px 2px #000',
+                            }}
+                          >
+                            中度
+                          </span>
+                        </Checkbox>
+                        <Checkbox value="轻度">
+                          <span
+                            style={{
+                              color: 'lime',
+                              textShadow: '0px 0px 2px #000',
+                            }}
+                          >
+                            轻度
+                          </span>
+                        </Checkbox>
+                        <Checkbox value="正常">
+                          <span style={{ color: 'black' }}>正常</span>
+                        </Checkbox>
+                      </Checkbox.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Form>
             </Col>
             <Col span={6}>
@@ -355,15 +416,28 @@ const Result: FC<ResultProps> = ({
 
 const mapStateToProps = ({
   results,
+  deptTree,
+  publishs,
   loading,
   zipProgress,
 }: {
   results: resultListState;
+  deptTree: deptTreeState;
+  publishs: publishListState;
   loading: Loading;
   zipProgress: zipProgressState;
 }) => {
+  var publishSelect: any[] = [];
+
+  publishs?.list?.map((p) => {
+    const ps = { id: p.id, subject: p.subject };
+    publishSelect.push(ps);
+  });
+
   return {
     results,
+    deptTree,
+    publishSelect,
     resultListLoading: loading.models.results,
     zipProgress,
   };

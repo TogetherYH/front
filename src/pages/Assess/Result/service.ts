@@ -5,12 +5,20 @@ export async function list({
   scaleName,
   warningLevel,
   username,
+  deptId,
+  publishId,
+  startDate,
+  endDate,
   pageNum,
   pageSize,
 }: {
   scaleName: string;
   warningLevel: string[];
   username: string;
+  deptId: string;
+  publishId: string;
+  startDate: string;
+  endDate: string;
   pageNum: number;
   pageSize: number;
 }) {
@@ -19,7 +27,9 @@ export async function list({
       scaleName ? scaleName : ''
     }&warningLevel=${warningLevel ? warningLevel : ''}&username=${
       username ? username : ''
-    }`,
+    }&deptId=${deptId ? deptId : ''}&publishId=${publishId ? publishId : ''}${
+      startDate ? '&startTime=' + startDate + ' 00:00:00' : ''
+    }${endDate ? '&endTime=' + endDate + ' 23:59:59' : ''}`,
     {},
   );
 }
@@ -50,12 +60,20 @@ export async function zip({
   scaleName,
   warningLevel,
   username,
+  deptId,
+  publishId,
+  startDate,
+  endDate,
   callBack,
 }: {
   fileName: string;
   scaleName: string;
   warningLevel: string[];
   username: string;
+  deptId: string;
+  publishId: string;
+  startDate: string;
+  endDate: string;
   callBack: (status: boolean) => void;
 }) {
   return request.download(
@@ -63,7 +81,9 @@ export async function zip({
       scaleName ? scaleName : ''
     }&warningLevel=${warningLevel ? warningLevel : ''}&username=${
       username ? username : ''
-    }&${Math.random()}`,
+    }&deptId=${deptId ? deptId : ''}&publishId=${publishId ? publishId : ''}${
+      startDate ? '&startTime=' + startDate + ' 00:00:00' : ''
+    }${endDate ? '&endTime=' + endDate + ' 23:59:59' : ''}&${Math.random()}`,
     fileName,
     {},
     callBack,
