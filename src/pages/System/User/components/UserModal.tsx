@@ -12,6 +12,7 @@ import {
 import { userState, deptTreeState, Loading, Dispatch, connect } from 'umi';
 import moment from 'moment';
 import { UserType, FormValues } from '../data';
+import DictSelect from '@/components/DictSelect';
 
 interface UserModalProps {
   visible: boolean;
@@ -152,12 +153,17 @@ const UserModal: FC<UserModalProps> = (props) => {
 
           <Form.Item label="性别" name="sex">
             <Radio.Group>
-              <Radio value={'1'}>男</Radio>
-              <Radio value={'0'}>女</Radio>
+              <Radio value="male">男</Radio>
+              <Radio value="female">女</Radio>
             </Radio.Group>
+            {/* <DictSelect dictCode="user_sex" disabled={false} /> */}
           </Form.Item>
 
-          <Form.Item label="出生日期" name="birthday">
+          <Form.Item
+            label="出生日期"
+            name="birthday"
+            rules={[{ required: true, message: '出生日期不能为空' }]}
+          >
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
 
