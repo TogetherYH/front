@@ -118,6 +118,16 @@ const User: FC<UserProps> = ({
           ) : (
             ''
           )}
+          <Popconfirm
+            title="确定重置该用户的密码?"
+            onConfirm={() => {
+              resetHandler(record);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a style={{}}>重置密码</a>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -218,6 +228,15 @@ const User: FC<UserProps> = ({
     const id = record.id;
     dispatch({
       type: 'users/fetchDelete',
+      payload: { id },
+    });
+  };
+
+  const resetHandler = (record: UserType) => {
+    console.log('...');
+    const id = record.id;
+    dispatch({
+      type: 'user/fetchReset',
       payload: { id },
     });
   };
