@@ -38,7 +38,7 @@ const Publish: FC<PublishProps> = ({
       title: '发布主题',
       dataIndex: 'subject',
       key: 'subject',
-      width: 400,
+      width: 300,
     },
     {
       title: '开始日期',
@@ -53,6 +53,19 @@ const Publish: FC<PublishProps> = ({
       width: 150,
     },
     {
+      title: '移动端查看报告',
+      dataIndex: 'mobileView',
+      key: 'mobileView',
+      width: 100,
+      render: (text: string) => {
+        if (text === '1') {
+          return '允许';
+        } else {
+          return '不允许';
+        }
+      },
+    },
+    {
       title: '创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
@@ -63,6 +76,13 @@ const Publish: FC<PublishProps> = ({
       dataIndex: 'status',
       key: 'status',
       width: 70,
+      render: (text: string) => {
+        if (text === '1') {
+          return '启用';
+        } else {
+          return <span style={{ color: 'red' }}>禁用</span>;
+        }
+      },
     },
     {
       title: '操作',
@@ -147,6 +167,7 @@ const Publish: FC<PublishProps> = ({
     values = {
       ...values,
       status: values.status ? '1' : '0',
+      mobileView: values.mobileView ? '1' : '0',
       startDate: moment(values.startDate[0]).utcOffset(8).format('YYYY-MM-DD'),
       endDate: moment(values.startDate[1]).utcOffset(8).format('YYYY-MM-DD'),
     };

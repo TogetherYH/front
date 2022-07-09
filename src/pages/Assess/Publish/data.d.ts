@@ -4,6 +4,7 @@ export interface PublishType {
   startDate: string;
   endDate: string;
   createTime: string;
+  mobileView: string;
   status: string;
   scales: any[];
   depts: any[];
