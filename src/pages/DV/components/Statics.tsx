@@ -1,10 +1,14 @@
 import { FC, useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic } from 'antd';
+import { connect, Dispatch, staticsState } from 'umi';
 import styles from '../index.less';
 
-interface StaticsProps {}
+interface StaticsProps {
+  statics: staticsState;
+}
 
-const Statics: FC<StaticsProps> = ({}) => {
+const Statics: FC<StaticsProps> = (props) => {
+  const { statics } = props;
   return (
     <div className={styles.card + ' ' + styles.cardHeight}>
       <Card
@@ -42,7 +46,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               suffix={
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
-              value={'462,119'}
+              value={statics.countUser}
               valueStyle={{ color: '#23B7E5', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
@@ -65,7 +69,7 @@ const Statics: FC<StaticsProps> = ({}) => {
                   人次
                 </span>
               }
-              value="1,176,381"
+              value={statics.countResult}
               valueStyle={{ color: '#23B7E5', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
@@ -96,7 +100,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               suffix={
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
-              value="11,318"
+              value={statics.countWarning}
               valueStyle={{ color: '#FAAA21', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
@@ -117,7 +121,7 @@ const Statics: FC<StaticsProps> = ({}) => {
               suffix={
                 <span style={{ fontSize: '14px', color: 'lightgray' }}>人</span>
               }
-              value="2,361"
+              value={statics.countWarningMiddleAbove}
               valueStyle={{ color: '#FAAA21', fontSize: '28px' }}
               style={{ color: 'gray' }}
             />
@@ -128,4 +132,10 @@ const Statics: FC<StaticsProps> = ({}) => {
   );
 };
 
-export default Statics;
+const mapStateToProps = ({ statics }: { statics: staticsState }) => {
+  return {
+    statics,
+  };
+};
+
+export default connect(mapStateToProps)(Statics);

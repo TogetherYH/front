@@ -108,7 +108,7 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                 onFinish={onFinish}
               >
                 <Row gutter={12}>
-                  <Col span={9}>
+                  <Col span={12}>
                     <Form.Item label="量表" name="scaleId">
                       {/* <TreeSelect
                         // multiple={true}
@@ -127,14 +127,14 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                   </Col>
                 </Row>
                 <Row gutter={12}>
-                  <Col span={9}>
+                  <Col span={12}>
                     <Form.Item label="日期范围" name="startDate">
                       <RangePicker style={{ width: '100%' }} />
                     </Form.Item>
                   </Col>
                 </Row>
                 <Row gutter={12}>
-                  <Col span={9}>
+                  <Col span={12}>
                     <Form.Item label="单位" name="deptId">
                       <TreeSelect
                         multiple={true}
@@ -147,7 +147,7 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                   </Col>
                 </Row>
                 <Row gutter={12}>
-                  <Col span={9}>
+                  <Col span={12}>
                     <Form.Item label="发布主题" name="publishId">
                       <Select
                         allowClear
@@ -163,7 +163,7 @@ const GroupReportProps: FC<GroupReportProps> = (prop) => {
                   </Col>
                 </Row>
                 <Row gutter={12}>
-                  <Col span={9}>
+                  <Col span={12}>
                     <Form.Item label=" " colon={false}>
                       <Space>
                         <Button

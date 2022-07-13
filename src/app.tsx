@@ -14,6 +14,7 @@ import RightContent from '@/components/RightContent';
 import { getToken, removeToken } from '@/utils/token';
 
 const loginPath = '/login';
+const dvPath = '/dv';
 const isDev = process.env.NODE_ENV === 'development';
 
 /**
@@ -60,7 +61,10 @@ export async function getInitialState(): Promise<{
     }
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  if (
+    history.location.pathname !== loginPath &&
+    history.location.pathname !== dvPath
+  ) {
     const currentUser = await fetchUserInfo();
     const dictData = await fetchDictData();
     return {
@@ -112,7 +116,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!getToken() && location.pathname !== loginPath) {
+      if (
+        !getToken() &&
+        location.pathname !== loginPath &&
+        location.pathname !== dvPath
+      ) {
         console.log('没有登录，重定向到 login');
         history.push(loginPath);
       }
