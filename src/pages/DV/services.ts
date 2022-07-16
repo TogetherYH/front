@@ -7,3 +7,7 @@ export async function statics() {
 export async function countResultByMonth() {
   return request.get(`/api/dv/countResultByMonth`, {});
 }
+
+export async function countWarningByMonth() {
+  return request.get(`/api/dv/countWarningByMonth`, {});
+}
