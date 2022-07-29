@@ -46,6 +46,10 @@ export default [
         path: '/system/job',
         component: '@/pages/System/Job',
       },
+      {
+        path: '/system/log',
+        component: '@/pages/System/Log',
+      },
     ],
   },
   // 量表管理
@@ -69,6 +73,10 @@ export default [
         path: '/base/answer',
         component: '@/pages/Base/Answer',
       },
+      {
+        path: '/base/custom',
+        component: '@/pages/Base/Custom',
+      },
     ],
   },
   // 测评
@@ -91,6 +99,11 @@ export default [
         path: '/assess/publish',
         component: '@/pages/Assess/Publish',
       },
+      // 测评记录查询
+      {
+        path: '/assess/record',
+        component: '@/pages/Assess/Record',
+      },
     ],
   },
   // 统计分析
@@ -103,6 +116,11 @@ export default [
         path: '/statistics/originalExp',
         component: '@/pages/Statistics/OriginalExp',
       },
+      // 团体报告
+      {
+        path: '/statistics/groupReport',
+        component: '@/pages/Statistics/GroupReport',
+      },
     ],
   },
   // 档案
@@ -110,10 +128,31 @@ export default [
     path: '/archive',
     icon: 'barChart',
     routes: [
-      // 个人档案
+      // 编辑档案
       {
-        path: '/archive/personal',
-        component: '@/pages/Archive',
+        path: '/archive/edit',
+        component: '@/pages/Archive/Edit',
+      },
+      // 档案管理
+      {
+        path: '/archive/manage',
+        component: '@/pages/Archive/Manage',
+      },
+    ],
+  },
+  // 知识科普
+  {
+    path: '/knowledge',
+    icon: 'barChart',
+    routes: [
+      // 知识谱图
+      {
+        path: '/knowledge/graph',
+        component: '@/pages/knowledge/G',
+      },
+      {
+        path: '/knowledge/d3',
+        component: '@/pages/knowledge/D3',
       },
     ],
   },

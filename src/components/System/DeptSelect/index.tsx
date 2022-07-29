@@ -56,6 +56,7 @@ const DeptSelect: FC<DeptSelectProps> = (props) => {
         visible={isModalVisible}
         onOk={onOk}
         onCancel={handleCancel}
+        bodyStyle={{ overflowY: 'auto' }}
       >
         <Tree
           checkable

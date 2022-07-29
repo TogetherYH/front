@@ -7,12 +7,14 @@ import type { RunTimeLayoutConfig } from 'umi';
 import {
   currentUser as queryCurrentUser,
   menuData as fetchMenuData,
+  dictData as queryDictData,
 } from '@/services/login';
 import RightContent from '@/components/RightContent';
 // import Footer from './components/Footer';
-import { getToken } from '@/utils/token';
+import { getToken, removeToken } from '@/utils/token';
 
 const loginPath = '/login';
+const dvPath = '/dv';
 const isDev = process.env.NODE_ENV === 'development';
 
 /**
@@ -21,7 +23,9 @@ const isDev = process.env.NODE_ENV === 'development';
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
+  dictData?: any;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchDictData?: () => Promise<any>;
 }> {
   const fetchUserInfo = async () => {
     if (!getToken()) {
@@ -30,6 +34,10 @@ export async function getInitialState(): Promise<{
     try {
       const msg = await queryCurrentUser();
       console.log('fetchUserInfo msg', msg);
+      if (msg.data.status === 403) {
+        removeToken();
+        history.push(loginPath);
+      }
       return msg.data;
     } catch (error) {
       console.log('fetchUserInfo error', error);
@@ -38,17 +46,38 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+  const fetchDictData = async () => {
+    if (!getToken()) {
+      return undefined;
+    }
+    try {
+      const msg = await queryDictData();
+      // console.log('dictData msg', msg);
+      return msg.data;
+    } catch (error) {
+      // console.log('fetchDictData error', error);
+      // console.log('fetchDictData error，重定向到 login');
+      // history.push(loginPath);
+    }
+  };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  if (
+    history.location.pathname !== loginPath &&
+    history.location.pathname !== dvPath
+  ) {
     const currentUser = await fetchUserInfo();
+    const dictData = await fetchDictData();
     return {
       fetchUserInfo,
+      fetchDictData,
       currentUser,
+      dictData,
       settings: {},
     };
   }
   return {
     fetchUserInfo,
+    fetchDictData,
     settings: {},
   };
 }
@@ -87,7 +116,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!getToken() && location.pathname !== loginPath) {
+      if (
+        !getToken() &&
+        location.pathname !== loginPath &&
+        location.pathname !== dvPath
+      ) {
         console.log('没有登录，重定向到 login');
         history.push(loginPath);
       }

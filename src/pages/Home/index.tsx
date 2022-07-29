@@ -5,6 +5,7 @@ export default function IndexPage() {
   return (
     <div>
       <h1>Hello, {initialState?.currentUser?.username} ~</h1>
+      {/* <h3>字典： {initialState?.dictData['user_sex'].items.at(0)['label']}</h3> */}
     </div>
   );
 }

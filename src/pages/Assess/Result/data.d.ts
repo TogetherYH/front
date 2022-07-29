@@ -9,5 +9,12 @@ export interface ResultType {
   rawScore: number;
   standardScore: number;
   averageScore: number;
+  warningLevel: string;
   startTime: string;
+}
+
+export interface ZipProgress {
+  current: number;
+  total: number;
+  step: string;
 }

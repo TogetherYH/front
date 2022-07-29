@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   LogoutOutlined,
   SettingOutlined,
+  SolutionOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
@@ -12,6 +13,7 @@ import styles from './index.less';
 // import { outLogin } from '@/services/ant-design-pro/api';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import { removeToken } from '@/utils/token';
+import ChangePwd from '../System/ChangePwd';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -38,6 +40,7 @@ const loginOut = async () => {
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  const [changePwdModal, setChangePwdModal] = useState<boolean>(false);
 
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
@@ -46,8 +49,11 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         setInitialState((s) => ({ ...s, currentUser: undefined }));
         loginOut();
         return;
+      } else if (key === 'changePwd') {
+        setChangePwdModal(true);
+        return;
       }
-      history.push(`/account/${key}`);
+      // history.push(`/account/${key}`);
     },
     [setInitialState],
   );
@@ -88,6 +94,10 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
           个人设置
         </Menu.Item>
       )} */}
+      <Menu.Item key="changePwd">
+        <SolutionOutlined />
+        修改密码
+      </Menu.Item>
       {menu && <Menu.Divider />}
 
       <Menu.Item key="logout">
@@ -96,18 +106,31 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       </Menu.Item>
     </Menu>
   );
+
+  const changePwdCancel = () => {
+    setChangePwdModal(false);
+  };
+
   return (
-    <HeaderDropdown overlay={menuHeaderDropdown}>
-      <span className={`${styles.action} ${styles.account}`}>
-        <Avatar
-          size="small"
-          className={styles.avatar}
-          src={currentUser?.avatar}
-          alt="avatar"
-        />
-        <span className={`${styles.name} anticon`}>{currentUser.username}</span>
-      </span>
-    </HeaderDropdown>
+    <>
+      <HeaderDropdown overlay={menuHeaderDropdown}>
+        <span className={`${styles.action} ${styles.account}`}>
+          <Avatar
+            size="small"
+            className={styles.avatar}
+            src={currentUser?.avatar}
+            alt="avatar"
+          />
+          <span className={`${styles.name} anticon`}>
+            {currentUser.username}
+          </span>
+        </span>
+      </HeaderDropdown>
+      <ChangePwd
+        isModalVisible={changePwdModal}
+        handleCancel={changePwdCancel}
+      ></ChangePwd>
+    </>
   );
 };
 

@@ -82,27 +82,27 @@ const Factor: FC<FactorProps> = ({
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: FactorType) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              editHandler(record);
-            }}
-          >
-            修改
-          </a>
-          <Popconfirm
-            title="Are you sure to delete this task?"
-            onConfirm={() => {
-              deleteHandler(record);
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a style={{}}>删除</a>
-          </Popconfirm>
-        </Space>
-      ),
+      // render: (text: string, record: FactorType) => (
+      //   <Space size="middle">
+      //     <a
+      //       onClick={() => {
+      //         editHandler(record);
+      //       }}
+      //     >
+      //       修改
+      //     </a>
+      //     <Popconfirm
+      //       title="Are you sure to delete this task?"
+      //       onConfirm={() => {
+      //         deleteHandler(record);
+      //       }}
+      //       okText="Yes"
+      //       cancelText="No"
+      //     >
+      //       <a style={{}}>删除</a>
+      //     </Popconfirm>
+      //   </Space>
+      // ),
     },
   ];
 
@@ -231,6 +231,7 @@ const Factor: FC<FactorProps> = ({
               <Input.Search style={{ marginBottom: 8 }} placeholder="Search" />
               <Tree
                 // showLine
+                style={{ height: 696, overflow: 'auto' }}
                 onSelect={handleSelect}
                 blockNode
                 treeData={scaleTree?.tree}

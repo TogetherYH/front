@@ -30,6 +30,11 @@ export default defineConfig({
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
     },
+    '/graph': {
+      target: 'http://localhost:9090',
+      changeOrigin: true,
+      // pathRewrite: { '^/api': '/' },
+    },
   },
   externals: {
     // "@ant-design/charts": "charts",

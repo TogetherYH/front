@@ -1,113 +1,77 @@
 import { FC, useState, useEffect } from 'react';
 import { Card } from 'antd';
-import { Column } from '@ant-design/charts';
+// import { Column } from '@ant-design/charts';
+import { Column } from '@ant-design/plots';
+import { connect, Dispatch, resultByMonthState } from 'umi';
 import styles from '../index.less';
 
-interface YearColumnProps {}
+interface YearColumnProps {
+  resultByMonth: resultByMonthState;
+}
 
-const YearColumn: FC<YearColumnProps> = ({}) => {
-  const data = [
-    {
-      date: '2021-8',
-      scale: 'SCL-90',
-      times: 203,
-    },
-    {
-      date: '2021-8',
-      scale: 'SAS',
-      times: 456,
-    },
-    {
-      date: '2021-8',
-      scale: 'SDS',
-      times: 777,
-    },
-    {
-      date: '2021-9',
-      scale: 'SCL-90',
-      times: 803,
-    },
-    {
-      date: '2021-9',
-      scale: 'SAS',
-      times: 1203,
-    },
-    {
-      date: '2021-9',
-      scale: 'SDS',
-      times: 603,
-    },
-    {
-      date: '2021-10',
-      scale: 'SCL-90',
-      times: 453,
-    },
-    {
-      date: '2021-10',
-      scale: 'SAS',
-      times: 1003,
-    },
-    {
-      date: '2021-10',
-      scale: 'SDS',
-      times: 603,
-    },
-    {
-      date: '2021-11',
-      scale: 'SCL-90',
-      times: 343,
-    },
-    {
-      date: '2021-11',
-      scale: 'SAS',
-      times: 203,
-    },
-    {
-      date: '2021-11',
-      scale: 'SDS',
-      times: 603,
-    },
-    {
-      date: '2021-12',
-      scale: 'SCL-90',
-      times: 223,
-    },
-    {
-      date: '2021-12',
-      scale: 'SAS',
-      times: 203,
-    },
-    {
-      date: '2021-12',
-      scale: 'SDS',
-      times: 603,
-    },
-    {
-      date: '2022-1',
-      scale: 'SCL-90',
-      times: 773,
-    },
-    {
-      date: '2022-1',
-      scale: 'SAS',
-      times: 503,
-    },
-    {
-      date: '2022-1',
-      scale: 'SDS',
-      times: 603,
-    },
-  ];
+const YearColumn: FC<YearColumnProps> = ({ resultByMonth }) => {
+  // const data = [
+  //   {
+  //     date: '2021-8',
+  //     scale: 'SCL-90',
+  //     times: 203,
+  //   },
+  //   {
+  //     date: '2021-9',
+  //     scale: 'SCL-90',
+  //     times: 803,
+  //   },
+  //   {
+  //     date: '2021-10',
+  //     scale: 'SCL-90',
+  //     times: 453,
+  //   },
+  //   {
+  //     date: '2021-11',
+  //     scale: 'SCL-90',
+  //     times: 343,
+  //   },
+  //   {
+  //     date: '2021-12',
+  //     scale: 'SCL-90',
+  //     times: 223,
+  //   },
+  //   {
+  //     date: '2022-1',
+  //     scale: 'SCL-90',
+  //     times: 773,
+  //   },
+  //   {
+  //     date: '2022-2',
+  //     scale: 'SCL-90',
+  //     times: 73,
+  //   },
+  //   {
+  //     date: '2022-3',
+  //     scale: 'SCL-90',
+  //     times: 273,
+  //   },
+  //   {
+  //     date: '2022-4',
+  //     scale: 'SCL-90',
+  //     times: 1073,
+  //   },
+  //   {
+  //     date: '2022-5',
+  //     scale: 'SCL-90',
+  //     times: 773,
+  //   },
+  // ];
   const config = {
-    data,
+    data: resultByMonth.data,
     // autoFit: true,
     xField: 'date',
-    yField: 'times',
-    seriesField: 'scale',
+    yField: 'cc',
+    seriesField: 'title',
     isGroup: true,
-    // height: 250,
-    // width: 500,
-    color: ['#20A1EF', '#FFBE3D', '#F56845', '#62DEEA'],
+    // height: '150px',
+    // width: '200',
+    color: ['#20A1EF'],
 
     // label: {
     //   // 可手动配置 label 数据标签位置
@@ -128,10 +92,25 @@ const YearColumn: FC<YearColumnProps> = ({}) => {
   };
 
   return (
-    <div className={styles.card + ' ' + styles.cardHeight}>
-      <Column {...config} />
+    <div
+      className={styles.card + ' ' + styles.cardHeight}
+      style={{ padding: '18px' }}
+    >
+      <div style={{ height: '100%' }}>
+        <Column {...config} />
+      </div>
     </div>
   );
 };
 
-export default YearColumn;
+const mapStateToProps = ({
+  resultByMonth,
+}: {
+  resultByMonth: resultByMonthState;
+}) => {
+  return {
+    resultByMonth,
+  };
+};
+
+export default connect(mapStateToProps)(YearColumn);

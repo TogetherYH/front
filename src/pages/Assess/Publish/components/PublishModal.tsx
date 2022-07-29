@@ -104,6 +104,7 @@ const PublishModal: FC<PublishModalProps> = (props) => {
         publish.endDate ? moment(publish.endDate) : '',
       ],
       status: publish.status === '1' ? true : false,
+      mobileView: publish.mobileView === '1' ? true : false,
       scaleIds: checkedScaleKeys,
       deptIds: checkedDeptKeys,
     });
@@ -197,8 +198,8 @@ const PublishModal: FC<PublishModalProps> = (props) => {
         <Form
           form={form}
           name="basic"
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
           autoComplete="off"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -244,6 +245,14 @@ const PublishModal: FC<PublishModalProps> = (props) => {
               />
               {/* <Button>选择部门</Button> */}
             </Space>
+          </Form.Item>
+
+          <Form.Item
+            label="移动端查看报告"
+            name="mobileView"
+            valuePropName="checked"
+          >
+            <Switch checkedChildren="允许" unCheckedChildren="不允许" />
           </Form.Item>
 
           <Form.Item label="状态" name="status" valuePropName="checked">

@@ -42,7 +42,7 @@ const ResultView: FC<ResultViewProps> = (props) => {
     }
   }, [visible]);
 
-  const onOk = () => {};
+  // const onOk = () => {};
 
   return (
     <div>
@@ -55,7 +55,7 @@ const ResultView: FC<ResultViewProps> = (props) => {
         bodyStyle={{ height: 600, overflowY: 'auto' }}
         // style={{ overflowY: 'auto', height: 700 }}
         visible={visible}
-        onOk={onOk}
+        onOk={closeHandler}
         onCancel={closeHandler}
         // confirmLoading={confirmLoading}
       >
@@ -79,7 +79,7 @@ const ResultView: FC<ResultViewProps> = (props) => {
                 <Descriptions.Item label="量表名称">
                   {result.scaleName}
                 </Descriptions.Item>
-                <Descriptions.Item label="量表编号">
+                <Descriptions.Item label="量表代码">
                   {result.scaleCode}
                 </Descriptions.Item>
               </Descriptions>

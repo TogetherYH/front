@@ -1,7 +1,6 @@
 // import { message } from 'antd';
-import { Reducer, Effect, Subscription } from 'umi';
-import { get, update, del, add } from '../service';
-import { UserType } from '../data';
+import { Reducer, Effect } from 'umi';
+import { get, resetPwd } from '../service';
 
 export interface userState {
   id?: string;
@@ -12,7 +11,7 @@ export interface userState {
   createTime?: string;
   status?: string;
   roleIds?: string[];
-  deptId: string;
+  deptId?: string;
 }
 
 export interface UserModelType {
@@ -23,13 +22,8 @@ export interface UserModelType {
   };
   effects: {
     fetchOne: Effect;
-    // fetchDelete: Effect;
-    // fetchUpdate: Effect;
-    // fetchAdd: Effect;
+    fetchReset: Effect;
   };
-  // subscriptions: {
-  //   setup: Subscription;
-  // };
 }
 
 const UserModel: UserModelType = {
@@ -52,67 +46,12 @@ const UserModel: UserModelType = {
         });
       }
     },
-    // *fetchUpdate({ payload: { id, values } }, { put, call, select }) {
-    //   const data = yield call(update, { id, values });
-    //   if (data) {
-    //     // message.success('Edit successfully');
-    //     const { pageNum, pageSize } = yield select((state: any) => {
-    //       return state.users;
-    //     });
-    //     yield put({
-    //       type: 'fetchList',
-    //       payload: {
-    //         pageNum,
-    //         pageSize,
-    //       },
-    //     });
-    //   }
-    // },
-    // *fetchAdd({ payload: { values } }, { put, call, select }) {
-    //   const data = yield call(add, { values });
-    //   if (data) {
-    //     // message.success('Add successfully');
-    //     const { pageNum, pageSize } = yield select((state: any) => {
-    //       return state.users;
-    //     });
-    //     yield put({
-    //       type: 'fetchList',
-    //       payload: {
-    //         pageNum,
-    //         pageSize,
-    //       },
-    //     });
-    //   }
-    // },
-    // *fetchDelete({ payload: { id } }, { put, call, select }) {
-    //   const data = yield call(del, { id });
-    //   if (data) {
-    //     // message.success('Delete successfully');
-    //     const { pageNum, pageSize } = yield select((state: any) => {
-    //       return state.users;
-    //     });
-    //     yield put({
-    //       type: 'fetchList',
-    //       payload: {
-    //         pageNum,
-    //         pageSize,
-    //       },
-    //     });
-    //   }
-    // },
+    *fetchReset({ payload: { id } }, { put, call }) {
+      const data = yield call(resetPwd, {
+        id,
+      });
+    },
   },
-  // subscriptions: {
-  //   setup({ dispatch, history }) {
-  //     return history.listen((location, action) => {
-  //       if (location.pathname === '/system/user') {
-  //         dispatch({
-  //           type: 'fetchList',
-  //           payload: { pageNum: 1, pageSize: 20 },
-  //         });
-  //       }
-  //     });
-  //   },
-  // },
 };
 
 export default UserModel;

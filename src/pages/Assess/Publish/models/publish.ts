@@ -9,6 +9,7 @@ export interface publishState {
   endDate?: string;
   createTime?: string;
   status?: string;
+  mobileView?: string;
   scales?: any[];
   depts?: any[];
 }

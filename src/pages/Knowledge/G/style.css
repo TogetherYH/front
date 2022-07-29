@@ -1,0 +1,96 @@
+.context-menu-item {
+  stroke-width: 2px;
+  fill: #d2d5da;
+}
+/* 
+button {
+  border: none;
+  background: transparent;
+  padding: 8px;
+}
+  
+button :hover {
+  background-color: #717780;
+  opacity: 0.1;
+  border-radius: 2px;
+}
+button :active {
+  background-color: #717780;
+  opacity: 0.2;
+}
+button :focus {
+  outline: none;
+}
+button .faded {
+  opacity: 0.3;
+  cursor: auto;
+} */
+
+/* .symptom {
+  color: #fff;
+  background: #03cee0;
+  border-color: #03cee0;
+}
+
+.symptom :hover {
+  color: #fff;
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.symptom :active {
+  color: #fff;
+  background: #4dff97;
+  border-color: #4dff97;
+} */
+
+.hasSymptomChecked, .hasSymptomChecked :hover, .hasSymptomChecked :active{
+  color: #fff !important;
+  border-color: #c41d7f !important;
+  background: #c41d7f !important;
+}
+
+
+.hasSymptomUnchecked, .hasSymptomUnchecked :hover, .hasSymptomUnchecked :active{
+  color: #c41d7f !important;
+  background: #fff0f6 !important;
+  border-color: #ffadd2 !important;
+}
+
+
+.needCheckChecked, .needCheckChecked :hover, .needCheckChecked :active{
+  color: #fff !important;
+  border-color: #d4380d !important;
+  background: #d4380d !important;
+}
+
+.needCheckUnchecked, .needCheckUnchecked :hover, .needCheckUnchecked :active{
+  color: #d4380d !important;
+  background: #fff2e8 !important;
+  border-color: #ffbb96 !important;
+}
+
+
+.hasTreatChecked, .hasTreatChecked :hover, .hasTreatChecked :active {
+  color: #fff !important;
+  background: #d46b08 !important;
+  border-color: #d46b08 !important;
+}
+
+.hasTreatUnchecked, .hasTreatUnchecked :hover, .hasTreatUnchecked :active {
+  color: #d46b08 !important;
+  background: #fff7e6 !important;
+  border-color: #ffd591 !important;
+} 
+
+.recommendDrugChecked, .recommendDrugChecked :hover, .recommendDrugChecked :active {
+  color: #fff !important;
+  background: #d48806 !important;
+  border-color: #d48806 !important;
+}
+
+.recommendDrugUnchecked, .recommendDrugUnchecked :hover, .recommendDrugUnchecked :active {
+  color: #d48806 !important;
+  background: #fffbe6 !important;
+  border-color: #ffe58f !important;
+}

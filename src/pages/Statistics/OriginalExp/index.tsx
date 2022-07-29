@@ -60,7 +60,7 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
     const { columns, scroll } = props;
     const [tableWidth, setTableWidth] = useState(0);
 
-    console.log('tableWidth', tableWidth);
+    // console.log('tableWidth', tableWidth);
 
     const widthColumnCount = columns!.filter(({ width }) => !width).length;
     const mergedColumns = columns!.map((column) => {
@@ -161,7 +161,7 @@ const OriginalExp: FC<OriginalExpProps> = (prop) => {
     return (
       <ResizeObserver
         onResize={({ width }) => {
-          console.log('ww', width);
+          // console.log('ww', width);
           setTableWidth(width);
         }}
       >

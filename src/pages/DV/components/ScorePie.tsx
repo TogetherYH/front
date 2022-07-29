@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { Card, Row } from 'antd';
+import { Card, Row, Col } from 'antd';
 import { Pie } from '@ant-design/charts';
 import styles from '../index.less';
 
@@ -26,7 +26,8 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
   ];
   const config1 = {
     // appendPadding: 10,
-    autoFit: true,
+    legend: false,
+    // autoFit: true,
     data: data1,
     angleField: 'value',
     colorField: 'type',
@@ -34,17 +35,16 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
     radius: 0.75,
     innerRadius: 0.65,
     color: ['#00D98B', 'yellow', 'orange', 'red'],
-    label: {
-      type: 'spider',
-      labelHeight: 28,
-      content: '{percentage}',
-    },
+    label: null,
     statistic: {
-      title: {
-        offsetY: -4,
-        customHtml: '90项症状',
+      title: null,
+      content: {
+        style: {
+          fontSize: '14px',
+          color: 'gray',
+        },
+        customHtml: '90项症状清单',
       },
-      content: false,
     },
   };
 
@@ -68,25 +68,26 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
   ];
   const config2 = {
     // appendPadding: 10,
-    autoFit: true,
+    legend: false,
+    // autoFit: true,
     data: data2,
     angleField: 'value',
     colorField: 'type',
+
     // height: 250,
     radius: 0.75,
     innerRadius: 0.65,
     color: ['#00D98B', 'yellow', 'orange', 'red'],
-    label: {
-      type: 'spider',
-      labelHeight: 28,
-      content: '{percentage}',
-    },
+    label: null,
     statistic: {
-      title: {
-        offsetY: -4,
-        customHtml: '焦虑自评',
+      title: null,
+      content: {
+        style: {
+          fontSize: '14px',
+          color: 'gray',
+        },
+        customHtml: '焦虑自评量表',
       },
-      content: false,
     },
   };
 
@@ -96,21 +97,24 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
       value: 90,
     },
     {
-      type: '轻度焦虑',
+      type: '轻度',
       value: 5,
     },
     {
-      type: '中度焦虑',
+      type: '中度',
       value: 3,
     },
     {
-      type: '重度度焦虑',
+      type: '重度',
       value: 2,
     },
   ];
   const config3 = {
     // appendPadding: 10,
-    autoFit: true,
+    legend: {
+      position: 'right',
+    },
+    // autoFit: true,
     data: data3,
     angleField: 'value',
     colorField: 'type',
@@ -118,26 +122,42 @@ const ScorePie: FC<ScorePieProps> = ({}) => {
     radius: 0.75,
     innerRadius: 0.65,
     color: ['#00D98B', 'yellow', 'orange', 'red'],
-    label: {
-      type: 'spider',
-      labelHeight: 28,
-      content: '{percentage}',
-    },
+    label: null,
     statistic: {
-      title: {
-        offsetY: -4,
-        customHtml: '抑郁自评',
+      title: null,
+      content: {
+        style: {
+          fontSize: '14px',
+          color: 'gray',
+        },
+        customHtml: '抑郁自评量表',
       },
-      content: false,
     },
   };
 
   return (
-    <div className={styles.card + ' ' + styles.cardHeight}>
-      <Row className={styles.row + ' ' + styles.cardHeight}>
-        <Pie {...config1} />
-        <Pie {...config2} />
-        <Pie {...config3} />
+    <div
+      className={styles.card + ' ' + styles.cardHeight}
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        // lineHeight: 4,
+      }}
+    >
+      <Row style={{ width: '100%' }}>
+        <Col span={7} style={{ height: '100%' }}>
+          <Pie {...config1} />
+        </Col>
+        <Col span={7} style={{ height: '100%' }}>
+          <Pie {...config2} />
+        </Col>
+        <Col span={9} style={{ height: '100%' }}>
+          <Pie {...config3} />
+        </Col>
+        <Col span={1} style={{ height: '100%' }}>
+          <div></div>
+        </Col>
       </Row>
     </div>
   );
